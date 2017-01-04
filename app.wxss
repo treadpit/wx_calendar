@@ -1,0 +1,117 @@
+page {
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.box {
+    display: flex;
+}
+
+.box-lr {
+    flex-direction: row;
+}
+
+.box-rl {
+    flex-direction: row-reverse;
+}
+
+.box-tb {
+    flex-direction: column;
+}
+
+.box-bt {
+    flex-direction: column-reverse;
+}
+
+.box-pack-center {
+    justify-content: center;
+}
+
+.box-pack-start {
+    justify-content: flex-start;
+}
+
+.box-pack-end {
+    justify-content: flex-end;
+}
+
+.box-pack-between {
+    justify-content: space-between;
+}
+
+.box-pack-around {
+    justify-content: space-around;
+}
+
+.box-align-center {
+    align-items: center;
+}
+
+.box-align-start {
+    align-items: flex-start;
+}
+
+.box-align-end {
+    align-items: flex-end;
+}
+
+.self-align-center {
+    align-self: center;
+    margin: 0 auto;
+}
+
+.self-align-start {
+    align-self: flex-start;
+}
+
+.self-align-end {
+    align-self: flex-end;
+}
+
+.self-align-stretch {
+    align-self: stretch;
+}
+
+.box-wrap {
+    flex-wrap: wrap;
+}
+
+.box-nowrap {
+    flex-wrap: nowrap;
+}
+
+.flex {
+    flex-grow: 1;
+}
+
+.shrink {
+    flex-shrink: 1;
+}
+.bg {
+  background-image: linear-gradient(to bottom, #faefe7, #ffcbd7);
+  overflow: hidden;
+}
+.brown-color {
+  color: #784344;
+}
+.pink-color {
+  color: #ff629a;
+}
+.white-color {
+  color: #fff;
+}
+.fs24 {
+  font-size: 24rpx;
+}
+.fs28 {
+  font-size: 28rpx;
+}
+.fs32 {
+  font-size: 32rpx;
+}
+.fs36 {
+  font-size: 36rpx;
+}

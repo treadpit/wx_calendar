@@ -1,0 +1,149 @@
+/* pages/calendar/calendar.wxss */
+.top-handle {
+    height: 80rpx;
+}
+.prev {
+    text-align: right;
+    height: 80rpx;
+}
+.next {
+    height: 80rpx;
+}
+.prev-handle {
+    width: 80rpx;
+    height: 100%;
+}
+.next-handle {
+    width: 80rpx;
+    height: 100%;
+}
+.date-area {
+    width: 50%;
+    height: 80rpx;
+    text-align: center;
+}
+.weeks {
+    height: 50rpx;
+    line-height: 50rpx;
+    opacity: 0.5
+}
+.week {
+    text-align: center;
+}
+.days {
+    height: 500rpx;
+}
+.grid {
+    width: 107.1428571429rpx;
+}
+.day {
+    width: 60rpx;
+    height: 60rpx;
+    color: #88d2ac;
+    font-size: 26rpx;
+    font-weight: 200;
+}
+.border-radius {
+    border-radius: 50%;
+    position: relative;
+    left: 0;
+    top: 0;
+    color: #fff;
+}
+.pink-bg {
+    background-color: #ff629a;
+}
+.purple-bg {
+    background-color: #b8b8f1;
+}
+
+.right-triangle::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    border: 15rpx solid transparent;
+    border-left-color: #ff629a;
+    position: absolute;
+    right: -22rpx;
+    top: 18rpx;
+}
+.left-triangle::before {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    border: 15rpx solid transparent;
+    border-right-color: #ff629a;
+    position: absolute;
+    left: -22rpx;
+    top: 18rpx;
+}
+.tips {
+    text-align: center;
+    margin-top: 20rpx;
+    margin-bottom: 20rpx;
+}
+.types {
+    background-color: #ffedf4;
+    height: 50rpx;
+}
+.type-dot {
+    width: 25rpx;
+    height: 25rpx;
+    border-radius: 50%;
+    margin-right: 10rpx;
+}
+.type-dot-ymq {
+    color:rgb(255, 124, 160);
+    background-color: rgb(255, 124, 160);
+}
+.type-dot-ycq {
+    color: rgb(255, 200, 202);
+    background-color: rgb(255, 200, 202);
+}
+.type-dot-aqq {
+    color: rgb(118, 191, 92);
+    background-color: rgb(118, 191, 92);
+}
+.type-dot-yyq {
+    color: rgb(255, 182, 236);
+    background-color: rgb(255, 182, 236);
+}
+.type-dot-plr {
+    color: rgb(211, 189, 215);
+    background-color: rgb(211, 189, 215);
+}
+.types-desc {
+    padding: 0 20rpx;
+}
+.type-name {
+    margin-top: 50rpx;
+    margin-bottom: 30rpx;
+}
+.type-desc {
+    padding: 0 35rpx;
+    line-height: 38rpx;
+}
+.explain {
+    border-top: 1px solid #eee;
+    width: 90%;
+    margin: 20rpx 5% 20rpx 5%;
+    padding: 20rpx 0;
+}
+.explain-title {
+    font-weight: bold;
+    margin-bottom: 15rpx;
+}
+.explain-item {
+    padding: 8rpx 20rpx;
+    color: #fff;
+}
+.left-border-radius {
+    border-top-left-radius: 20rpx;
+    border-bottom-left-radius: 20rpx;
+}
+.right-border-radius {
+    border-top-right-radius: 20rpx;
+    border-bottom-right-radius: 20rpx;
+}
