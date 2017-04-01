@@ -2,15 +2,18 @@ const conf = {
   data: {
     hasEmptyGrid: false
   },
-  getSystemInfo() {
-    try {
-      const res = wx.getSystemInfoSync();
-      this.setData({
-        scrollViewHeight: res.windowHeight * res.pixelRatio || 667
-      });
-    } catch (e) {
-      console.log(e);
-    }
+  onLoad(options) {
+    const date = new Date();
+    const cur_year = date.getFullYear();
+    const cur_month = date.getMonth() + 1;
+    const weeks_ch = ['日', '一', '二', '三', '四', '五', '六'];
+    this.calculateEmptyGrids(cur_year, cur_month);
+    this.calculateDays(cur_year, cur_month);
+    this.setData({
+      cur_year,
+      cur_month,
+      weeks_ch
+    })
   },
   getThisMonthDays(year, month) {
     return new Date(year, month, 0).getDate();
@@ -48,20 +51,6 @@ const conf = {
     this.setData({
       days
     });
-  },
-  onLoad(options) {
-    const date = new Date();
-    const cur_year = date.getFullYear();
-    const cur_month = date.getMonth() + 1;
-    const weeks_ch = ['日', '一', '二', '三', '四', '五', '六'];
-    this.calculateEmptyGrids(cur_year, cur_month);
-    this.calculateDays(cur_year, cur_month);
-    this.getSystemInfo();
-    this.setData({
-      cur_year,
-      cur_month,
-      weeks_ch
-    })
   },
   handleCalendar(e) {
     const handle = e.currentTarget.dataset.handle;
