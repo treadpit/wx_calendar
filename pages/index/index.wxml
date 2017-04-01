@@ -1,4 +1,4 @@
-<scroll-view scroll-y="true" class="flex box box-tb box-pack-center box-align-center" style="height: {{scrollViewHeight*2}}rpx">
+<view class="flex box box-tb box-align-center" style="height: {{scrollViewHeight*2}}rpx">
   <view class="calendar pink-color box box-tb">
         <view class="top-handle fs28 box box-lr box-align-center box-pack-center">
             <view class="prev box box-rl" bindtap="handleCalendar" data-handle="prev">
@@ -20,4 +20,4 @@
             </view>
         </view>
     </view>
-</scroll-view>
+</view>
