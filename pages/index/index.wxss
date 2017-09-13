@@ -95,8 +95,8 @@
     margin-right: 10rpx;
 }
 .type-dot-ymq {
-    color:rgb(255, 124, 160);
-    background-color: rgb(255, 124, 160);
+    color:#FF7CA0;
+    background-color: #FF7CA0;
 }
 .type-dot-ycq {
     color: rgb(255, 200, 202);
@@ -107,8 +107,8 @@
     background-color: rgb(118, 191, 92);
 }
 .type-dot-yyq {
-    color: rgb(255, 182, 236);
-    background-color: rgb(255, 182, 236);
+    color: #FF7CA0;
+    background-color: #FF7CA0;
 }
 .type-dot-plr {
     color: rgb(211, 189, 215);
@@ -146,4 +146,19 @@
 .right-border-radius {
     border-top-right-radius: 20rpx;
     border-bottom-right-radius: 20rpx;
+}
+.picker-btns {
+	height: 120rpx;
+	line-height: 120rpx;
+	border-bottom: 1rpx solid #FF7CA0;
+}
+.picker-confirm {
+	margin-right: 50rpx;
+}
+.picker-cancel {
+	margin-left: 50rpx;
+}
+.picker-view {
+	color:#FF7CA0;
+	text-align: center;
 }

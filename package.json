@@ -1,6 +1,6 @@
 {
   "name": "wx_calendar",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "description": "one small calendar demo",
   "main": "app.js",
   "devDependencies": {
@@ -26,5 +26,9 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "dependencies": {
+    "eslint": "^3.19.0",
+    "stylelint": "^7.10.1"
   }
 }

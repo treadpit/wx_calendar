@@ -1,0 +1,86 @@
+{
+	"env": {
+		"browser": false,
+		"es6": true,
+		"node": true
+	},
+	"extends": [
+		"eslint:recommended"
+	],
+	"globals": {
+		"App": true,
+		"Page": true,
+		"getApp": true,
+		"getCurrentPages": true,
+		"wx": true
+	},
+	"root": true,
+	"rules": {
+		"arrow-spacing": [
+			"error",
+			{
+				"after": true,
+				"before": true
+			}
+		],
+		"comma-spacing": [
+			"error",
+			{
+				"after": true,
+				"before": false
+			}
+		],
+		"eol-last": [
+			"error",
+			"always"
+		],
+		"keyword-spacing": [
+			"error",
+			{
+				"after": true,
+				"before": true
+			}
+		],
+		"no-console": [
+			"warn",
+			{
+			}
+		],
+		"quotes": [
+			"error",
+			"single",
+			{
+				"allowTemplateLiterals": true,
+				"avoidEscape": true
+			}
+		],
+		"semi": [
+			"error",
+			"always",
+			{
+				"omitLastInOneLineBlock": false
+			}
+		],
+		"space-before-blocks": [
+			"error",
+			"always"
+		],
+		"space-infix-ops": [
+			"error"
+		],
+		"spaced-comment": [
+			"error",
+			"always"
+		],
+		"strict": [
+			"error",
+			"safe"
+		],
+		"valid-jsdoc": [
+			"error",
+			{
+				"requireReturn": false
+			}
+		]
+	}
+}
