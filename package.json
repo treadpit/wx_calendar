@@ -4,10 +4,12 @@
   "description": "one small calendar demo",
   "main": "app.js",
   "devDependencies": {
-    "cz-conventional-changelog": "^2.0.0"
+    "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-debug": "^3.2.0"
   },
   "scripts": {
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -w -r 0"
+    "build": "rm -rf dist && gulp",
+    "dev": "gulp watch"
   },
   "repository": {
     "type": "git",
@@ -22,11 +24,6 @@
     "url": "https://github.com/treadpit/wx_calendar/issues"
   },
   "homepage": "https://github.com/treadpit/wx_calendar#readme",
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
   "dependencies": {
     "eslint": "^3.19.0",
     "stylelint": "^7.10.1"

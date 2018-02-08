@@ -13,6 +13,32 @@
 
 > 小程序没有DOM操作概念，故不能动态的往当月第一天的插入多少个空格子，只能通过在前面加入空格子的循环来控制，具体参考 `wxml` 文件。
 
+### 日历模板引入
+
+提供 `template` [模板引入](https://mp.weixin.qq.com/debug/wxadoc/dev/framework/view/wxml/template.html)
+
+1. 引入`wxml`及`wxss`
+```xml
+// example.wxml
+<import src="../../template/index.wxml"/>
+<template is="calendar" data="{{...calendar}}" />
+
+// example.wxss
+@import '../../template/index.wxss';
+```
+2. 日历组件初始化
+```js
+// example.js
+
+import initCalendar from '../../template/index';
+const conf = {
+	onShow: function(){
+		initCalendar(); // 初始化日历
+	}
+}
+Page(conf);
+
+```
 #### 效果图
 
 ![](https://ws1.sinaimg.cn/large/9274759egy1fjhx2haqexg208t0fptb1.jpg)

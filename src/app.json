@@ -1,6 +1,8 @@
 {
   "pages":[
-    "pages/index/index"
+    "pages/index/index",
+    "pages/template/index",
+    "pages/calendar/index"
   ],
   "window":{
     "backgroundTextStyle":"light",

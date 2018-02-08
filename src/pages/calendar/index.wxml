@@ -29,10 +29,10 @@
 	</view>
 	<picker-view class="flex" indicator-style="height: 50px;" style="width: 100%; height: 150px;" value="{{picker_value}}" bindchange="pickerChange">
 		<picker-view-column>
-			<view class="picker-view" wx:for="{{picker_year}}" style="line-height: 50px">{{item}}年</view>
+			<view class="picker-view" wx:for="{{picker_year}}" wx:key="*this" style="line-height: 50px">{{item}}年</view>
 		</picker-view-column>
 		<picker-view-column>
-			<view class="picker-view" wx:for="{{picker_month}}" style="line-height: 50px">{{item}}月</view>
+			<view class="picker-view" wx:for="{{picker_month}}" wx:key="*this" style="line-height: 50px">{{item}}月</view>
 		</picker-view-column>
 	</picker-view>
 </view>

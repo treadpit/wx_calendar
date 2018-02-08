@@ -1,0 +1,7 @@
+<view class="wrap">
+    <text>示例目前有独立页面和template两种模式, template 模式
+      <text class="comments">(模板介绍参考微信小程序官方文档)</text>
+    引入方法见 README</text>
+	  <navigator class="navigator" url="/pages/calendar/index">独立页面</navigator>
+	  <navigator class="navigator" url="/pages/template/index">template 示例页</navigator>
+</view>
