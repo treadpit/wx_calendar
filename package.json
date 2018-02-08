@@ -9,7 +9,8 @@
   },
   "scripts": {
     "build": "rm -rf dist && gulp",
-    "dev": "gulp watch"
+    "dev": "gulp watch",
+		"fix": "eslint src --fix"
   },
   "repository": {
     "type": "git",

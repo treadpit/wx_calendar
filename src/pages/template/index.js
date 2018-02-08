@@ -1,7 +1,7 @@
 import initCalendar from '../../template/index';
 const conf = {
-	onShow: function(){
+	onShow: function() {
 		initCalendar();
 	}
-}
+};
 Page(conf);

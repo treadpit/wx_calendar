@@ -1,6 +1,3 @@
-let choose_year = null;
-let choose_month = null;
-
 const conf = {
 	getThisMonthDays(year, month) {
 		return new Date(year, month, 0).getDate();
@@ -88,8 +85,6 @@ const conf = {
 		});
 	},
 	chooseYearAndMonth() {
-		const cur_year = this.data.calendar.cur_year;
-		const cur_month = this.data.calendar.cur_month;
 		let picker_year = [],
 			picker_month = [];
 		for (let i = 1900; i <= 2100; i++) {
@@ -98,8 +93,6 @@ const conf = {
 		for (let i = 1; i <= 12; i++) {
 			picker_month.push(i);
 		}
-		const idx_year = picker_year.indexOf(cur_year);
-		const idx_month = picker_month.indexOf(cur_month);
 		this.setData({
 			'calendar.showPicker': true,
 		});
@@ -131,5 +124,5 @@ export default () => {
 	self.tapDayItem = conf.tapDayItem.bind(self);
 	self.handleCalendar = conf.handleCalendar.bind(self);
 	self.chooseYearAndMonth = conf.chooseYearAndMonth.bind(self);
-}
+};
 

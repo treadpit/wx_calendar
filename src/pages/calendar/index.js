@@ -1,4 +1,4 @@
-'use strict';
+
 let choose_year = null,
 	choose_month = null;
 const conf = {
