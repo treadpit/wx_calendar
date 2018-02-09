@@ -1,0 +1,2 @@
+<import src="../../template/calendar.wxml"/>
+<template is="calendar" data="{{...calendar}}" />

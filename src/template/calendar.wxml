@@ -1,0 +1,60 @@
+<template name="calendar">
+  <view class="flex box box-tb box-align-center">
+    <view class="calendar pink-color box box-tb">
+      <view class="top-handle fs28 box box-lr box-align-center box-pack-center">
+        <view class="prev box box-rl" bindtap="handleCalendar" data-handle="prev">
+          <view class="prev-handle box box-lr box-align-center box-pack-center">《</view>
+        </view>
+        <view bindtap="chooseYearAndMonth" class="date-area box box-lr box-align-center box-pack-center">{{cur_year || "--"}} 年 {{cur_month || "--"}} 月</view>
+        <view class="next box box-lr" bindtap="handleCalendar" data-handle="next">
+          <view class="next-handle box box-lr box-align-center box-pack-center">》</view>
+        </view>
+      </view>
+      <view class="weeks box box-lr box-pack-center box-align-center">
+        <view class="flex week fs28" wx:for="{{weeks_ch}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
+      </view>
+      <view class="days box box-lr box-wrap">
+        <view wx:if="{{hasEmptyGrid}}" class="grid white-color box box-align-center box-pack-center" wx:for="{{empytGrids}}" wx:key="{{index}}" data-idx="{{index}}">
+        </view>
+        <view class="grid white-color box box-align-center box-pack-center" wx:for="{{days}}" wx:key="{{index}}" data-idx="{{index}}">
+          <view class="day box box-align-center box-pack-center {{item.type==0?'':''}} {{item.type==1?'border-radius pink-bg':''}} {{item.type==2?'border-radius upbg':''}} {{item.type==3?'border-radius downbg':''}}" bindtap="tapDayItem" data-day="{{item.day}}">{{item.day}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="weui-cell weui-cells__title">
+    <view class="weui-cell__bd">
+      <view style="display: inline-block; vertical-align: middle">已选择的日期</view>
+      <view class="weui-badge" style="margin-left: 5px;">{{selectDaysNum}}</view>
+    </view>
+    <view class="weui-cell__ft " bindtap="showDaysDetail">
+      <block wx:if="{{isShowDetail}}">
+        隐藏
+      </block>
+      <block wx:if="{{!isShowDetail}}">
+        查看
+      </block>详细信息</view>
+  </view>
+
+  <view class="weui-cells weui-cells_after-title" wx:if="{{isShowDetail}}">
+    <view class="weui-cell__bd">
+      <block wx:for="{{selectedDays}}" wx:for-item="item" wx:key="*this">
+        <view class="weui-cell" style="padding: 3px 8px;">
+          <view class="weui-cell__bd">{{cur_year}}年{{item.mon}}月{{item.day}}日</view>
+          <view class="weui-cell__ft">
+            <block wx:if="{{item.type==1}}">
+              全天
+            </block>
+            <block wx:if="{{item.type==2}}">
+              上午
+            </block>
+            <block wx:if="{{item.type==3}}">
+              下午
+            </block>
+          </view>
+        </view>
+      </block>
+
+    </view>
+  </view>
+</template>
