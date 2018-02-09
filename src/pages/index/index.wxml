@@ -4,4 +4,5 @@
     引入方法见 README</text>
 	  <navigator class="navigator" url="/pages/calendar/index">独立页面</navigator>
 	  <navigator class="navigator" url="/pages/template/index">template 示例页</navigator>
+    <navigator class="navigator" url="/pages/template_extra/index">template带上下午选择和列表</navigator>
 </view>

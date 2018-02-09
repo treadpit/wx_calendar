@@ -2,7 +2,8 @@
   "pages":[
     "pages/index/index",
     "pages/template/index",
-    "pages/calendar/index"
+    "pages/calendar/index",
+    "pages/template_extra/index"
   ],
   "window":{
     "backgroundTextStyle":"light",
