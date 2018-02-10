@@ -4,13 +4,25 @@
   "description": "one small calendar demo",
   "main": "app.js",
   "devDependencies": {
+    "babel-eslint": "^8.2.1",
+    "eslint": "^4.17.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^6.0.0",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
     "gulp": "github:gulpjs/gulp#4.0",
-    "gulp-debug": "^3.2.0"
+    "gulp-debug": "^3.2.0",
+    "stylelint": "^8.4.0",
+    "stylelint-config-standard": "^18.0.0",
+    "stylelint-config-wxss": "^2.4.0",
+    "stylelint-no-z-index": "^1.1.2"
   },
   "scripts": {
     "build": "rm -rf dist && gulp",
-    "dev": "gulp watch",
-		"fix": "eslint src --fix"
+		"dev": "gulp watch",
+		"test": "eslint src && stylelint \"src/**/*.wxss\"",
+    "fix": "eslint src --fix && stylelint \"src/**/*.wxss\" --fix"
   },
   "repository": {
     "type": "git",
@@ -20,13 +32,13 @@
     "wx-app"
   ],
   "author": "treadpit",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/treadpit/wx_calendar/issues"
   },
   "homepage": "https://github.com/treadpit/wx_calendar#readme",
   "dependencies": {
-    "eslint": "^3.19.0",
-    "stylelint": "^7.10.1"
+    "eslint": "^4.17.0",
+    "stylelint": "^8.4.0"
   }
 }

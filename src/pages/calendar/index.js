@@ -1,6 +1,6 @@
 
-let choose_year = null,
-	choose_month = null;
+let chooseYear = null;
+let chooseMonth = null;
 const conf = {
 	data: {
 		hasEmptyGrid: false,
@@ -8,15 +8,15 @@ const conf = {
 	},
 	onLoad() {
 		const date = new Date();
-		const cur_year = date.getFullYear();
-		const cur_month = date.getMonth() + 1;
-		const weeks_ch = [ '日', '一', '二', '三', '四', '五', '六' ];
-		this.calculateEmptyGrids(cur_year, cur_month);
-		this.calculateDays(cur_year, cur_month);
+		const curYear = date.getFullYear();
+		const curMonth = date.getMonth() + 1;
+		const weeksCh = [ '日', '一', '二', '三', '四', '五', '六' ];
+		this.calculateEmptyGrids(curYear, curMonth);
+		this.calculateDays(curYear, curMonth);
 		this.setData({
-			cur_year,
-			cur_month,
-			weeks_ch
+			curYear,
+			curMonth,
+			weeksCh
 		});
 	},
 	getThisMonthDays(year, month) {
@@ -61,13 +61,13 @@ const conf = {
 	},
 	handleCalendar(e) {
 		const handle = e.currentTarget.dataset.handle;
-		const cur_year = this.data.cur_year;
-		const cur_month = this.data.cur_month;
+		const curYear = this.data.curYear;
+		const curMonth = this.data.curMonth;
 		if (handle === 'prev') {
-			let newMonth = cur_month - 1;
-			let newYear = cur_year;
+			let newMonth = curMonth - 1;
+			let newYear = curYear;
 			if (newMonth < 1) {
-				newYear = cur_year - 1;
+				newYear = curYear - 1;
 				newMonth = 12;
 			}
 
@@ -75,15 +75,14 @@ const conf = {
 			this.calculateEmptyGrids(newYear, newMonth);
 
 			this.setData({
-				cur_year: newYear,
-				cur_month: newMonth
+				curYear: newYear,
+				curMonth: newMonth
 			});
-
 		} else {
-			let newMonth = cur_month + 1;
-			let newYear = cur_year;
+			let newMonth = curMonth + 1;
+			let newYear = curYear;
 			if (newMonth > 12) {
-				newYear = cur_year + 1;
+				newYear = curYear + 1;
 				newMonth = 1;
 			}
 
@@ -91,8 +90,8 @@ const conf = {
 			this.calculateEmptyGrids(newYear, newMonth);
 
 			this.setData({
-				cur_year: newYear,
-				cur_month: newMonth
+				curYear: newYear,
+				curMonth: newMonth
 			});
 		}
 	},
@@ -105,29 +104,29 @@ const conf = {
 		});
 	},
 	chooseYearAndMonth() {
-		const cur_year = this.data.cur_year;
-		const cur_month = this.data.cur_month;
-		let picker_year = [],
-			picker_month = [];
+		const curYear = this.data.curYear;
+		const curMonth = this.data.curMonth;
+		let pickerYear = [];
+		let pickerMonth = [];
 		for (let i = 1900; i <= 2100; i++) {
-			picker_year.push(i);
+			pickerYear.push(i);
 		}
 		for (let i = 1; i <= 12; i++) {
-			picker_month.push(i);
+			pickerMonth.push(i);
 		}
-		const idx_year = picker_year.indexOf(cur_year);
-		const idx_month = picker_month.indexOf(cur_month);
+		const idxYear = pickerYear.indexOf(curYear);
+		const idxMonth = pickerMonth.indexOf(curMonth);
 		this.setData({
-			picker_value: [ idx_year, idx_month ],
-			picker_year,
-			picker_month,
+			pickerValue: [ idxYear, idxMonth ],
+			pickerYear,
+			pickerMonth,
 			showPicker: true,
 		});
 	},
 	pickerChange(e) {
 		const val = e.detail.value;
-		choose_year = this.data.picker_year[val[0]];
-		choose_month = this.data.picker_month[val[1]];
+		chooseYear = this.data.pickerYear[val[0]];
+		chooseMonth = this.data.pickerMonth[val[1]];
 	},
 	tapPickerBtn(e) {
 		const type = e.currentTarget.dataset.type;
@@ -135,12 +134,12 @@ const conf = {
 			showPicker: false,
 		};
 		if (type === 'confirm') {
-			o.cur_year = choose_year;
-			o.cur_month = choose_month;
-			this.calculateEmptyGrids(choose_year, choose_month);
-			this.calculateDays(choose_year, choose_month);
+			o.curYear = chooseYear;
+			o.curMonth = chooseMonth;
+			this.calculateEmptyGrids(chooseYear, chooseMonth);
+			this.calculateDays(chooseYear, chooseMonth);
 		}
-		
+
 		this.setData(o);
 	},
 	onShareAppMessage() {
