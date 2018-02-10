@@ -1,3 +1,6 @@
+
+![](https://travis-ci.org/treadpit/wx_calendar.svg?branch=master)
+
 # 小程序日历
 
 ### 思路分析
