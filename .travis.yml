@@ -1,9 +1,10 @@
 language: node_js
 node_js:
+  - "iojs"
   - "8"
 install:
-  - npm install
   - npm install -g gulp-cli
+  - npm install
 script:
   - npm test && npm run build:
 branches:
