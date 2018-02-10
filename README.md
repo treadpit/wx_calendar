@@ -1,5 +1,4 @@
-
-![](https://travis-ci.org/treadpit/wx_calendar.svg?branch=master)
+[![Build Status](https://travis-ci.org/treadpit/wx_calendar.svg?branch=master)](https://travis-ci.org/treadpit/wx_calendar)
 
 # 小程序日历
 

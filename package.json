@@ -20,8 +20,8 @@
   },
   "scripts": {
     "build": "rm -rf dist && gulp",
-		"dev": "gulp watch",
-		"test": "eslint src && stylelint \"src/**/*.wxss\"",
+    "dev": "gulp watch",
+    "test": "eslint src && stylelint \"src/**/*.wxss\"",
     "fix": "eslint src --fix && stylelint \"src/**/*.wxss\" --fix"
   },
   "repository": {
@@ -39,6 +39,6 @@
   "homepage": "https://github.com/treadpit/wx_calendar#readme",
   "dependencies": {
     "eslint": "^4.17.0",
-    "stylelint": "^8.4.0"
+    "stylelint": "^8.3.0"
   }
 }
