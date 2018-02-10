@@ -1,15 +1,15 @@
 language: node_js
 node_js:
-  - "iojs"
-  - "8"
+  - '7'
+before_install:
+  - npm install gulp-cli -g
 install:
-  - npm install -g gulp-cli
   - npm install
 script:
-  - npm test && npm run build:
-branches:
-  only:
+  - npm test & npm run build
+  branches:
+    only:
     - develop
 cache:
-	directories:
-		- "node_modules"
+  directories:
+    - node_modules
