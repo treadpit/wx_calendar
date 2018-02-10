@@ -1,15 +1,6 @@
 language: node_js
 node_js:
-  - '7'
-before_install:
-  - npm install gulp-cli -g
-install:
-  - npm install
-script:
-  - npm test & npm run build
-  branches:
-    only:
-    - develop
-cache:
-  directories:
-    - node_modules
+  - '6.9.5'
+  - '7.5.0'
+before_script: npm install
+script: npm run test
