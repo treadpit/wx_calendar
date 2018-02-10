@@ -5,7 +5,7 @@
 				<view class="prev box box-rl" bindtap="handleCalendar" data-handle="prev">
 					<view class="prev-handle box box-lr box-align-center box-pack-center">《</view>
 				</view>
-				<view bindtap="chooseYearAndMonth" class="date-area box box-lr box-align-center box-pack-center">{{cur_year || "--"}} 年 {{cur_month || "--"}} 月</view>
+				<view bindtap="chooseYearAndMonth" class="date-area box box-lr box-align-center box-pack-center">{{curYear || "--"}} 年 {{curMonth || "--"}} 月</view>
 				<view class="next box box-lr" bindtap="handleCalendar" data-handle="next">
 					<view class="next-handle box box-lr box-align-center box-pack-center">》</view>
 				</view>

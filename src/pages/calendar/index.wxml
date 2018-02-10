@@ -4,13 +4,13 @@
             <view class="prev box box-rl" bindtap="handleCalendar" data-handle="prev">
                 <view class="prev-handle box box-lr box-align-center box-pack-center">《</view>
             </view>
-            <view bindtap="chooseYearAndMonth" class="date-area box box-lr box-align-center box-pack-center">{{cur_year || "--"}} 年 {{cur_month || "--"}} 月</view>
+            <view bindtap="chooseYearAndMonth" class="date-area box box-lr box-align-center box-pack-center">{{curYear || "--"}} 年 {{curMonth || "--"}} 月</view>
             <view class="next box box-lr" bindtap="handleCalendar" data-handle="next">
                 <view class="next-handle box box-lr box-align-center box-pack-center">》</view>
             </view>
         </view>
         <view class="weeks box box-lr box-pack-center box-align-center">
-            <view class="flex week fs28" wx:for="{{weeks_ch}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
+            <view class="flex week fs28" wx:for="{{weeksCh}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
         </view>
         <view class="days box box-lr box-wrap">
             <view wx:if="{{hasEmptyGrid}}" class="grid white-color box box-align-center box-pack-center" wx:for="{{empytGrids}}" wx:key="{{index}}" data-idx="{{index}}">
@@ -27,12 +27,12 @@
 		<view class="picker-btn picker-cancel" data-type="cancel" bindtap="tapPickerBtn">取消</view>
 		<view class="picker-btn picker-confirm" data-type="confirm" bindtap="tapPickerBtn">确定</view>
 	</view>
-	<picker-view class="flex" indicator-style="height: 50px;" style="width: 100%; height: 150px;" value="{{picker_value}}" bindchange="pickerChange">
+	<picker-view class="flex" indicator-style="height: 50px;" style="width: 100%; height: 150px;" value="{{pickerValue}}" bindchange="pickerChange">
 		<picker-view-column>
-			<view class="picker-view" wx:for="{{picker_year}}" wx:key="*this" style="line-height: 50px">{{item}}年</view>
+			<view class="picker-view" wx:for="{{pickerYear}}" wx:key="*this" style="line-height: 50px">{{item}}年</view>
 		</picker-view-column>
 		<picker-view-column>
-			<view class="picker-view" wx:for="{{picker_month}}" wx:key="*this" style="line-height: 50px">{{item}}月</view>
+			<view class="picker-view" wx:for="{{pickerMonth}}" wx:key="*this" style="line-height: 50px">{{item}}月</view>
 		</picker-view-column>
 	</picker-view>
 </view>

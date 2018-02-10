@@ -41,13 +41,13 @@ const conf = {
 	},
 	handleCalendar(e) {
 		const handle = e.currentTarget.dataset.handle;
-		const cur_year = this.data.calendar.cur_year;
-		const cur_month = this.data.calendar.cur_month;
+		const curYear = this.data.calendar.curYear;
+		const curMonth = this.data.calendar.curMonth;
 		if (handle === 'prev') {
-			let newMonth = cur_month - 1;
-			let newYear = cur_year;
+			let newMonth = curMonth - 1;
+			let newYear = curYear;
 			if (newMonth < 1) {
-				newYear = cur_year - 1;
+				newYear = curYear - 1;
 				newMonth = 12;
 			}
 
@@ -55,15 +55,14 @@ const conf = {
 			conf.calculateEmptyGrids.call(this, newYear, newMonth);
 
 			this.setData({
-				'calendar.cur_year': newYear,
-				'calendar.cur_month': newMonth,
+				'calendar.curYear': newYear,
+				'calendar.curMonth': newMonth,
 			});
-
 		} else {
-			let newMonth = cur_month + 1;
-			let newYear = cur_year;
+			let newMonth = curMonth + 1;
+			let newYear = curYear;
 			if (newMonth > 12) {
-				newYear = cur_year + 1;
+				newYear = curYear + 1;
 				newMonth = 1;
 			}
 
@@ -71,8 +70,8 @@ const conf = {
 			conf.calculateEmptyGrids.call(this, newYear, newMonth);
 
 			this.setData({
-				'calendar.cur_year': newYear,
-				'calendar.cur_month': newMonth
+				'calendar.curYear': newYear,
+				'calendar.curMonth': newMonth
 			});
 		}
 	},
@@ -85,13 +84,13 @@ const conf = {
 		});
 	},
 	chooseYearAndMonth() {
-		let picker_year = [],
-			picker_month = [];
+		let pickerYear = [];
+		let pickerMonth = [];
 		for (let i = 1900; i <= 2100; i++) {
-			picker_year.push(i);
+			pickerYear.push(i);
 		}
 		for (let i = 1; i <= 12; i++) {
-			picker_month.push(i);
+			pickerMonth.push(i);
 		}
 		this.setData({
 			'calendar.showPicker': true,
@@ -108,21 +107,20 @@ function _getCurrentPage() {
 export default () => {
 	const self = _getCurrentPage();
 	const date = new Date();
-	const cur_year = date.getFullYear();
-	const cur_month = date.getMonth() + 1;
-	const weeks_ch = [ '日', '一', '二', '三', '四', '五', '六' ];
+	const curYear = date.getFullYear();
+	const curMonth = date.getMonth() + 1;
+	const weeksCh = [ '日', '一', '二', '三', '四', '五', '六' ];
 	self.setData({
 		calendar: {
-			cur_year,
-			cur_month,
-			weeks_ch,
+			curYear,
+			curMonth,
+			weeksCh,
 			hasEmptyGrid: false,
 		}
 	});
-	conf.calculateEmptyGrids.call(self, cur_year, cur_month);
-	conf.calculateDays.call(self, cur_year, cur_month);
+	conf.calculateEmptyGrids.call(self, curYear, curMonth);
+	conf.calculateDays.call(self, curYear, curMonth);
 	self.tapDayItem = conf.tapDayItem.bind(self);
 	self.handleCalendar = conf.handleCalendar.bind(self);
 	self.chooseYearAndMonth = conf.chooseYearAndMonth.bind(self);
 };
-
