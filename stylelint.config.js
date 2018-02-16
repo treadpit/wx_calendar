@@ -6,7 +6,7 @@ module.exports = {
 	],
 	rules: {
 		'at-rule-no-vendor-prefix': true,
-		'indentation': 2,
+		'indentation': 'tab',
 		'media-feature-name-no-vendor-prefix': true,
 		'no-missing-end-of-source-newline': null,
 		'plugin/no-z-index': 2,

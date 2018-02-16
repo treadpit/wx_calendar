@@ -21,7 +21,7 @@
   "scripts": {
     "build": "rm -rf dist && gulp",
     "dev": "gulp watch",
-    "test": "eslint src && stylelint \"src/**/*.wxss\"",
+    "lint": "eslint src && stylelint \"src/**/*.wxss\"",
     "fix": "eslint src --fix && stylelint \"src/**/*.wxss\" --fix"
   },
   "repository": {

@@ -1,4 +1,4 @@
-import initCalendar from '../../template/index';
+import initCalendar from '../../template/calendar/index';
 const conf = {
 	onShow: function() {
 		initCalendar();
