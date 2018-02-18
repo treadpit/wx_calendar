@@ -67,27 +67,96 @@ const conf = {
 	},
 	calculateDays(year, month, curDate) {
 		let days = [];
-
+		let day;
+		let selectMonth;
+		let selectYear;
 		const thisMonthDays = conf.getThisMonthDays(year, month);
-
+		const selectedDay = this.data.datepicker.selectedDay;
+		if (selectedDay && selectedDay.length) {
+			day = selectedDay[ 0 ].day;
+			selectMonth = selectedDay[ 0 ].month;
+			selectYear = selectedDay[ 0 ].year;
+		}
 		for (let i = 1; i <= thisMonthDays; i++) {
 			days.push({
 				day: i,
-				choosed: i === curDate,
+				choosed: curDate ? (i === curDate) : (year === selectYear && month === selectMonth && i === day),
 				year,
 				month,
 			});
 		}
-
-		this.setData({
+		const tmp = {
 			'datepicker.days': days,
-			'datepicker.selectedDay': [{
+		};
+		if (curDate) {
+			tmp[ 'datepicker.selectedDay' ] = [ {
 				day: curDate,
 				choosed: true,
 				year,
 				month,
-			}],
+			} ];
+		}
+		this.setData(tmp);
+	},
+	/**
+	 * 初始化日历选择器
+	 * @param {number} curYear
+	 * @param {number} curMonth
+	 * @param {number} curDate
+	 */
+	init(curYear = 2018, curMonth = 1, curDate = 1) {
+		const self = _getCurrentPage();
+		if (!curYear || !curMonth || !curDate) {
+			const date = new Date();
+			curYear = date.getFullYear();
+			curMonth = date.getMonth() + 1;
+			curDate = date.getDate();
+		}
+		const weeksCh = [ '日', '一', '二', '三', '四', '五', '六' ];
+		self.setData({
+			datepicker: {
+				curYear,
+				curMonth,
+				weeksCh,
+				hasEmptyGrid: false,
+				showDatePicker: true,
+			}
 		});
+		conf.calculateEmptyGrids.call(self, curYear, curMonth);
+		conf.calculateDays.call(self, curYear, curMonth, curDate);
+	},
+	/**
+	 * 点击输入框调起日历选择器
+	 * @param {object} e  事件对象
+	 */
+	onFocusInput(e) {
+		const value = e.detail.value;
+		if (value && typeof value === 'string') {
+			const tmp = value.split('-');
+			conf.init(+tmp[ 0 ], +tmp[ 1 ], +tmp[ 2 ]);
+		} else {
+			conf.init();
+		}
+	},
+	/**
+	 * 当输入日期时
+	 * @param {object} e  事件对象
+	 */
+	onInputDate(e) {
+		this.inputTimer && clearTimeout(this.inputTimer);
+		this.inputTimer = setTimeout(() => {
+			console.log(e);
+			const v = e.detail.value;
+			const _v = (v && v.split('-')) || [];
+			const RegExpYear = /^\d{4}$/;
+			const RegExpMonth = /^([0]?[1-9])|([1][0-2])$/;
+			const RegExpDay = /^([0]?[1-9])|([1-2][0-9])|(3[0-1])$/;
+			if (_v && _v.length === 3) {
+				if (RegExpYear.test(_v[0]) && RegExpMonth.test(_v[1]) && RegExpDay.test(_v[2])) {
+					conf.init(+_v[0], +_v[1], +_v[2]);
+				}
+			}
+		}, 500);
 	},
 	choosePrevMonth() {
 		const { curYear, curMonth } = this.data.datepicker;
@@ -132,72 +201,30 @@ const conf = {
 	},
 	tapDayItem(e) {
 		const idx = e.currentTarget.dataset.idx;
-		const days = this.data.datepicker.days;
+		const { curYear, curMonth, days } = this.data.datepicker;
 		const key = `datepicker.days[${idx}].choosed`;
-		if (this.config.multiSelect) {
+		const selectedValue = `${curYear}-${curMonth}-${days[ idx ].day}`;
+		if (this.config.type === 'timearea') {
 			this.setData({
 				[ key ]: !days[ idx ].choosed,
 			});
-		} else if (!this.config.multiSelect && !days[ idx ].choosed) {
+		} else if (this.config.type === 'normal' && !days[ idx ].choosed) {
 			const prev = days.filter(item => item.choosed)[ 0 ];
 			const prevKey = prev && `datepicker.days[${prev.day - 1}].choosed`;
 			this.setData({
 				[ prevKey ]: false,
 				[ key ]: true,
-				'datepicker.selectedDay': [days[ idx ]],
+				'datepicker.selectedValue': selectedValue,
+				'datepicker.selectedDay': [ days[ idx ] ],
 			});
 		}
 	},
-	chooseYearAndMonth() {
-		let pickerYear = [];
-		let pickerMonth = [];
-		for (let i = 1900; i <= 2100; i++) {
-			pickerYear.push(i);
-		}
-		for (let i = 1; i <= 12; i++) {
-			pickerMonth.push(i);
-		}
-		this.setData({
-			'datepicker.showPicker': true,
-		});
-	},
-	init(curYear = '', curMonth = '', curDate = '') {
-		const self = _getCurrentPage();
-		if (!curYear || !curMonth || !curDate) {
-			const date = new Date();
-			curYear = date.getFullYear();
-			curMonth = date.getMonth() + 1;
-			curDate = date.getDate();
-		}
-		const weeksCh = [ '日', '一', '二', '三', '四', '五', '六' ];
-		self.setData({
-			datepicker: {
-				curYear,
-				curMonth,
-				weeksCh,
-				hasEmptyGrid: false,
-				showDatePicker: true,
-			}
-		});
-		conf.calculateEmptyGrids.call(self, curYear, curMonth);
-		conf.calculateDays.call(self, curYear, curMonth, curDate);
-	},
-	triggerDatepicker(e) {
-		const value = e.detail.value;
-		if (value && typeof value === 'string') {
-			const tmp = value.split('-');
-			conf.init(+tmp[ 0 ], +tmp[ 1 ], +tmp[ 2 ]);
-		} else {
-			conf.init();
-		}
-	},
+	/**
+	 * 关闭日历选择器
+	 */
 	closeDatePicker() {
-		const selectedDay = this.data.datepicker && this.data.datepicker.selectedDay[0];
-		const { year, month, day } = selectedDay;
-		const selectedValue = selectedDay && `${year}-${month}-${day}`;
 		this.setData({
 			'datepicker.showDatePicker': false,
-			'datepicker.selectedValue': selectedValue,
 		});
 	},
 	touchstart(e) {
@@ -228,17 +255,27 @@ function _getCurrentPage() {
 
 export default (config = {}) => {
 	const self = _getCurrentPage();
+	if (!config.type) config.type = 'normal';
 	self.config = config;
 	self.setData({
 		datepicker: {
 			showDatePicker: false,
+			placeholder: config.placeholder || '请选择',
 		}
 	});
 	self.touchstart = conf.touchstart.bind(self);
 	self.touchmove = conf.touchmove.bind(self);
-	self.triggerDatepicker = conf.triggerDatepicker.bind(self);
+	self.onFocusInput = conf.onFocusInput.bind(self);
+	self.onInputDate = conf.onInputDate.bind(self);
 	self.closeDatePicker = conf.closeDatePicker.bind(self);
 	self.tapDayItem = conf.tapDayItem.bind(self);
 	self.handleCalendar = conf.handleCalendar.bind(self);
-	self.chooseYearAndMonth = conf.chooseYearAndMonth.bind(self);
+};
+
+/**
+ * 获取已选择的日期
+*/
+export const getSelectedDay = () => {
+	const self = _getCurrentPage();
+	return self.data.datepicker.selectedDay;
 };

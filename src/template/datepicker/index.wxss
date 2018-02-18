@@ -12,8 +12,13 @@
 	width: 300rpx;
 	height: 50rpx;
 	border: 1rpx solid #dadada;
-	border-radius: 5rpx;
+	border-radius: 10rpx;
 	padding: 10rpx;
+	font-size: 28rpx;
+}
+/* stylelint-disable-next-line */
+.datepicker-input::-webkit-input-placeholder {
+	color: #dadada;
 }
 
 .datepicker-wrap {
@@ -127,7 +132,7 @@
 }
 
 .grid {
-	width: 107.1428571429rpx;
+	width: 14.285714285714286%;
 }
 
 .day {
