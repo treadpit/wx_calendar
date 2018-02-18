@@ -114,13 +114,11 @@ const conf = {
 		}
 		const weeksCh = [ '日', '一', '二', '三', '四', '五', '六' ];
 		self.setData({
-			datepicker: {
-				curYear,
-				curMonth,
-				weeksCh,
-				hasEmptyGrid: false,
-				showDatePicker: true,
-			}
+			'datepicker.curYear': curYear,
+			'datepicker.curMonth': curMonth,
+			'datepicker.weeksCh': weeksCh,
+			'datepicker.hasEmptyGrid': false,
+			'datepicker.showDatePicker': true,
 		});
 		conf.calculateEmptyGrids.call(self, curYear, curMonth);
 		conf.calculateDays.call(self, curYear, curMonth, curDate);
@@ -129,7 +127,7 @@ const conf = {
 	 * 点击输入框调起日历选择器
 	 * @param {object} e  事件对象
 	 */
-	onFocusInput(e) {
+	showDatepicker(e) {
 		const value = e.detail.value;
 		if (value && typeof value === 'string') {
 			const tmp = value.split('-');
@@ -149,8 +147,8 @@ const conf = {
 			const v = e.detail.value;
 			const _v = (v && v.split('-')) || [];
 			const RegExpYear = /^\d{4}$/;
-			const RegExpMonth = /^([0]?[1-9])|([1][0-2])$/;
-			const RegExpDay = /^([0]?[1-9])|([1-2][0-9])|(3[0-1])$/;
+			const RegExpMonth = /^(([0]?[1-9])|([1][0-2]))$/;
+			const RegExpDay = /^(([0]?[1-9])|([1-2][0-9])|(3[0-1]))$/;
 			if (_v && _v.length === 3) {
 				if (RegExpYear.test(_v[0]) && RegExpMonth.test(_v[1]) && RegExpDay.test(_v[2])) {
 					conf.init(+_v[0], +_v[1], +_v[2]);
@@ -260,12 +258,13 @@ export default (config = {}) => {
 	self.setData({
 		datepicker: {
 			showDatePicker: false,
-			placeholder: config.placeholder || '请选择',
+			showInput: (config.showInput === true || config.showInput === undefined),
+			placeholder: config.placeholder || '请选择日期',
 		}
 	});
 	self.touchstart = conf.touchstart.bind(self);
 	self.touchmove = conf.touchmove.bind(self);
-	self.onFocusInput = conf.onFocusInput.bind(self);
+	self.showDatepicker = conf.showDatepicker.bind(self);
 	self.onInputDate = conf.onInputDate.bind(self);
 	self.closeDatePicker = conf.closeDatePicker.bind(self);
 	self.tapDayItem = conf.tapDayItem.bind(self);

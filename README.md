@@ -22,16 +22,17 @@
 1. 引入`wxml`及`wxss`
 ```xml
 // example.wxml
-<import src="../../template/index.wxml"/>
+<import src="../../template/calendar/index.wxml"/>
 <template is="calendar" data="{{...calendar}}" />
-
-// example.wxss
-@import '../../template/index.wxss';
 ```
+```css
+/* example.wxss */
+@import '../../template/calendar/index.wxss';
+```
+
 2. 日历组件初始化
 ```js
 // example.js
-
 import initCalendar from '../../template/index';
 const conf = {
 	onShow: function(){
@@ -39,8 +40,45 @@ const conf = {
 	}
 }
 Page(conf);
-
 ```
+### 日历选择器模板引入
+
+> 日期选择器面板支持 ***手势左右滑动***；
+
+> 此 `template` 带有 `input` 输入框，不影响模板的使用，可配置隐藏；
+
+> 日期选择 input 组件支持直接输入指定日期；
+
+1. 引入`wxml`及`wxss`
+```xml
+// example.wxml
+<import src="../../template/datepicker/index.wxml"/>
+
+<view class="datepicker-box">
+	<template is="datepicker" data="{{...datepicker}}" />
+</view>
+```
+```css
+/* example.wxss */
+@import '../../template/datepicker/index.wxss';
+```
+
+2. 日期选择器初始化
+```js
+// example.js
+import initDatepicker from '../../template/datepicker/index';
+const conf = {
+	onShow: function() {
+		initDatepicker({
+			// showInput: false, // 默认为 true
+			placeholder: '请选择日期', // input 输入框
+			type: 'normal', // [normal 普通单选模式(默认), timearea 时间段选择模式(待开发), multiSelect 多选模式(待完善)]
+		});
+	}
+};
+Page(conf);
+```
+
 #### 效果图
 
 ![](https://ws1.sinaimg.cn/large/9274759egy1fjhx2haqexg208t0fptb1.jpg)
