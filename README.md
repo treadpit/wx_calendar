@@ -33,12 +33,12 @@
 2. 日历组件初始化
 ```js
 // example.js
-import initCalendar from '../../template/index';
+import initCalendar from '../../template/calendar/index';
 const conf = {
-	onShow: function(){
+	onShow: function() {
 		initCalendar(); // 初始化日历
 	}
-}
+};
 Page(conf);
 ```
 ### 日历选择器模板引入
@@ -71,7 +71,7 @@ const conf = {
 	onShow: function() {
 		initDatepicker({
 			// showInput: false, // 默认为 true
-			// placeholder: '请选择日期', // input 输入框
+			// placeholder: '请选择日期', // input 输入框placeholder值
 			// type: 'normal', // [normal 普通单选模式(默认), timearea 时间段选择模式(待开发), multiSelect 多选模式(待完善)]
 		});
 	}
