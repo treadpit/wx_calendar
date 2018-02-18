@@ -2,7 +2,7 @@ language: node_js
 node_js:
   - '8'
 before_script: npm install
-script: npm lint
+script: npm run lint
 cache:
   directories:
     - "node_modules"
