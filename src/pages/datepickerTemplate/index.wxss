@@ -1,0 +1,9 @@
+@import '../../template/datepicker/index.wxss';
+
+.datepicker-box {
+	margin: 100rpx;
+}
+
+button {
+	margin-top: 100rpx;
+}

@@ -1,8 +1,9 @@
 {
   "pages":[
     "pages/index/index",
-    "pages/template/index",
-    "pages/calendar/index"
+    "pages/calendar/index",
+    "pages/calendarTemplate/index",
+    "pages/datepickerTemplate/index"
   ],
   "window":{
     "backgroundTextStyle":"light",

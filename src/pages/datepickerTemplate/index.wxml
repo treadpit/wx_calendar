@@ -1,0 +1,6 @@
+<import src="../../template/datepicker/index.wxml"/>
+
+<view class="datepicker-box">
+	<!-- <button type="primary" bindtap="showDatepicker"> 点击唤起日期选择器 </button> -->
+	<template is="datepicker" data="{{...datepicker}}" />	
+</view>
