@@ -41,12 +41,27 @@ function isRightSlide(e) {
 }
 
 const conf = {
+	/**
+	 * 计算指定月份共多少天
+	 * @param {number} year 年份
+	 * @param {number} month  月份
+	 */
 	getThisMonthDays(year, month) {
 		return new Date(year, month, 0).getDate();
 	},
+	/**
+	 * 计算指定月份第一天星期几
+	 * @param {number} year 年份
+	 * @param {number} month  月份
+	 */
 	getFirstDayOfWeek(year, month) {
 		return new Date(Date.UTC(year, month - 1, 1)).getDay();
 	},
+	/**
+	 * 计算日历第一排应该空多少格子
+	 * @param {number} year 年份
+	 * @param {number} month  月份
+	 */
 	calculateEmptyGrids(year, month) {
 		const firstDayOfWeek = conf.getFirstDayOfWeek(year, month);
 		let empytGrids = [];
@@ -65,6 +80,11 @@ const conf = {
 			});
 		}
 	},
+	/**
+	 * 设置日历面板数据
+	 * @param {number} year 年份
+	 * @param {number} month  月份
+	 */
 	calculateDays(year, month, curDate) {
 		let days = [];
 		let day;
@@ -156,6 +176,9 @@ const conf = {
 			}
 		}, 500);
 	},
+	/**
+	 * 计算当前日历面板月份的前一月数据
+	 */
 	choosePrevMonth() {
 		const { curYear, curMonth } = this.data.datepicker;
 		let newMonth = curMonth - 1;
@@ -173,6 +196,9 @@ const conf = {
 			'datepicker.curMonth': newMonth,
 		});
 	},
+	/**
+	 * 计算当前日历面板月份的后一月数据
+	 */
 	chooseNextMonth() {
 		const { curYear, curMonth } = this.data.datepicker;
 		let newMonth = curMonth + 1;
@@ -189,6 +215,10 @@ const conf = {
 			'datepicker.curMonth': newMonth
 		});
 	},
+	/**
+	 * 切换月份
+	 * @param {!object} e 事件对象
+	 */
 	handleCalendar(e) {
 		const handle = e.currentTarget.dataset.handle;
 		if (handle === 'prev') {
@@ -197,6 +227,10 @@ const conf = {
 			conf.chooseNextMonth.call(this);
 		}
 	},
+	/**
+	 * 选择具体日期
+	 * @param {!object} e  事件对象
+	 */
 	tapDayItem(e) {
 		const idx = e.currentTarget.dataset.idx;
 		const { curYear, curMonth, days } = this.data.datepicker;
@@ -229,7 +263,7 @@ const conf = {
 		const t = e.touches[ 0 ];
 		const startX = t.clientX;
 		const startY = t.clientY;
-		this.slideLock = true;
+		this.slideLock = true; // 滑动事件加锁
 		this.setData({
 			'gesture.startX': startX,
 			'gesture.startY': startY

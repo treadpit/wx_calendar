@@ -1,10 +1,25 @@
 const conf = {
+	/**
+	 * 计算指定月份共多少天
+	 * @param {number} year 年份
+	 * @param {number} month  月份
+	 */
 	getThisMonthDays(year, month) {
 		return new Date(year, month, 0).getDate();
 	},
+	/**
+	 * 计算指定月份第一天星期几
+	 * @param {number} year 年份
+	 * @param {number} month  月份
+	 */
 	getFirstDayOfWeek(year, month) {
 		return new Date(Date.UTC(year, month - 1, 1)).getDay();
 	},
+	/**
+	 * 计算日历第一排应该空多少格子
+	 * @param {number} year 年份
+	 * @param {number} month  月份
+	 */
 	calculateEmptyGrids(year, month) {
 		const firstDayOfWeek = conf.getFirstDayOfWeek(year, month);
 		let empytGrids = [];
@@ -23,6 +38,11 @@ const conf = {
 			});
 		}
 	},
+	/**
+	 * 设置日历面板数据
+	 * @param {number} year 年份
+	 * @param {number} month  月份
+	 */
 	calculateDays(year, month) {
 		let days = [];
 
@@ -39,6 +59,10 @@ const conf = {
 			'calendar.days': days,
 		});
 	},
+	/**
+	 * 切换月份
+	 * @param {!object} e 事件对象
+	 */
 	handleCalendar(e) {
 		const handle = e.currentTarget.dataset.handle;
 		const curYear = this.data.calendar.curYear;
@@ -75,6 +99,10 @@ const conf = {
 			});
 		}
 	},
+	/**
+	 * 选择具体日期
+	 * @param {!object} e  事件对象
+	 */
 	tapDayItem(e) {
 		const idx = e.currentTarget.dataset.idx;
 		const days = this.data.calendar.days;
@@ -83,6 +111,9 @@ const conf = {
 			'calendar.days': days,
 		});
 	},
+	/**
+	 * 唤起年月选择器
+	 */
 	chooseYearAndMonth() {
 		let pickerYear = [];
 		let pickerMonth = [];
