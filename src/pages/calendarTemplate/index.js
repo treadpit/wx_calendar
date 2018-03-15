@@ -10,7 +10,7 @@ const conf = {
        */
       onTapDay: (currentSelect, allSelectedDays) => {
         console.log('当前点击的日期', currentSelect);
-        console.log('选择的所有日期', allSelectedDays);
+        allSelectedDays && console.log('选择的所有日期', allSelectedDays);
         console.log('getSelectedDay方法', getSelectedDay());
       }
     });
