@@ -14,8 +14,7 @@ module.exports = {
     'prefer-promise-reject-errors': 0,
     'space-before-function-paren': 0,
 		'arrow-parens': 0,
-		"no-tabs": 0,
-		"indent": ["error", "tab"]
+		"no-tabs": 0
   },
   globals: {
     App: true,
