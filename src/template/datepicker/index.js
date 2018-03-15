@@ -236,6 +236,8 @@ const conf = {
     const { curYear, curMonth, days } = this.data.datepicker;
     const key = `datepicker.days[${idx}].choosed`;
     const selectedValue = `${curYear}-${curMonth}-${days[ idx ].day}`;
+    const config = this.config;
+    const { onTapDay } = config;
     if (this.config.type === 'timearea') {
       this.setData({
         [ key ]: !days[ idx ].choosed,
@@ -250,6 +252,9 @@ const conf = {
         'datepicker.selectedDay': [ days[ idx ] ],
       });
     }
+    if (onTapDay && typeof onTapDay === 'function') {
+      config.onTapDay(days[ idx ]);
+    };
   },
   /**
 	 * 关闭日历选择器

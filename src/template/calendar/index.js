@@ -43,21 +43,38 @@ const conf = {
 	 * @param {number} year 年份
 	 * @param {number} month  月份
 	 */
-  calculateDays(year, month) {
+  calculateDays(year, month, curDate) {
     let days = [];
-
+    let day;
+    let selectMonth;
+    let selectYear;
     const thisMonthDays = conf.getThisMonthDays(year, month);
-
+    const selectedDay = this.data.calendar.selectedDay;
+    if (selectedDay && selectedDay.length) {
+      day = selectedDay[ 0 ].day;
+      selectMonth = selectedDay[ 0 ].month;
+      selectYear = selectedDay[ 0 ].year;
+    }
     for (let i = 1; i <= thisMonthDays; i++) {
       days.push({
         day: i,
-        choosed: false
+        choosed: curDate ? (i === curDate) : (year === selectYear && month === selectMonth && i === day),
+        year,
+        month,
       });
     }
-
-    this.setData({
+    const tmp = {
       'calendar.days': days,
-    });
+    };
+    if (curDate) {
+      tmp[ 'calendar.selectedDay' ] = [ {
+        day: curDate,
+        choosed: true,
+        year,
+        month,
+      } ];
+    }
+    this.setData(tmp);
   },
   /**
 	 * 切换月份
@@ -106,20 +123,42 @@ const conf = {
   tapDayItem(e) {
     const idx = e.currentTarget.dataset.idx;
     const days = this.data.calendar.days.slice();
-    if (this.config && this.config.multi) {
+    const config = this.config;
+    const { multi, onTapDay } = config;
+    let selected;
+    let selectedDays = this.data.calendar.selectedDay || [];
+    if (multi) {
       days[ idx ].choosed = !days[ idx ].choosed;
+      if (!days[ idx ].choosed) {
+        days[ idx ].cancel = true; // 是否是取消的选择日期
+        selected = days[ idx ];
+        selectedDays = selectedDays.filter(item => item.day !== days[ idx ].day);
+      } else {
+        selected = days[ idx ];
+        selectedDays.push(selected);
+      }
       this.setData({
         'calendar.days': days,
+        'calendar.selectedDay': selectedDays,
       });
     } else {
       days.forEach(day => {
         day.choosed = false;
       });
       days[ idx ].choosed = true;
+      selected = days[ idx ];
       this.setData({
         'calendar.days': days,
+        'calendar.selectedDay': [ selected ],
       });
     }
+    if (onTapDay && typeof onTapDay === 'function') {
+      if (!multi) {
+        config.onTapDay(selected);
+      } else {
+        config.onTapDay(selected, selectedDays);
+      }
+    };
   },
   /**
 	 * 唤起年月选择器
@@ -151,6 +190,7 @@ export default (config = {}) => {
   const date = new Date();
   const curYear = date.getFullYear();
   const curMonth = date.getMonth() + 1;
+  const curDate = date.getDate();
   const weeksCh = [ '日', '一', '二', '三', '四', '五', '六' ];
   self.setData({
     calendar: {
@@ -161,8 +201,16 @@ export default (config = {}) => {
     }
   });
   conf.calculateEmptyGrids.call(self, curYear, curMonth);
-  conf.calculateDays.call(self, curYear, curMonth);
+  conf.calculateDays.call(self, curYear, curMonth, curDate);
   self.tapDayItem = conf.tapDayItem.bind(self);
   self.handleCalendar = conf.handleCalendar.bind(self);
   self.chooseYearAndMonth = conf.chooseYearAndMonth.bind(self);
+};
+
+/**
+ * 获取已选择的日期
+*/
+export const getSelectedDay = () => {
+  const self = _getCurrentPage();
+  return self.data.calendar.selectedDay;
 };
