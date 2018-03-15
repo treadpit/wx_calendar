@@ -30,12 +30,23 @@
 
 2. 日历组件初始化
 ```js
-// example.js
-import initCalendar from '../../template/calendar/index';
+import initCalendar, { getSelectedDay } from '../../template/calendar/index';
 const conf = {
-	onShow: function() {
-		initCalendar(); // 初始化日历
-	}
+  onShow: function() {
+    initCalendar({
+      // multi: true, // 是否开启多选,
+      /**
+       * 选择日期后执行的事件
+       * @param { object } currentSelect 当前点击的日期
+       * @param { array } allSelectedDays 选择的所有日期（当mulit为true时，才有allSelectedDays参数）
+       */
+      onTapDay: (currentSelect, allSelectedDays) => {
+        console.log('当前点击的日期', currentSelect);
+        allSelectedDays && console.log('选择的所有日期', allSelectedDays);
+        console.log('getSelectedDay方法', getSelectedDay());
+      }
+    });
+  }
 };
 Page(conf);
 ```
@@ -63,24 +74,31 @@ Page(conf);
 
 2. 日期选择器初始化
 ```js
-// example.js
-import initDatepicker from '../../template/datepicker/index';
+import initDatepicker, { getSelectedDay } from '../../template/datepicker/index';
 const conf = {
-	onShow: function() {
-		initDatepicker({
-			// showInput: false, // 默认为 true
-			// placeholder: '请选择日期', // input 输入框placeholder值
-			// type: 'normal', // [normal 普通单选模式(默认), timearea 时间段选择模式(待开发), multiSelect 多选模式(待完善)]
-		});
-	}
+  onShow: function() {
+    initDatepicker({
+      // showInput: false, // 默认为 true
+      // placeholder: '请选择日期', // input 输入框
+      // type: 'normal', // [normal 普通单选模式(默认), timearea 时间段选择模式(待开发), multiSelect 多选模式(待完善)]
+      /**
+       * 选择日期后执行的事件
+       * @param { object } currentSelect 当前点击的日期
+       */
+      onTapDay: (currentSelect) => {
+        console.log('当前点击的日期', currentSelect);
+        console.log('getSelectedDay方法', getSelectedDay());
+      }
+    });
+  }
 };
 Page(conf);
 ```
 #### 日期选择器效果图
-![日期选择器](https://raw.githubusercontent.com/treadpit/wx_calendar/develop/screenshot/screenshow_datepicker.gif)
+![日期选择器](https://gitee.com/drfu/image_server/raw/master/github/screenshow_datepicker.gif)
 
 #### 日历效果图
 
-![日历效果图](https://raw.githubusercontent.com/treadpit/wx_calendar/develop/screenshot/screenshot_calendar.jpg)
+![日历效果图](https://gitee.com/drfu/image_server/raw/master/github/screenshot_calendar.jpg)
 
 欢迎反馈...
