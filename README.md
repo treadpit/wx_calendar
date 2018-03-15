@@ -95,10 +95,10 @@ const conf = {
 Page(conf);
 ```
 #### 日期选择器效果图
-![日期选择器](https://gitee.com/drfu/image_server/raw/master/github/screenshow_datepicker.gif)
+![日期选择器](https://raw.githubusercontent.com/treadpit/wx_calendar/develop/screenshot/screenshow_datepicker.gif)
 
 #### 日历效果图
 
-![日历效果图](https://gitee.com/drfu/image_server/raw/master/github/screenshot_calendar.jpg)
+![日历效果图](https://raw.githubusercontent.com/treadpit/wx_calendar/develop/screenshot/screenshot_calendar.jpg)
 
 欢迎反馈...
