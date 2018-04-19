@@ -1,2 +1,5 @@
 <import src="../../template/calendar/index.wxml"/>
-<template is="calendar" data="{{...calendar}}" />
+
+<view class="calendar-wrap">
+   <template is="calendar" data="{{...calendar}}" />
+</view>

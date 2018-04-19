@@ -8,7 +8,7 @@
 		type="text"
 		bindinput="onInputDate"
 		bindfocus="showDatepicker"/>
-	<view wx:if="{{showDatePicker}}" class="datepicker-wrap flex box box-tb box-align-center" bindtouchstart="touchstart" bindtouchmove="touchmove">
+	<view wx:if="{{showDatePicker}}" class="datepicker-wrap flex box box-tb box-align-center">
 		<view class="calendar pink-color box box-tb">
 			<view class="top-handle fs28 box box-lr box-align-center box-pack-center">
 				<view class="prev box box-rl" catchtap="handleCalendar" data-handle="prev">
@@ -22,12 +22,22 @@
 			<view wx:if="{{weeksCh}}" class="weeks box box-lr box-pack-center box-align-center">
 				<view class="flex week fs28" wx:for="{{weeksCh}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
 			</view>
-			<view class="days box box-lr box-wrap">
-				<view wx:if="{{hasEmptyGrid}}" class="grid white-color box box-align-center box-pack-center" wx:for="{{empytGrids}}" wx:key="{{index}}" data-idx="{{index}}">
-				</view>
-				<view class="grid white-color box box-align-center box-pack-center" wx:for="{{days}}" wx:key="{{index}}" data-idx="{{index}}" catchtap="tapDayItem">
+			<view class="days box box-lr box-wrap" bindtouchstart="touchstart" bindtouchmove="touchmove">
+				<view wx:if="{{empytGrids}}" class="grid disable-day-color  box box-align-center box-pack-center"
+          wx:for="{{empytGrids}}"
+          wx:key="{{index}}"
+          data-idx="{{index}}">
+            <view class="day box box-align-center box-pack-center">{{item}}</view>
+        </view>
+				<view class="grid normal-day-color box box-align-center box-pack-center" wx:for="{{days}}" wx:key="{{index}}" data-idx="{{index}}" catchtap="tapDayItem">
 					<view class="day {{item.choosed ? 'border-radius pink-bg' : ''}} box box-align-center box-pack-center">{{item.day}}</view>
 				</view>
+				<view class="grid disable-day-color  box box-align-center box-pack-center"
+          wx:for="{{lastEmptyGrids}}"
+          wx:key="{{index}}"
+          data-idx="{{index}}">
+            <view class="day box box-align-center box-pack-center">{{item}}</view>
+        </view>
 			</view>
 		</view>
 	</view>

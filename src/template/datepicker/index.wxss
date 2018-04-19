@@ -1,32 +1,3 @@
-@import '../calendar/index.wxss';
-
-.datepicker-bg {
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-}
-
-.datepicker-input {
-	width: 300rpx;
-	height: 50rpx;
-	border: 1rpx solid #dadada;
-	border-radius: 10rpx;
-	padding: 10rpx;
-	font-size: 28rpx;
-}
-/* stylelint-disable-next-line */
-.datepicker-input::-webkit-input-placeholder {
-	color: #dadada;
-}
-
-.datepicker-wrap {
-	background-color: #fff;
-	box-shadow: 0 0 10rpx 0 #dadada;
-	position: relative;
-}
-
 .box {
 	display: flex;
 }
@@ -88,6 +59,33 @@
 	font-size: 36rpx;
 }
 
+.datepicker-bg {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.datepicker-input {
+	width: 300rpx;
+	height: 50rpx;
+	border: 1rpx solid #dadada;
+	border-radius: 10rpx;
+	padding: 10rpx;
+	font-size: 28rpx;
+}
+/* stylelint-disable-next-line */
+.datepicker-input::-webkit-input-placeholder {
+	color: #dadada;
+}
+
+.datepicker-wrap {
+	background-color: #fff;
+	box-shadow: 0 0 10rpx 0 #dadada;
+	position: relative;
+}
+
 .top-handle {
 	height: 80rpx;
 }
@@ -138,9 +136,16 @@
 .day {
 	width: 60rpx;
 	height: 60rpx;
-	color: #88d2ac;
 	font-size: 26rpx;
 	font-weight: 200;
+}
+
+.normal-day-color {
+	color: #88d2ac;
+}
+
+.disable-day-color {
+	color: #ddd;
 }
 
 .border-radius {

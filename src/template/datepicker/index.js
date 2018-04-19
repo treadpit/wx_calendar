@@ -58,25 +58,57 @@ const conf = {
     return new Date(Date.UTC(year, month - 1, 1)).getDay();
   },
   /**
-	 * 计算日历第一排应该空多少格子
+	 * 计算当前月份前后两月应占的格子
 	 * @param {number} year 年份
 	 * @param {number} month  月份
 	 */
   calculateEmptyGrids(year, month) {
+    conf.calculatePrevMonthGrids.call(this, year, month);
+    conf.calculateNextMonthGrids.call(this, year, month);
+  },
+  /**
+	 * 计算上月应占的格子
+	 * @param {number} year 年份
+	 * @param {number} month  月份
+	 */
+  calculatePrevMonthGrids(year, month) {
+    const prevMonthDays = conf.getThisMonthDays(year, month - 1);
     const firstDayOfWeek = conf.getFirstDayOfWeek(year, month);
     let empytGrids = [];
     if (firstDayOfWeek > 0) {
-      for (let i = 0; i < firstDayOfWeek; i++) {
+      const len = prevMonthDays - firstDayOfWeek;
+      for (let i = prevMonthDays; i > len; i--) {
         empytGrids.push(i);
       }
       this.setData({
-        'datepicker.hasEmptyGrid': true,
-        'datepicker.empytGrids': empytGrids,
+        'datepicker.empytGrids': empytGrids.reverse(),
       });
     } else {
       this.setData({
-        'datepicker.hasEmptyGrid': false,
-        'datepicker.empytGrids': [],
+        'datepicker.empytGrids': null,
+      });
+    }
+  },
+  /**
+	 * 计算下月应占的格子
+	 * @param {number} year 年份
+	 * @param {number} month  月份
+	 */
+  calculateNextMonthGrids(year, month) {
+    const thisMonthDays = conf.getThisMonthDays(year, month);
+    const lastDayWeek = new Date(`${year}-${month}-${thisMonthDays}`).getDay();
+    let lastEmptyGrids = [];
+    if (+lastDayWeek !== 6) {
+      const len = 7 - (lastDayWeek + 1);
+      for (let i = 1; i <= len; i++) {
+        lastEmptyGrids.push(i);
+      }
+      this.setData({
+        'datepicker.lastEmptyGrids': lastEmptyGrids,
+      });
+    } else {
+      this.setData({
+        'datepicker.lastEmptyGrids': null,
       });
     }
   },

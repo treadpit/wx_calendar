@@ -1,3 +1,44 @@
+/**
+* 左滑
+* @param {object} e 事件对象
+* @returns {boolean} 布尔值
+*/
+function isLeftSlide(e) {
+  const { startX, startY } = this.data.gesture;
+  if (this.slideLock) {
+    const t = e.touches[ 0 ];
+    const deltaX = t.clientX - startX;
+    const deltaY = t.clientY - startY;
+
+    if (deltaX < -20 && deltaX > -40 && deltaY < 8 && deltaY > -8) {
+      this.slideLock = false;
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+/**
+* 右滑
+* @param {object} e 事件对象
+* @returns {boolean} 布尔值
+*/
+function isRightSlide(e) {
+  const { startX, startY } = this.data.gesture;
+  if (this.slideLock) {
+    const t = e.touches[ 0 ];
+    const deltaX = t.clientX - startX;
+    const deltaY = t.clientY - startY;
+
+    if (deltaX > 20 && deltaX < 40 && deltaY < 8 && deltaY > -8) {
+      this.slideLock = false;
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
 const conf = {
   /**
 	 * 计算指定月份共多少天
@@ -16,25 +57,57 @@ const conf = {
     return new Date(Date.UTC(year, month - 1, 1)).getDay();
   },
   /**
-	 * 计算日历第一排应该空多少格子
+	 * 计算当前月份前后两月应占的格子
 	 * @param {number} year 年份
 	 * @param {number} month  月份
 	 */
   calculateEmptyGrids(year, month) {
+    conf.calculatePrevMonthGrids.call(this, year, month);
+    conf.calculateNextMonthGrids.call(this, year, month);
+  },
+  /**
+	 * 计算上月应占的格子
+	 * @param {number} year 年份
+	 * @param {number} month  月份
+	 */
+  calculatePrevMonthGrids(year, month) {
+    const prevMonthDays = conf.getThisMonthDays(year, month - 1);
     const firstDayOfWeek = conf.getFirstDayOfWeek(year, month);
     let empytGrids = [];
     if (firstDayOfWeek > 0) {
-      for (let i = 0; i < firstDayOfWeek; i++) {
+      const len = prevMonthDays - firstDayOfWeek;
+      for (let i = prevMonthDays; i > len; i--) {
         empytGrids.push(i);
       }
       this.setData({
-        'calendar.hasEmptyGrid': true,
-        'calendar.empytGrids': empytGrids,
+        'calendar.empytGrids': empytGrids.reverse(),
       });
     } else {
       this.setData({
-        'calendar.hasEmptyGrid': false,
-        'calendar.empytGrids': [],
+        'calendar.empytGrids': null,
+      });
+    }
+  },
+  /**
+	 * 计算下月应占的格子
+	 * @param {number} year 年份
+	 * @param {number} month  月份
+	 */
+  calculateNextMonthGrids(year, month) {
+    const thisMonthDays = conf.getThisMonthDays(year, month);
+    const lastDayWeek = new Date(`${year}-${month}-${thisMonthDays}`).getDay();
+    let lastEmptyGrids = [];
+    if (+lastDayWeek !== 6) {
+      const len = 7 - (lastDayWeek + 1);
+      for (let i = 1; i <= len; i++) {
+        lastEmptyGrids.push(i);
+      }
+      this.setData({
+        'calendar.lastEmptyGrids': lastEmptyGrids,
+      });
+    } else {
+      this.setData({
+        'calendar.lastEmptyGrids': null,
       });
     }
   },
@@ -77,44 +150,42 @@ const conf = {
     this.setData(tmp);
   },
   /**
-	 * 切换月份
-	 * @param {!object} e 事件对象
-	 */
-  handleCalendar(e) {
-    const handle = e.currentTarget.dataset.handle;
+   * 选择上一月
+   */
+  choosePrevMonth() {
     const curYear = this.data.calendar.curYear;
     const curMonth = this.data.calendar.curMonth;
-    if (handle === 'prev') {
-      let newMonth = curMonth - 1;
-      let newYear = curYear;
-      if (newMonth < 1) {
-        newYear = curYear - 1;
-        newMonth = 12;
-      }
-
-      conf.calculateDays.call(this, newYear, newMonth);
-      conf.calculateEmptyGrids.call(this, newYear, newMonth);
-
-      this.setData({
-        'calendar.curYear': newYear,
-        'calendar.curMonth': newMonth,
-      });
-    } else {
-      let newMonth = curMonth + 1;
-      let newYear = curYear;
-      if (newMonth > 12) {
-        newYear = curYear + 1;
-        newMonth = 1;
-      }
-
-      conf.calculateDays.call(this, newYear, newMonth);
-      conf.calculateEmptyGrids.call(this, newYear, newMonth);
-
-      this.setData({
-        'calendar.curYear': newYear,
-        'calendar.curMonth': newMonth
-      });
+    let newMonth = curMonth - 1;
+    let newYear = curYear;
+    if (newMonth < 1) {
+      newYear = curYear - 1;
+      newMonth = 12;
     }
+    conf.calculateDays.call(this, newYear, newMonth);
+    conf.calculateEmptyGrids.call(this, newYear, newMonth);
+    this.setData({
+      'calendar.curYear': newYear,
+      'calendar.curMonth': newMonth,
+    });
+  },
+  /**
+   * 选择下一月
+   */
+  chooseNextMonth() {
+    const curYear = this.data.calendar.curYear;
+    const curMonth = this.data.calendar.curMonth;
+    let newMonth = curMonth + 1;
+    let newYear = curYear;
+    if (newMonth > 12) {
+      newYear = curYear + 1;
+      newMonth = 1;
+    }
+    conf.calculateDays.call(this, newYear, newMonth);
+    conf.calculateEmptyGrids.call(this, newYear, newMonth);
+    this.setData({
+      'calendar.curYear': newYear,
+      'calendar.curMonth': newMonth
+    });
   },
   /**
 	 * 选择具体日期
@@ -176,6 +247,24 @@ const conf = {
       'calendar.showPicker': true,
     });
   },
+  touchstart(e) {
+    const t = e.touches[ 0 ];
+    const startX = t.clientX;
+    const startY = t.clientY;
+    this.slideLock = true; // 滑动事件加锁
+    this.setData({
+      'gesture.startX': startX,
+      'gesture.startY': startY
+    });
+  },
+  touchmove(e) {
+    if (isLeftSlide.call(this, e)) {
+      conf.chooseNextMonth.call(this);
+    }
+    if (isRightSlide.call(this, e)) {
+      conf.choosePrevMonth.call(this);
+    }
+  },
 };
 
 function _getCurrentPage() {
@@ -203,8 +292,11 @@ export default (config = {}) => {
   conf.calculateEmptyGrids.call(self, curYear, curMonth);
   conf.calculateDays.call(self, curYear, curMonth, curDate);
   self.tapDayItem = conf.tapDayItem.bind(self);
-  self.handleCalendar = conf.handleCalendar.bind(self);
+  self.choosePrevMonth = conf.choosePrevMonth.bind(self);
+  self.chooseNextMonth = conf.chooseNextMonth.bind(self);
   self.chooseYearAndMonth = conf.chooseYearAndMonth.bind(self);
+  self.touchstart = conf.touchstart.bind(self);
+  self.touchmove = conf.touchmove.bind(self);
 };
 
 /**

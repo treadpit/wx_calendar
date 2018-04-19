@@ -104,15 +104,22 @@
 }
 
 .grid {
-	width: 107.1428571429rpx;
+	width: 14.285714285714285%;
 }
 
 .day {
 	width: 60rpx;
 	height: 60rpx;
-	color: #88d2ac;
 	font-size: 26rpx;
 	font-weight: 200;
+}
+
+.normal-day-color {
+	color: #88d2ac;
+}
+
+.disable-day-color {
+	color: #ddd;
 }
 
 .border-radius {

@@ -1,1 +1,5 @@
 @import '../../template/calendar/index.wxss';
+
+.calendar-wrap {
+	padding: 0 10rpx;
+}
