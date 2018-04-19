@@ -294,7 +294,6 @@ export default (config = {}) => {
       curYear,
       curMonth,
       weeksCh,
-      hasEmptyGrid: false,
     }
   });
   conf.calculateEmptyGrids.call(self, curYear, curMonth);

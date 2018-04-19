@@ -169,7 +169,6 @@ const conf = {
       'datepicker.curYear': curYear,
       'datepicker.curMonth': curMonth,
       'datepicker.weeksCh': weeksCh,
-      'datepicker.hasEmptyGrid': false,
       'datepicker.showDatePicker': true,
     });
     conf.calculateEmptyGrids.call(self, curYear, curMonth);
@@ -285,12 +284,15 @@ const conf = {
         config.onTapDay(days[ idx ], e);
         return;
       };
-      this.setData({
-        [ prevKey ]: false,
+      const data = {
         [ key ]: true,
         'datepicker.selectedValue': selectedValue,
         'datepicker.selectedDay': [ days[ idx ] ],
-      });
+      };
+      if (prevKey) {
+        data[prevKey] = false;
+      }
+      this.setData(data);
     }
     if (afterTapDay && typeof afterTapDay === 'function') {
       config.afterTapDay(days[ idx ]);
