@@ -8,11 +8,20 @@ const conf = {
        * @param { object } currentSelect 当前点击的日期
        * @param { array } allSelectedDays 选择的所有日期（当mulit为true时，才有allSelectedDays参数）
        */
-      onTapDay: (currentSelect, allSelectedDays) => {
+      afterTapDay: (currentSelect, allSelectedDays) => {
         console.log('当前点击的日期', currentSelect);
         allSelectedDays && console.log('选择的所有日期', allSelectedDays);
         console.log('getSelectedDay方法', getSelectedDay());
-      }
+      },
+      /**
+       * 日期点击事件（此事件会完全接管点击事件）
+       * @param { object } currentSelect 当前点击的日期
+       * @param { object } event 日期点击事件对象
+       */
+      // onTapDay(currentSelect, event) {
+      //   console.log(currentSelect);
+      //   console.log(event);
+      // },
     });
   }
 };

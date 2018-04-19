@@ -265,18 +265,26 @@ const conf = {
 	 */
   tapDayItem(e) {
     const idx = e.currentTarget.dataset.idx;
+    const config = this.config;
+    const { afterTapDay, onTapDay } = config;
     const { curYear, curMonth, days } = this.data.datepicker;
     const key = `datepicker.days[${idx}].choosed`;
     const selectedValue = `${curYear}-${curMonth}-${days[ idx ].day}`;
-    const config = this.config;
-    const { onTapDay } = config;
     if (this.config.type === 'timearea') {
+      if (onTapDay && typeof onTapDay === 'function') {
+        config.onTapDay(this.data.datepicker.days[idx], e);
+        return;
+      };
       this.setData({
         [ key ]: !days[ idx ].choosed,
       });
     } else if (this.config.type === 'normal' && !days[ idx ].choosed) {
       const prev = days.filter(item => item.choosed)[ 0 ];
       const prevKey = prev && `datepicker.days[${prev.day - 1}].choosed`;
+      if (onTapDay && typeof onTapDay === 'function') {
+        config.onTapDay(days[ idx ], e);
+        return;
+      };
       this.setData({
         [ prevKey ]: false,
         [ key ]: true,
@@ -284,8 +292,8 @@ const conf = {
         'datepicker.selectedDay': [ days[ idx ] ],
       });
     }
-    if (onTapDay && typeof onTapDay === 'function') {
-      config.onTapDay(days[ idx ]);
+    if (afterTapDay && typeof afterTapDay === 'function') {
+      config.afterTapDay(days[ idx ]);
     };
   },
   /**

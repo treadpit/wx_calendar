@@ -193,9 +193,9 @@ const conf = {
 	 */
   tapDayItem(e) {
     const idx = e.currentTarget.dataset.idx;
-    const days = this.data.calendar.days.slice();
     const config = this.config;
-    const { multi, onTapDay } = config;
+    const { multi, afterTapDay, onTapDay } = config;
+    const days = this.data.calendar.days.slice();
     let selected;
     let selectedDays = this.data.calendar.selectedDay || [];
     if (multi) {
@@ -208,6 +208,10 @@ const conf = {
         selected = days[ idx ];
         selectedDays.push(selected);
       }
+      if (onTapDay && typeof onTapDay === 'function') {
+        config.onTapDay(selected, e);
+        return;
+      };
       this.setData({
         'calendar.days': days,
         'calendar.selectedDay': selectedDays,
@@ -218,16 +222,20 @@ const conf = {
       });
       days[ idx ].choosed = true;
       selected = days[ idx ];
+      if (onTapDay && typeof onTapDay === 'function') {
+        config.onTapDay(selected, e);
+        return;
+      };
       this.setData({
         'calendar.days': days,
         'calendar.selectedDay': [ selected ],
       });
     }
-    if (onTapDay && typeof onTapDay === 'function') {
+    if (afterTapDay && typeof afterTapDay === 'function') {
       if (!multi) {
-        config.onTapDay(selected);
+        config.afterTapDay(selected);
       } else {
-        config.onTapDay(selected, selectedDays);
+        config.afterTapDay(selected, selectedDays);
       }
     };
   },
