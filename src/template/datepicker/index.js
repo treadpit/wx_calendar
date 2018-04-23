@@ -1,17 +1,53 @@
-
 /**
-* 左滑
+* 上滑
 * @param {object} e 事件对象
 * @returns {boolean} 布尔值
 */
-function isLeftSlide(e) {
+export function isUpSlide(e) {
   const { startX, startY } = this.data.gesture;
   if (this.slideLock) {
     const t = e.touches[ 0 ];
     const deltaX = t.clientX - startX;
     const deltaY = t.clientY - startY;
-
-    if (deltaX < -20 && deltaX > -40 && deltaY < 8 && deltaY > -8) {
+    if (deltaY < -60 && deltaX < 20 && deltaX > -20) {
+      this.slideLock = false;
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+/**
+* 下滑
+* @param {object} e 事件对象
+* @returns {boolean} 布尔值
+*/
+export function isDownSlide(e) {
+  const { startX, startY } = this.data.gesture;
+  if (this.slideLock) {
+    const t = e.touches[ 0 ];
+    const deltaX = t.clientX - startX;
+    const deltaY = t.clientY - startY;
+    if (deltaY > 60 && deltaX < 20 && deltaX > -20) {
+      this.slideLock = false;
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+/**
+* 左滑
+* @param {object} e 事件对象
+* @returns {boolean} 布尔值
+*/
+export function isLeftSlide(e) {
+  const { startX, startY } = this.data.gesture;
+  if (this.slideLock) {
+    const t = e.touches[ 0 ];
+    const deltaX = t.clientX - startX;
+    const deltaY = t.clientY - startY;
+    if (deltaX < -60 && deltaY < 20 && deltaY > -20) {
       this.slideLock = false;
       return true;
     } else {
@@ -24,14 +60,14 @@ function isLeftSlide(e) {
 * @param {object} e 事件对象
 * @returns {boolean} 布尔值
 */
-function isRightSlide(e) {
+export function isRightSlide(e) {
   const { startX, startY } = this.data.gesture;
   if (this.slideLock) {
     const t = e.touches[ 0 ];
     const deltaX = t.clientX - startX;
     const deltaY = t.clientY - startY;
 
-    if (deltaX > 20 && deltaX < 40 && deltaY < 8 && deltaY > -8) {
+    if (deltaX > 60 && deltaY < 20 && deltaY > -20) {
       this.slideLock = false;
       return true;
     } else {
@@ -158,22 +194,12 @@ const conf = {
 	 */
   init(curYear = 2018, curMonth = 1, curDate = 1) {
     const self = _getCurrentPage();
-    if (!curYear || !curMonth || !curDate) {
-      const date = new Date();
-      curYear = date.getFullYear();
-      curMonth = date.getMonth() + 1;
-      curDate = date.getDate();
-    }
     const weeksCh = [ '日', '一', '二', '三', '四', '五', '六' ];
     self.setData({
-      'datepicker.curYear': curYear,
-      'datepicker.curMonth': curMonth,
       'datepicker.weeksCh': weeksCh,
-      'datepicker.hasEmptyGrid': false,
       'datepicker.showDatePicker': true,
     });
-    conf.calculateEmptyGrids.call(self, curYear, curMonth);
-    conf.calculateDays.call(self, curYear, curMonth, curDate);
+    conf.jumpToToday.call(self);
   },
   /**
 	 * 点击输入框调起日历选择器
@@ -285,12 +311,15 @@ const conf = {
         config.onTapDay(days[ idx ], e);
         return;
       };
-      this.setData({
-        [ prevKey ]: false,
+      const data = {
         [ key ]: true,
         'datepicker.selectedValue': selectedValue,
         'datepicker.selectedDay': [ days[ idx ] ],
-      });
+      };
+      if (prevKey) {
+        data[prevKey] = false;
+      }
+      this.setData(data);
     }
     if (afterTapDay && typeof afterTapDay === 'function') {
       config.afterTapDay(days[ idx ]);
@@ -304,7 +333,7 @@ const conf = {
       'datepicker.showDatePicker': false,
     });
   },
-  touchstart(e) {
+  datepickerTouchstart(e) {
     const t = e.touches[ 0 ];
     const startX = t.clientX;
     const startY = t.clientY;
@@ -314,14 +343,29 @@ const conf = {
       'gesture.startY': startY
     });
   },
-  touchmove(e) {
+  datepickerTouchmove(e) {
     if (isLeftSlide.call(this, e)) {
       conf.chooseNextMonth.call(this);
     }
     if (isRightSlide.call(this, e)) {
       conf.choosePrevMonth.call(this);
     }
-  }
+  },
+  /**
+	 * 跳转至今天
+	 */
+  jumpToToday() {
+    const date = new Date();
+    const curYear = date.getFullYear();
+    const curMonth = date.getMonth() + 1;
+    const curDate = date.getDate();
+    this.setData({
+      'datepicker.curYear': curYear,
+      'datepicker.curMonth': curMonth,
+    });
+    conf.calculateEmptyGrids.call(this, curYear, curMonth);
+    conf.calculateDays.call(this, curYear, curMonth, curDate);
+  },
 };
 
 function _getCurrentPage() {
@@ -329,6 +373,14 @@ function _getCurrentPage() {
   const last = pages.length - 1;
   return pages[ last ];
 }
+
+/**
+ * 跳转至今天
+ */
+export const jumpToToday = () => {
+  const self = _getCurrentPage();
+  conf.jumpToToday.call(self);
+};
 
 export default (config = {}) => {
   const self = _getCurrentPage();
@@ -341,8 +393,8 @@ export default (config = {}) => {
       placeholder: config.placeholder || '请选择日期',
     }
   });
-  self.touchstart = conf.touchstart.bind(self);
-  self.touchmove = conf.touchmove.bind(self);
+  self.datepickerTouchstart = conf.datepickerTouchstart.bind(self);
+  self.datepickerTouchmove = conf.datepickerTouchmove.bind(self);
   self.showDatepicker = conf.showDatepicker.bind(self);
   self.onInputDate = conf.onInputDate.bind(self);
   self.closeDatePicker = conf.closeDatePicker.bind(self);

@@ -5,7 +5,7 @@
 				<view class="prev box box-rl" bindtap="choosePrevMonth" data-handle="prev">
 					<view class="prev-handle box box-lr box-align-center box-pack-center">《</view>
 				</view>
-				<view bindtap="chooseYearAndMonth" class="date-area box box-lr box-align-center box-pack-center">{{curYear || "--"}} 年 {{curMonth || "--"}} 月</view>
+				<view class="date-area box box-lr box-align-center box-pack-center">{{curYear || "--"}} 年 {{curMonth || "--"}} 月</view>
 				<view class="next box box-lr" bindtap="chooseNextMonth" data-handle="next">
 					<view class="next-handle box box-lr box-align-center box-pack-center">》</view>
 				</view>
@@ -13,7 +13,7 @@
 			<view class="weeks box box-lr box-pack-center box-align-center">
 				<view class="flex week fs28" wx:for="{{weeksCh}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
 			</view>
-			<view class="days box box-lr box-wrap" bindtouchstart="touchstart" bindtouchmove="touchmove">
+			<view class="days box box-lr box-wrap" bindtouchstart="calendarTouchstart" bindtouchmove="calendarTouchmove">
 				<view wx:if="{{empytGrids}}" class="grid disable-day-color box box-align-center box-pack-center"
           wx:for="{{empytGrids}}"
           wx:key="{{index}}"
