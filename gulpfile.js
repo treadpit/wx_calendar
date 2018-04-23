@@ -6,16 +6,16 @@ const path = require('path');
 const projRootDir = path.join(process.cwd(), 'src');
 
 function fileCopy() {
-	return gulp.src([
-		'src/**/*',
-	], {
-		base: projRootDir,
-	}).pipe(debug({
-		title: '文件复制:'
-	})).pipe(gulp.dest('dist'));
+  return gulp.src([
+    'src/**/*',
+  ], {
+    base: projRootDir,
+  }).pipe(debug({
+    title: '文件复制:'
+  })).pipe(gulp.dest('dist'));
 }
 
 gulp.task('default', fileCopy);
 gulp.task('watch', () => {
-	gulp.watch('src/**/*', fileCopy);
+  gulp.watch('src/**/*', fileCopy);
 });
