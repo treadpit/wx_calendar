@@ -84,7 +84,7 @@
 }
 
 .date-area {
-	width: 50%;
+	width: 375rpx;
 	height: 80rpx;
 	text-align: center;
 }

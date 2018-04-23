@@ -1,4 +1,4 @@
-import initCalendar, { getSelectedDay } from '../../template/calendar/index';
+import initCalendar, { getSelectedDay, jumpToToday } from '../../template/calendar/index';
 const conf = {
   onShow: function() {
     initCalendar({
@@ -23,6 +23,12 @@ const conf = {
       //   console.log(event);
       // },
     });
+  },
+  /**
+   * 跳转至今天
+   */
+  jump() {
+    jumpToToday();
   }
 };
 Page(conf);

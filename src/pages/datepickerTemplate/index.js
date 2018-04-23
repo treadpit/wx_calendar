@@ -1,4 +1,4 @@
-import initDatepicker, { getSelectedDay } from '../../template/datepicker/index';
+import initDatepicker, { getSelectedDay, jumpToToday } from '../../template/datepicker/index';
 const conf = {
   onShow: function() {
     initDatepicker({
@@ -23,6 +23,12 @@ const conf = {
       //   console.log(event);
       // },
     });
+  },
+  /**
+   * 跳转至今天
+   */
+  jump() {
+    jumpToToday();
   }
 };
 Page(conf);

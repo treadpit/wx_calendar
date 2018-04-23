@@ -1,16 +1,53 @@
 /**
-* 左滑
+* 上滑
 * @param {object} e 事件对象
 * @returns {boolean} 布尔值
 */
-function isLeftSlide(e) {
+export function isUpSlide(e) {
   const { startX, startY } = this.data.gesture;
   if (this.slideLock) {
     const t = e.touches[ 0 ];
     const deltaX = t.clientX - startX;
     const deltaY = t.clientY - startY;
-
-    if (deltaX < -20 && deltaX > -40 && deltaY < 8 && deltaY > -8) {
+    if (deltaY < -60 && deltaX < 20 && deltaX > -20) {
+      this.slideLock = false;
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+/**
+* 下滑
+* @param {object} e 事件对象
+* @returns {boolean} 布尔值
+*/
+export function isDownSlide(e) {
+  const { startX, startY } = this.data.gesture;
+  if (this.slideLock) {
+    const t = e.touches[ 0 ];
+    const deltaX = t.clientX - startX;
+    const deltaY = t.clientY - startY;
+    if (deltaY > 60 && deltaX < 20 && deltaX > -20) {
+      this.slideLock = false;
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+/**
+* 左滑
+* @param {object} e 事件对象
+* @returns {boolean} 布尔值
+*/
+export function isLeftSlide(e) {
+  const { startX, startY } = this.data.gesture;
+  if (this.slideLock) {
+    const t = e.touches[ 0 ];
+    const deltaX = t.clientX - startX;
+    const deltaY = t.clientY - startY;
+    if (deltaX < -60 && deltaY < 20 && deltaY > -20) {
       this.slideLock = false;
       return true;
     } else {
@@ -23,14 +60,14 @@ function isLeftSlide(e) {
 * @param {object} e 事件对象
 * @returns {boolean} 布尔值
 */
-function isRightSlide(e) {
+export function isRightSlide(e) {
   const { startX, startY } = this.data.gesture;
   if (this.slideLock) {
     const t = e.touches[ 0 ];
     const deltaX = t.clientX - startX;
     const deltaY = t.clientY - startY;
 
-    if (deltaX > 20 && deltaX < 40 && deltaY < 8 && deltaY > -8) {
+    if (deltaX > 60 && deltaY < 20 && deltaY > -20) {
       this.slideLock = false;
       return true;
     } else {
@@ -240,22 +277,21 @@ const conf = {
     };
   },
   /**
-	 * 唤起年月选择器
+	 * 跳转至今天
 	 */
-  chooseYearAndMonth() {
-    let pickerYear = [];
-    let pickerMonth = [];
-    for (let i = 1900; i <= 2100; i++) {
-      pickerYear.push(i);
-    }
-    for (let i = 1; i <= 12; i++) {
-      pickerMonth.push(i);
-    }
+  jumpToToday() {
+    const date = new Date();
+    const curYear = date.getFullYear();
+    const curMonth = date.getMonth() + 1;
+    const curDate = date.getDate();
     this.setData({
-      'calendar.showPicker': true,
+      'calendar.curYear': curYear,
+      'calendar.curMonth': curMonth,
     });
+    conf.calculateEmptyGrids.call(this, curYear, curMonth);
+    conf.calculateDays.call(this, curYear, curMonth, curDate);
   },
-  touchstart(e) {
+  calendarTouchstart(e) {
     const t = e.touches[ 0 ];
     const startX = t.clientX;
     const startY = t.clientY;
@@ -265,7 +301,7 @@ const conf = {
       'gesture.startY': startY
     });
   },
-  touchmove(e) {
+  calendarTouchmove(e) {
     if (isLeftSlide.call(this, e)) {
       conf.chooseNextMonth.call(this);
     }
@@ -275,36 +311,24 @@ const conf = {
   },
 };
 
+/**
+ * 获取当前页面实例
+ */
 function _getCurrentPage() {
   const pages = getCurrentPages();
   const last = pages.length - 1;
   return pages[ last ];
 }
-
-export default (config = {}) => {
-  const self = _getCurrentPage();
-  self.config = config;
-  const date = new Date();
-  const curYear = date.getFullYear();
-  const curMonth = date.getMonth() + 1;
-  const curDate = date.getDate();
-  const weeksCh = [ '日', '一', '二', '三', '四', '五', '六' ];
-  self.setData({
-    calendar: {
-      curYear,
-      curMonth,
-      weeksCh,
-    }
+/**
+ * 绑定函数到当前页面实例上
+ * @param {array} functionArray 函数数组
+ */
+function bindFunctionToPage(functionArray) {
+  if (!functionArray || !functionArray.length) return;
+  functionArray.forEach(item => {
+    this[ item ] = conf[ item ].bind(this);
   });
-  conf.calculateEmptyGrids.call(self, curYear, curMonth);
-  conf.calculateDays.call(self, curYear, curMonth, curDate);
-  self.tapDayItem = conf.tapDayItem.bind(self);
-  self.choosePrevMonth = conf.choosePrevMonth.bind(self);
-  self.chooseNextMonth = conf.chooseNextMonth.bind(self);
-  self.chooseYearAndMonth = conf.chooseYearAndMonth.bind(self);
-  self.touchstart = conf.touchstart.bind(self);
-  self.touchmove = conf.touchmove.bind(self);
-};
+}
 
 /**
  * 获取已选择的日期
@@ -312,4 +336,23 @@ export default (config = {}) => {
 export const getSelectedDay = () => {
   const self = _getCurrentPage();
   return self.data.calendar.selectedDay;
+};
+/**
+ * 跳转至今天
+ */
+export const jumpToToday = () => {
+  const self = _getCurrentPage();
+  conf.jumpToToday.call(self);
+};
+
+export default (config = {}) => {
+  const weeksCh = [ '日', '一', '二', '三', '四', '五', '六' ];
+  const self = _getCurrentPage();
+  self.config = config;
+  self.setData({
+    'calendar.weeksCh': weeksCh,
+  });
+  conf.jumpToToday.call(self);
+  const functionArray = [ 'tapDayItem', 'choosePrevMonth', 'chooseNextMonth', 'calendarTouchstart', 'calendarTouchmove' ];
+  bindFunctionToPage.call(self, functionArray);
 };
