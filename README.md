@@ -15,6 +15,7 @@
 
 ### 日历模板引入
 > 日历模板面板支持 ***手势左右滑动***；
+
 > 提供跳转至今天方法`jumpToToday`；
 
 提供 `template` [模板引入](https://mp.weixin.qq.com/debug/wxadoc/dev/framework/view/wxml/template.html)
@@ -71,8 +72,11 @@ Page(conf);
 ```
 ### 日历选择器模板引入
 > 日历模板面板支持 ***手势左右滑动***；
+
 > 提供跳转至今天方法`jumpToToday`；
+
 > 此 `template` 带有 `input` 输入框，不影响模板的使用，可配置隐藏；
+
 > 日期选择 input 组件支持直接输入指定日期；
 
 1. 引入`wxml`及`wxss`
