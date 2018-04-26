@@ -155,34 +155,33 @@ const conf = {
 	 */
   calculateDays(year, month, curDate) {
     let days = [];
-    let day;
-    let selectMonth;
-    let selectYear;
     const thisMonthDays = conf.getThisMonthDays(year, month);
-    const selectedDay = this.data.calendar.selectedDay;
-    if (selectedDay && selectedDay.length) {
-      day = selectedDay[ 0 ].day;
-      selectMonth = selectedDay[ 0 ].month;
-      selectYear = selectedDay[ 0 ].year;
-    }
+    const selectedDay = this.data.calendar.selectedDay || [{
+      day: curDate,
+      choosed: true,
+      year,
+      month,
+    }];
     for (let i = 1; i <= thisMonthDays; i++) {
       days.push({
         day: i,
-        choosed: curDate ? (i === curDate) : (year === selectYear && month === selectMonth && i === day),
+        choosed: false,
         year,
         month,
       });
     }
+    days.map(item => {
+      selectedDay.forEach(d => {
+        if (item.day === d.day && item.year === d.year && item.month === d.month) {
+          item.choosed = true;
+        }
+      });
+    });
     const tmp = {
       'calendar.days': days,
     };
     if (curDate) {
-      tmp[ 'calendar.selectedDay' ] = [ {
-        day: curDate,
-        choosed: true,
-        year,
-        month,
-      } ];
+      tmp[ 'calendar.selectedDay' ] = selectedDay;
     }
     this.setData(tmp);
   },
