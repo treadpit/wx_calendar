@@ -154,6 +154,7 @@ const conf = {
 	 * @param {number} month  月份
 	 */
   calculateDays(year, month, curDate) {
+    const { todayTimestamp } = this.data.datepicker;
     let days = [];
     let day;
     let selectMonth;
@@ -173,6 +174,12 @@ const conf = {
         month,
       });
     }
+    days.map(item => {
+      const timestamp = new Date(`${item.year}-${item.month}-${item.day}`).getTime();
+      if (this.config.disablePastDay && (timestamp - todayTimestamp < 0)) {
+        item.disable = true;
+      }
+    });
     const tmp = {
       'datepicker.days': days,
     };
@@ -228,8 +235,8 @@ const conf = {
       const RegExpMonth = /^(([0]?[1-9])|([1][0-2]))$/;
       const RegExpDay = /^(([0]?[1-9])|([1-2][0-9])|(3[0-1]))$/;
       if (_v && _v.length === 3) {
-        if (RegExpYear.test(_v[0]) && RegExpMonth.test(_v[1]) && RegExpDay.test(_v[2])) {
-          conf.init(+_v[0], +_v[1], +_v[2]);
+        if (RegExpYear.test(_v[ 0 ]) && RegExpMonth.test(_v[ 1 ]) && RegExpDay.test(_v[ 2 ])) {
+          conf.init(+_v[ 0 ], +_v[ 1 ], +_v[ 2 ]);
         }
       }
     }, 500);
@@ -290,7 +297,8 @@ const conf = {
 	 * @param {!object} e  事件对象
 	 */
   tapDayItem(e) {
-    const idx = e.currentTarget.dataset.idx;
+    const { idx, disable } = e.currentTarget.dataset;
+    if (disable) return;
     const config = this.config;
     const { afterTapDay, onTapDay } = config;
     const { curYear, curMonth, days } = this.data.datepicker;
@@ -298,7 +306,7 @@ const conf = {
     const selectedValue = `${curYear}-${curMonth}-${days[ idx ].day}`;
     if (this.config.type === 'timearea') {
       if (onTapDay && typeof onTapDay === 'function') {
-        config.onTapDay(this.data.datepicker.days[idx], e);
+        config.onTapDay(this.data.datepicker.days[ idx ], e);
         return;
       };
       this.setData({
@@ -317,7 +325,7 @@ const conf = {
         'datepicker.selectedDay': [ days[ idx ] ],
       };
       if (prevKey) {
-        data[prevKey] = false;
+        data[ prevKey ] = false;
       }
       this.setData(data);
     }
@@ -359,9 +367,11 @@ const conf = {
     const curYear = date.getFullYear();
     const curMonth = date.getMonth() + 1;
     const curDate = date.getDate();
+    const timestamp = new Date(`${curYear}-${curMonth}-${curDate}`).getTime();
     this.setData({
       'datepicker.curYear': curYear,
       'datepicker.curMonth': curMonth,
+      'datepicker.todayTimestamp': timestamp,
     });
     conf.calculateEmptyGrids.call(this, curYear, curMonth);
     conf.calculateDays.call(this, curYear, curMonth, curDate);

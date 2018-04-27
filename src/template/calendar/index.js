@@ -155,6 +155,7 @@ const conf = {
 	 */
   calculateDays(year, month, curDate) {
     let days = [];
+    const { todayTimestamp } = this.data.calendar;
     const thisMonthDays = conf.getThisMonthDays(year, month);
     const selectedDay = this.data.calendar.selectedDay || [{
       day: curDate,
@@ -176,6 +177,10 @@ const conf = {
           item.choosed = true;
         }
       });
+      const timestamp = new Date(`${item.year}-${item.month}-${item.day}`).getTime();
+      if (this.config.disablePastDay && (timestamp - todayTimestamp < 0)) {
+        item.disable = true;
+      }
     });
     const tmp = {
       'calendar.days': days,
@@ -228,7 +233,8 @@ const conf = {
 	 * @param {!object} e  事件对象
 	 */
   tapDayItem(e) {
-    const idx = e.currentTarget.dataset.idx;
+    const { idx, disable } = e.currentTarget.dataset;
+    if (disable) return;
     const config = this.config;
     const { multi, afterTapDay, onTapDay } = config;
     const days = this.data.calendar.days.slice();
@@ -283,9 +289,11 @@ const conf = {
     const curYear = date.getFullYear();
     const curMonth = date.getMonth() + 1;
     const curDate = date.getDate();
+    const timestamp = new Date(`${curYear}-${curMonth}-${curDate}`).getTime();
     this.setData({
       'calendar.curYear': curYear,
       'calendar.curMonth': curMonth,
+      'calendar.todayTimestamp': timestamp,
     });
     conf.calculateEmptyGrids.call(this, curYear, curMonth);
     conf.calculateDays.call(this, curYear, curMonth, curDate);
