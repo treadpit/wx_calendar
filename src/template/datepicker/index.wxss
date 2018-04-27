@@ -144,8 +144,16 @@
 	color: #88d2ac;
 }
 
+.day-choosed-color {
+	color: #fff;
+}
+
 .disable-day-color {
 	color: #ddd;
+}
+
+.disable-day-circle {
+	background-color: #fbfdff;
 }
 
 .border-radius {
@@ -153,7 +161,6 @@
 	position: relative;
 	left: 0;
 	top: 0;
-	color: #fff;
 }
 
 .pink-bg {

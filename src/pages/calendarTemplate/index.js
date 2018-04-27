@@ -3,6 +3,7 @@ const conf = {
   onShow: function() {
     initCalendar({
       // multi: true, // 是否开启多选,
+      // disablePastDay: true, // 是否禁选过去日期
       /**
        * 选择日期后执行的事件
        * @param { object } currentSelect 当前点击的日期
