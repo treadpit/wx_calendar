@@ -293,6 +293,12 @@ const conf = {
     this.setData({
       'calendar.curYear': curYear,
       'calendar.curMonth': curMonth,
+      'calendar.selectedDay': [{
+        day: curDate,
+        choosed: true,
+        year: curYear,
+        month: curMonth,
+      }],
       'calendar.todayTimestamp': timestamp,
     });
     conf.calculateEmptyGrids.call(this, curYear, curMonth);
