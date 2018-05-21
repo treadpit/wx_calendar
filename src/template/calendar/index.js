@@ -75,8 +75,11 @@ export function isRightSlide(e) {
     }
   }
 }
-
-function uniqueObjectArrayByKey(array) {
+/**
+ *  todo 数组去重
+ * @param {array} array todo 数组
+ */
+function uniqueTodoLabels(array = []) {
   let uniqueObject = {};
   let uniqueArray = [];
   array.forEach(item => {
@@ -167,7 +170,7 @@ const conf = {
 	 */
   calculateDays(year, month, curDate) {
     let days = [];
-    const { todayTimestamp, todoLabels } = this.data.calendar;
+    const { todayTimestamp } = this.data.calendar;
     const thisMonthDays = conf.getThisMonthDays(year, month);
     const selectedDay = this.data.calendar.selectedDay || [ {
       day: curDate,
@@ -328,7 +331,7 @@ const conf = {
     });
     const o = {
       'calendar.days': days,
-      'calendar.todoLabels': uniqueObjectArrayByKey(todoDays.concat(todoLabels)),
+      'calendar.todoLabels': uniqueTodoLabels(todoDays.concat(todoLabels)),
     };
     if (pos && pos !== todoLabelPos) o[ 'calendar.todoLabelPos' ] = pos;
     if (dotColor && dotColor !== todoLabelColor) o[ 'calendar.todoLabelColor' ] = dotColor;
