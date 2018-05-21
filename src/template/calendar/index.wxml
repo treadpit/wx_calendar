@@ -26,7 +26,11 @@
           data-disable="{{item.disable}}"
           data-idx="{{index}}"
           bindtap="tapDayItem">
-					  <view class="day border-radius {{item.choosed ? 'day-choosed-color pink-bg' : ''}} {{ item.disable ? 'disable-day-color disable-day-circle' : '' }} box box-align-center box-pack-center">{{item.day}}</view>
+            <view class="day-with-dot box box-tb box-align-center box-pack-center">
+              <view wx:if="{{item.showTodoLabel && todoLabelPos === 'top'}}" class="todo-dot" style="background-color: {{todoLabelColor}}"></view>
+              <view class="day border-radius {{item.choosed ? 'day-choosed-color pink-bg' : ''}} {{ item.disable ? 'disable-day-color disable-day-circle' : '' }} box box-align-center box-pack-center">{{item.day}}</view>
+              <view wx:if="{{item.showTodoLabel && todoLabelPos === 'bottom'}}" class="todo-dot" style="background-color: {{todoLabelColor}}"></view>
+            </view>
 				</view>
 				<view class="grid disable-day-color box box-align-center box-pack-center"
           wx:for="{{lastEmptyGrids}}"
