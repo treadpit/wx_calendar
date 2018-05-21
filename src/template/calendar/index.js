@@ -76,6 +76,18 @@ export function isRightSlide(e) {
   }
 }
 
+function uniqueObjectArrayByKey(array) {
+  let uniqueObject = {};
+  let uniqueArray = [];
+  array.forEach(item => {
+    uniqueObject[ `${item.year}-${item.month}-${item.day}` ] = item;
+  });
+  for (let i in uniqueObject) {
+    uniqueArray.push(uniqueObject[ i ]);
+  }
+  return uniqueArray;
+}
+
 const conf = {
   /**
 	 * 计算指定月份共多少天
@@ -155,14 +167,14 @@ const conf = {
 	 */
   calculateDays(year, month, curDate) {
     let days = [];
-    const { todayTimestamp } = this.data.calendar;
+    const { todayTimestamp, todoLabels } = this.data.calendar;
     const thisMonthDays = conf.getThisMonthDays(year, month);
-    const selectedDay = this.data.calendar.selectedDay || [{
+    const selectedDay = this.data.calendar.selectedDay || [ {
       day: curDate,
       choosed: true,
       year,
       month,
-    }];
+    } ];
     for (let i = 1; i <= thisMonthDays; i++) {
       days.push({
         day: i,
@@ -194,16 +206,14 @@ const conf = {
    * 选择上一月
    */
   choosePrevMonth() {
-    const curYear = this.data.calendar.curYear;
-    const curMonth = this.data.calendar.curMonth;
+    const { curYear, curMonth } = this.data.calendar;
     let newMonth = curMonth - 1;
     let newYear = curYear;
     if (newMonth < 1) {
       newYear = curYear - 1;
       newMonth = 12;
     }
-    conf.calculateDays.call(this, newYear, newMonth);
-    conf.calculateEmptyGrids.call(this, newYear, newMonth);
+    conf.renderCalendar.call(this, newYear, newMonth);
     this.setData({
       'calendar.curYear': newYear,
       'calendar.curMonth': newMonth,
@@ -221,8 +231,7 @@ const conf = {
       newYear = curYear + 1;
       newMonth = 1;
     }
-    conf.calculateDays.call(this, newYear, newMonth);
-    conf.calculateEmptyGrids.call(this, newYear, newMonth);
+    conf.renderCalendar.call(this, newYear, newMonth);
     this.setData({
       'calendar.curYear': newYear,
       'calendar.curMonth': newMonth
@@ -243,7 +252,7 @@ const conf = {
     if (multi) {
       days[ idx ].choosed = !days[ idx ].choosed;
       if (!days[ idx ].choosed) {
-        days[ idx ].cancel = true; // 是否是取消的选择日期
+        days[ idx ].cancel = true; // 点击事件是否是取消日期选择
         selected = days[ idx ];
         selectedDays = selectedDays.filter(item => item.day !== days[ idx ].day);
       } else {
@@ -259,9 +268,23 @@ const conf = {
         'calendar.selectedDay': selectedDays,
       });
     } else {
-      days.forEach(day => {
-        day.choosed = false;
+      days[ selectedDays[ 0 ].day - 1 ].choosed = false;
+      const { calendar = {} } = this.data;
+      const { year, month } = days[ 0 ];
+      let shouldMarkerTodoDay = [];
+      if (calendar && calendar.todoLabels) {
+        shouldMarkerTodoDay = calendar.todoLabels.filter(item => {
+          return item.year === year && item.month === month;
+        });
+      }
+      shouldMarkerTodoDay.forEach(item => {
+        days[ item.day - 1 ].hasTodo = true;
+        if (selectedDays[ 0 ].day === item.day) {
+          days[ selectedDays[ 0 ].day - 1 ].showTodoLabel = true;
+        }
       });
+
+      if (days[ idx ].showTodoLabel) days[ idx ].showTodoLabel = false;
       days[ idx ].choosed = true;
       selected = days[ idx ];
       if (onTapDay && typeof onTapDay === 'function') {
@@ -282,6 +305,36 @@ const conf = {
     };
   },
   /**
+   * 设置代办事项标志
+   * @param {object} options 代办事项配置
+   */
+  setTodoLabels(options = {}) {
+    const { calendar } = this.data;
+    if (!calendar || !calendar.days) {
+      console.error('请等待日历初始化完成后再调用该方法');
+      return;
+    }
+    const days = calendar.days.slice();
+    const { year, month } = days[ 0 ];
+    const { days: todoDays = [], pos = 'bottom', dotColor = '' } = options;
+    const { todoLabels = [], todoLabelPos, todoLabelColor } = calendar;
+    const shouldMarkerTodoDay = todoDays.filter(item => +item.year === year && +item.month === month);
+    if ((!shouldMarkerTodoDay || !shouldMarkerTodoDay.length) && !todoLabels.length) return;
+    let temp = [];
+    let currentMonthTodoLabels = todoLabels.filter(item => +item.year === year && +item.month === month);
+    shouldMarkerTodoDay.concat(currentMonthTodoLabels).forEach((item) => {
+      temp.push(days[ item.day - 1 ]);
+      days[ item.day - 1 ].showTodoLabel = !days[ item.day - 1 ].choosed;
+    });
+    const o = {
+      'calendar.days': days,
+      'calendar.todoLabels': uniqueObjectArrayByKey(todoDays.concat(todoLabels)),
+    };
+    if (pos && pos !== todoLabelPos) o[ 'calendar.todoLabelPos' ] = pos;
+    if (dotColor && dotColor !== todoLabelColor) o[ 'calendar.todoLabelColor' ] = dotColor;
+    this.setData(o);
+  },
+  /**
 	 * 跳转至今天
 	 */
   jumpToToday() {
@@ -293,16 +346,26 @@ const conf = {
     this.setData({
       'calendar.curYear': curYear,
       'calendar.curMonth': curMonth,
-      'calendar.selectedDay': [{
+      'calendar.selectedDay': [ {
         day: curDate,
         choosed: true,
         year: curYear,
         month: curMonth,
-      }],
+      } ],
       'calendar.todayTimestamp': timestamp,
     });
+    conf.renderCalendar.call(this, curYear, curMonth, curDate);
+  },
+  renderCalendar(curYear, curMonth, curDate) {
     conf.calculateEmptyGrids.call(this, curYear, curMonth);
     conf.calculateDays.call(this, curYear, curMonth, curDate);
+    const { todoLabels } = this.data.calendar || {};
+    if (todoLabels && todoLabels instanceof Array) conf.setTodoLabels.call(this);
+    const { afterCalendarRender } = this.config;
+    if (afterCalendarRender && typeof afterCalendarRender === 'function' && !this.firstRender) {
+      afterCalendarRender();
+      this.firstRender = true;
+    }
   },
   calendarTouchstart(e) {
     const t = e.touches[ 0 ];
@@ -356,6 +419,18 @@ export const getSelectedDay = () => {
 export const jumpToToday = () => {
   const self = _getCurrentPage();
   conf.jumpToToday.call(self);
+};
+
+/**
+ * 设置代办事项日期标记
+ * @param {object} todos  待办事项配置
+ * @param {string} [todos.pos] 标记显示位置，默认值'bottom' ['bottom', 'top']
+ * @param {string} [todos.dotColor] 标记点颜色，backgroundColor 支持的值都行
+ * @param {object[]} todos.days 需要标记的所有日期，如：[{year: 2015, month: 5, day: 12}]，其中年月日字段必填
+ */
+export const setTodoLabels = (todos) => {
+  const self = _getCurrentPage();
+  conf.setTodoLabels.call(self, todos);
 };
 
 export default (config = {}) => {

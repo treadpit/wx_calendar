@@ -1,4 +1,4 @@
-import initCalendar, { getSelectedDay, jumpToToday } from '../../template/calendar/index';
+import initCalendar, { getSelectedDay, jumpToToday, setTodoLabels } from '../../template/calendar/index';
 const conf = {
   onShow: function() {
     initCalendar({
@@ -10,7 +10,9 @@ const conf = {
        * @param { array } allSelectedDays 选择的所有日期（当mulit为true时，才有allSelectedDays参数）
        */
       afterTapDay: (currentSelect, allSelectedDays) => {
+        console.log('===============================');
         console.log('当前点击的日期', currentSelect);
+        console.log('当前点击的日期是否有事件标记: ', currentSelect.hasTodo || false);
         allSelectedDays && console.log('选择的所有日期', allSelectedDays);
         console.log('getSelectedDay方法', getSelectedDay());
       },
@@ -23,6 +25,24 @@ const conf = {
       //   console.log(currentSelect);
       //   console.log(event);
       // },
+      /**
+       * 日历初次渲染完成后触发事件，如设置事件标记
+       */
+      afterCalendarRender() {
+        setTodoLabels({
+          pos: 'bottom',
+          dotColor: '#40',
+          days: [{
+            year: 2018,
+            month: 5,
+            day: 12,
+          }, {
+            year: 2018,
+            month: 5,
+            day: 15,
+          }],
+        });
+      },
     });
   },
   /**
@@ -30,6 +50,6 @@ const conf = {
    */
   jump() {
     jumpToToday();
-  }
+  },
 };
 Page(conf);
