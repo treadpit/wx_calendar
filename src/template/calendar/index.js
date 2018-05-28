@@ -338,6 +338,49 @@ const conf = {
     this.setData(o);
   },
   /**
+   * 筛选待办事项
+   * @param {array} todos 需要删除待办标记的日期
+   */
+  filterTodos(todos) {
+    const { todoLabels } = this.data.calendar;
+    const deleteTodo = todos.map(item => `${item.year}-${item.month}-${item.day}`);
+    return todoLabels.filter(item => deleteTodo.indexOf(`${item.year}-${item.month}-${item.day}`) === -1);
+  },
+  /**
+   *  删除指定日期的待办标识
+   * @param {array} todos  需要删除待办标记的日期
+   */
+  deleteTodoLabels(todos) {
+    if (!(todos instanceof Array)) return;
+    if (!todos.length) return;
+    const todoLabels = conf.filterTodos.call(this, todos);
+    const { days, curYear, curMonth } = this.data.calendar;
+    days.map(item => {
+      item.showTodoLabel = false;
+    });
+    const currentMonthTodoLabels = todoLabels.filter(item => curYear === item.year && curMonth === item.month);
+    currentMonthTodoLabels.forEach(item => {
+      days[ item.day - 1 ].showTodoLabel = !days[ item.day - 1 ].choosed;
+    });
+    this.setData({
+      'calendar.days': days,
+      'calendar.todoLabels': todoLabels,
+    });
+  },
+  /**
+   * 清空所有日期的待办标识
+   */
+  clearTodoLabels() {
+    const { days } = this.data.calendar;
+    days.map(item => {
+      item.showTodoLabel = false;
+    });
+    this.setData({
+      'calendar.days': days,
+      'calendar.todoLabels': [],
+    });
+  },
+  /**
 	 * 跳转至今天
 	 */
   jumpToToday() {
@@ -434,6 +477,16 @@ export const jumpToToday = () => {
 export const setTodoLabels = (todos) => {
   const self = _getCurrentPage();
   conf.setTodoLabels.call(self, todos);
+};
+
+export const deleteTodoLabels = (todos) => {
+  const self = _getCurrentPage();
+  conf.deleteTodoLabels.call(self, todos);
+};
+
+export const clearTodoLabels = () => {
+  const self = _getCurrentPage();
+  conf.clearTodoLabels.call(self);
 };
 
 export default (config = {}) => {
