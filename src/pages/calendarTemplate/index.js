@@ -1,4 +1,4 @@
-import initCalendar, { getSelectedDay, jumpToToday, setTodoLabels } from '../../template/calendar/index';
+import initCalendar, { getSelectedDay, jumpToToday, setTodoLabels, deleteTodoLabels, clearTodoLabels } from '../../template/calendar/index';
 const conf = {
   onShow: function() {
     initCalendar({
@@ -44,6 +44,18 @@ const conf = {
         });
       },
     });
+  },
+  deleteTodo() {
+    // deleteTodoLabels([{
+    //   year: 2018,
+    //   month: 5,
+    //   day: 12,
+    // }, {
+    //   year: 2018,
+    //   month: 5,
+    //   day: 15,
+    // }]);
+    clearTodoLabels();
   },
   /**
    * 跳转至今天

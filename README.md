@@ -18,6 +18,12 @@
 
 > 提供跳转至今天方法`jumpToToday`；
 
+> 设置日期待办事项标记 `setTodoLabels`；
+
+> 删除指定日期待办事项标记 `deleteTodoLabels`；
+
+> 清空所有日期待办事项标记 `clearTodoLabels`；
+
 提供 `template` [模板引入](https://mp.weixin.qq.com/debug/wxadoc/dev/framework/view/wxml/template.html)
 
 1. 引入`wxml`及`wxss`
@@ -35,7 +41,7 @@
 
 2. 日历组件初始化
 ```js
-import initCalendar, { getSelectedDay, jumpToToday, setTodoLabels } from '../../template/calendar/index';
+import initCalendar, { getSelectedDay, jumpToToday, setTodoLabels, deleteTodoLabels, clearTodoLabels } from '../../template/calendar/index';
 const conf = {
   onShow: function() {
     initCalendar({
@@ -81,6 +87,20 @@ const conf = {
         });
       },
     });
+  },
+  deleteTodo() {
+    // 指定需要删除待办标识的日期
+    deleteTodoLabels([{
+      year: 2018,
+      month: 5,
+      day: 12,
+    }, {
+      year: 2018,
+      month: 5,
+      day: 15,
+    }]);
+
+    // clearTodoLabels();
   },
   /**
    * 跳转至今天
