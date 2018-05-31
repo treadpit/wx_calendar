@@ -271,7 +271,9 @@ const conf = {
         'calendar.selectedDay': selectedDays,
       });
     } else {
-      days[ selectedDays[ 0 ].day - 1 ].choosed = false;
+      if (selectedDays[0].month === days[0].month && selectedDays[0].year === days[0].year) {
+        days[ selectedDays[ 0 ].day - 1 ].choosed = false;
+      }
       const { calendar = {} } = this.data;
       const { year, month } = days[ 0 ];
       let shouldMarkerTodoDay = [];
