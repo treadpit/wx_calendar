@@ -134,11 +134,11 @@
 }
 
 .disable-day-color {
-  color: #ddd;
+  color: #cacaca;
 }
 
 .disable-day-circle {
-  background-color: #fbfdff;
+  background-color: #f6f6f7;
 }
 
 .border-radius {

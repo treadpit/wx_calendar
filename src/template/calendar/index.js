@@ -111,7 +111,7 @@ const conf = {
   /**
 	 * 计算当前月份前后两月应占的格子
 	 * @param {number} year 年份
-	 * @param {number} month  月份
+	 * @param {number} month 月份
 	 */
   calculateEmptyGrids(year, month) {
     conf.calculatePrevMonthGrids.call(this, year, month);
@@ -120,7 +120,7 @@ const conf = {
   /**
 	 * 计算上月应占的格子
 	 * @param {number} year 年份
-	 * @param {number} month  月份
+	 * @param {number} month 月份
 	 */
   calculatePrevMonthGrids(year, month) {
     const prevMonthDays = conf.getThisMonthDays(year, month - 1);
@@ -186,20 +186,14 @@ const conf = {
         month,
       });
     }
+    const selectedDayCol = selectedDay.map(d => `${d.year}-${d.month}-${d.day}`);
     days.map(item => {
-      selectedDay.forEach(d => {
-        if (item.day === d.day && item.year === d.year && item.month === d.month) {
-          item.choosed = true;
-        }
-      });
-      const timestamp = new Date(`${item.year}-${item.month}-${item.day}`).getTime();
-      if (this.config.disablePastDay && (timestamp - todayTimestamp < 0)) {
-        item.disable = true;
-      }
+      const cur = `${item.year}-${item.month}-${item.day}`;
+      if (selectedDayCol.indexOf(cur) !== -1) item.choosed = true;
+      const timestamp = new Date(cur).getTime();
+      if (this.config.disablePastDay && (timestamp - todayTimestamp < 0)) item.disable = true;
     });
-    const tmp = {
-      'calendar.days': days,
-    };
+    const tmp = { 'calendar.days': days };
     if (curDate) {
       tmp[ 'calendar.selectedDay' ] = selectedDay;
     }
@@ -210,8 +204,8 @@ const conf = {
    */
   choosePrevMonth() {
     const { curYear, curMonth } = this.data.calendar;
-    let newMonth = curMonth - 1;
     let newYear = curYear;
+    let newMonth = curMonth - 1;
     if (newMonth < 1) {
       newYear = curYear - 1;
       newMonth = 12;
@@ -247,67 +241,93 @@ const conf = {
   tapDayItem(e) {
     const { idx, disable } = e.currentTarget.dataset;
     if (disable) return;
+    let currentSelected = {}; // 当前选中日期
+    let { days, selectedDay: selectedDays } = this.data.calendar || []; // 所有选中日期
     const config = this.config;
     const { multi, afterTapDay, onTapDay } = config;
-    const days = this.data.calendar.days.slice();
-    let selected;
-    let selectedDays = this.data.calendar.selectedDay || [];
+    const opts = {
+      e,
+      idx,
+      onTapDay,
+      currentSelected,
+      selectedDays,
+      days: days.slice(),
+    };
     if (multi) {
-      days[ idx ].choosed = !days[ idx ].choosed;
-      if (!days[ idx ].choosed) {
-        days[ idx ].cancel = true; // 点击事件是否是取消日期选择
-        selected = days[ idx ];
-        selectedDays = selectedDays.filter(item => item.day !== days[ idx ].day);
-      } else {
-        selected = days[ idx ];
-        selectedDays.push(selected);
-      }
-      if (onTapDay && typeof onTapDay === 'function') {
-        config.onTapDay(selected, e);
-        return;
-      };
-      this.setData({
-        'calendar.days': days,
-        'calendar.selectedDay': selectedDays,
-      });
+      conf.whenMulitSelect.call(this, opts);
     } else {
-      if (selectedDays[0].month === days[0].month && selectedDays[0].year === days[0].year) {
-        days[ selectedDays[ 0 ].day - 1 ].choosed = false;
-      }
-      const { calendar = {} } = this.data;
-      const { year, month } = days[ 0 ];
-      let shouldMarkerTodoDay = [];
-      if (calendar && calendar.todoLabels) {
-        shouldMarkerTodoDay = calendar.todoLabels.filter(item => {
-          return item.year === year && item.month === month;
-        });
-      }
-      shouldMarkerTodoDay.forEach(item => {
-        days[ item.day - 1 ].hasTodo = true;
-        if (selectedDays[ 0 ].day === item.day) {
-          days[ selectedDays[ 0 ].day - 1 ].showTodoLabel = true;
-        }
-      });
-
-      if (days[ idx ].showTodoLabel) days[ idx ].showTodoLabel = false;
-      days[ idx ].choosed = true;
-      selected = days[ idx ];
-      if (onTapDay && typeof onTapDay === 'function') {
-        config.onTapDay(selected, e);
-        return;
-      };
-      this.setData({
-        'calendar.days': days,
-        'calendar.selectedDay': [ selected ],
-      });
+      conf.whenSingleSelect.call(this, opts);
     }
     if (afterTapDay && typeof afterTapDay === 'function') {
       if (!multi) {
-        config.afterTapDay(selected);
+        config.afterTapDay(currentSelected);
       } else {
-        config.afterTapDay(selected, selectedDays);
+        config.afterTapDay(currentSelected, selectedDays);
       }
     };
+  },
+  /**
+   * 多选
+   * @param {object} opts
+   */
+  whenMulitSelect(opts = {}) {
+    let { currentSelected, selectedDays } = opts;
+    const { days, idx, onTapDay, e } = opts;
+    days[ idx ].choosed = !days[ idx ].choosed;
+    if (!days[ idx ].choosed) {
+      days[ idx ].cancel = true; // 点击事件是否是取消日期选择
+      currentSelected = days[ idx ];
+      selectedDays = selectedDays.filter(item => item.day !== days[ idx ].day);
+    } else {
+      currentSelected = days[ idx ];
+      selectedDays.push(currentSelected);
+    }
+    if (onTapDay && typeof onTapDay === 'function') {
+      this.config.onTapDay(currentSelected, e);
+      return;
+    };
+    this.setData({
+      'calendar.days': days,
+      'calendar.selectedDay': selectedDays,
+    });
+  },
+  /**
+   * 多选
+   * @param {object} opts
+   */
+  whenSingleSelect(opts = {}) {
+    let { currentSelected, selectedDays } = opts;
+    let shouldMarkerTodoDay = [];
+    const { days, idx, onTapDay, e } = opts;
+    const { month: sMonth, year: sYear } = selectedDays[ 0 ];
+    const { month: dMonth, year: dYear } = days[ 0 ];
+    const { calendar = {} } = this.data;
+    if (sMonth === dMonth && sYear === dYear) {
+      days[ selectedDays[ 0 ].day - 1 ].choosed = false;
+    }
+    if (calendar.todoLabels) {
+      // 过滤所有待办日期中当月有待办事项的日期
+      shouldMarkerTodoDay = calendar.todoLabels.filter(item => {
+        return item.year === dYear && item.month === dMonth;
+      });
+    }
+    shouldMarkerTodoDay.forEach(item => {
+      // hasTodo 是否有待办事项
+      days[ item.day - 1 ].hasTodo = true;
+      // showTodoLabel 是否显示待办标记
+      if (selectedDays[ 0 ].day === item.day) days[ selectedDays[ 0 ].day - 1 ].showTodoLabel = true;
+    });
+    if (days[ idx ].showTodoLabel) days[ idx ].showTodoLabel = false;
+    days[ idx ].choosed = true;
+    currentSelected = days[ idx ];
+    if (onTapDay && typeof onTapDay === 'function') {
+      this.config.onTapDay(currentSelected, e);
+      return;
+    };
+    this.setData({
+      'calendar.days': days,
+      'calendar.selectedDay': [ currentSelected ],
+    });
   },
   /**
    * 设置代办事项标志
@@ -357,10 +377,10 @@ const conf = {
     if (!todos.length) return;
     const todoLabels = conf.filterTodos.call(this, todos);
     const { days, curYear, curMonth } = this.data.calendar;
+    const currentMonthTodoLabels = todoLabels.filter(item => curYear === item.year && curMonth === item.month);
     days.map(item => {
       item.showTodoLabel = false;
     });
-    const currentMonthTodoLabels = todoLabels.filter(item => curYear === item.year && curMonth === item.month);
     currentMonthTodoLabels.forEach(item => {
       days[ item.day - 1 ].showTodoLabel = !days[ item.day - 1 ].choosed;
     });
@@ -373,12 +393,13 @@ const conf = {
    * 清空所有日期的待办标识
    */
   clearTodoLabels() {
-    const { days } = this.data.calendar;
-    days.map(item => {
+    const { days = [] } = this.data.calendar;
+    const _days = [].concat(days);
+    _days.map(item => {
       item.showTodoLabel = false;
     });
     this.setData({
-      'calendar.days': days,
+      'calendar.days': _days,
       'calendar.todoLabels': [],
     });
   },
@@ -408,8 +429,8 @@ const conf = {
     conf.calculateEmptyGrids.call(this, curYear, curMonth);
     conf.calculateDays.call(this, curYear, curMonth, curDate);
     const { todoLabels } = this.data.calendar || {};
-    if (todoLabels && todoLabels instanceof Array) conf.setTodoLabels.call(this);
     const { afterCalendarRender } = this.config;
+    if (todoLabels && todoLabels instanceof Array) conf.setTodoLabels.call(this);
     if (afterCalendarRender && typeof afterCalendarRender === 'function' && !this.firstRender) {
       afterCalendarRender();
       this.firstRender = true;
@@ -481,11 +502,18 @@ export const setTodoLabels = (todos) => {
   conf.setTodoLabels.call(self, todos);
 };
 
+/**
+ * 删除指定日期待办标记
+ * @param {array} todos 需要删除的待办日期数组
+ */
 export const deleteTodoLabels = (todos) => {
   const self = _getCurrentPage();
   conf.deleteTodoLabels.call(self, todos);
 };
 
+/**
+ * 清空所有待办标记
+ */
 export const clearTodoLabels = () => {
   const self = _getCurrentPage();
   conf.clearTodoLabels.call(self);
@@ -493,12 +521,12 @@ export const clearTodoLabels = () => {
 
 export default (config = {}) => {
   const weeksCh = [ '日', '一', '二', '三', '四', '五', '六' ];
+  const functionArray = [ 'tapDayItem', 'choosePrevMonth', 'chooseNextMonth', 'calendarTouchstart', 'calendarTouchmove' ];
   const self = _getCurrentPage();
   self.config = config;
   self.setData({
     'calendar.weeksCh': weeksCh,
   });
   conf.jumpToToday.call(self);
-  const functionArray = [ 'tapDayItem', 'choosePrevMonth', 'chooseNextMonth', 'calendarTouchstart', 'calendarTouchmove' ];
   bindFunctionToPage.call(self, functionArray);
 };
