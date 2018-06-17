@@ -1,3 +1,30 @@
+let info;
+
+function getSystemInfo() {
+  if (info) return info;
+  info = wx.getSystemInfoSync();
+  return info;
+}
+
+export function isIos() {
+  const sys = getSystemInfo();
+  return /iphone|ios/i.test(sys.platform);
+}
+
+/**
+ * new Date 区分平台
+ * @param {number} year
+ * @param {number} month
+ * @param {number} day
+ */
+function newDate(year, month, day) {
+  let cur = `${year}-${month}-${day}`;
+  if (isIos()) {
+    cur = `${year}/${month}/${day}`;
+  }
+  return new Date(cur);
+}
+
 /**
 * 上滑
 * @param {object} e 事件对象
@@ -109,9 +136,18 @@ const conf = {
     return new Date(Date.UTC(year, month - 1, 1)).getDay();
   },
   /**
-	 * 计算当前月份前后两月应占的格子
+   * 计算指定日期星期几
 	 * @param {number} year 年份
 	 * @param {number} month  月份
+   * @param {number} date 日期
+   */
+  getDayOfWeek(year, month, date) {
+    return new Date(Date.UTC(year, month - 1, date)).getDay();
+  },
+  /**
+	 * 计算当前月份前后两月应占的格子
+	 * @param {number} year 年份
+	 * @param {number} month 月份
 	 */
   calculateEmptyGrids(year, month) {
     conf.calculatePrevMonthGrids.call(this, year, month);
@@ -120,7 +156,7 @@ const conf = {
   /**
 	 * 计算上月应占的格子
 	 * @param {number} year 年份
-	 * @param {number} month  月份
+	 * @param {number} month 月份
 	 */
   calculatePrevMonthGrids(year, month) {
     const prevMonthDays = conf.getThisMonthDays(year, month - 1);
@@ -147,7 +183,7 @@ const conf = {
 	 */
   calculateNextMonthGrids(year, month) {
     const thisMonthDays = conf.getThisMonthDays(year, month);
-    const lastDayWeek = new Date(`${year}-${month}-${thisMonthDays}`).getDay();
+    const lastDayWeek = newDate(year, month, thisMonthDays).getDay();
     let lastEmptyGrids = [];
     if (+lastDayWeek !== 6) {
       const len = 7 - (lastDayWeek + 1);
@@ -186,20 +222,14 @@ const conf = {
         month,
       });
     }
+    const selectedDayCol = selectedDay.map(d => `${d.year}-${d.month}-${d.day}`);
     days.map(item => {
-      selectedDay.forEach(d => {
-        if (item.day === d.day && item.year === d.year && item.month === d.month) {
-          item.choosed = true;
-        }
-      });
-      const timestamp = new Date(`${item.year}-${item.month}-${item.day}`).getTime();
-      if (this.config.disablePastDay && (timestamp - todayTimestamp < 0)) {
-        item.disable = true;
-      }
+      const cur = `${item.year}-${item.month}-${item.day}`;
+      if (selectedDayCol.indexOf(cur) !== -1) item.choosed = true;
+      const timestamp = newDate(item.year, item.month, item.day).getTime();
+      if (this.config.disablePastDay && (timestamp - todayTimestamp < 0)) item.disable = true;
     });
-    const tmp = {
-      'calendar.days': days,
-    };
+    const tmp = { 'calendar.days': days };
     if (curDate) {
       tmp[ 'calendar.selectedDay' ] = selectedDay;
     }
@@ -210,8 +240,8 @@ const conf = {
    */
   choosePrevMonth() {
     const { curYear, curMonth } = this.data.calendar;
-    let newMonth = curMonth - 1;
     let newYear = curYear;
+    let newMonth = curMonth - 1;
     if (newMonth < 1) {
       newYear = curYear - 1;
       newMonth = 12;
@@ -247,67 +277,108 @@ const conf = {
   tapDayItem(e) {
     const { idx, disable } = e.currentTarget.dataset;
     if (disable) return;
+    let currentSelected = {}; // 当前选中日期
+    let { days, selectedDay: selectedDays } = this.data.calendar || []; // 所有选中日期
     const config = this.config;
     const { multi, afterTapDay, onTapDay } = config;
-    const days = this.data.calendar.days.slice();
-    let selected;
-    let selectedDays = this.data.calendar.selectedDay || [];
+    const opts = {
+      e,
+      idx,
+      onTapDay,
+      currentSelected,
+      selectedDays,
+      days: days.slice(),
+    };
     if (multi) {
-      days[ idx ].choosed = !days[ idx ].choosed;
-      if (!days[ idx ].choosed) {
-        days[ idx ].cancel = true; // 点击事件是否是取消日期选择
-        selected = days[ idx ];
-        selectedDays = selectedDays.filter(item => item.day !== days[ idx ].day);
-      } else {
-        selected = days[ idx ];
-        selectedDays.push(selected);
-      }
-      if (onTapDay && typeof onTapDay === 'function') {
-        config.onTapDay(selected, e);
-        return;
-      };
-      this.setData({
-        'calendar.days': days,
-        'calendar.selectedDay': selectedDays,
-      });
+      conf.whenMulitSelect.call(this, opts);
     } else {
-      if (selectedDays[0].month === days[0].month && selectedDays[0].year === days[0].year) {
-        days[ selectedDays[ 0 ].day - 1 ].choosed = false;
-      }
-      const { calendar = {} } = this.data;
-      const { year, month } = days[ 0 ];
-      let shouldMarkerTodoDay = [];
-      if (calendar && calendar.todoLabels) {
-        shouldMarkerTodoDay = calendar.todoLabels.filter(item => {
-          return item.year === year && item.month === month;
-        });
-      }
-      shouldMarkerTodoDay.forEach(item => {
-        days[ item.day - 1 ].hasTodo = true;
-        if (selectedDays[ 0 ].day === item.day) {
-          days[ selectedDays[ 0 ].day - 1 ].showTodoLabel = true;
-        }
-      });
-
-      if (days[ idx ].showTodoLabel) days[ idx ].showTodoLabel = false;
-      days[ idx ].choosed = true;
-      selected = days[ idx ];
-      if (onTapDay && typeof onTapDay === 'function') {
-        config.onTapDay(selected, e);
-        return;
-      };
-      this.setData({
-        'calendar.days': days,
-        'calendar.selectedDay': [ selected ],
-      });
+      conf.whenSingleSelect.call(this, opts);
     }
     if (afterTapDay && typeof afterTapDay === 'function') {
       if (!multi) {
-        config.afterTapDay(selected);
+        config.afterTapDay(currentSelected);
       } else {
-        config.afterTapDay(selected, selectedDays);
+        config.afterTapDay(currentSelected, selectedDays);
       }
     };
+  },
+  /**
+   * 多选
+   * @param {object} opts
+   */
+  whenMulitSelect(opts = {}) {
+    let { currentSelected, selectedDays } = opts;
+    const { days, idx, onTapDay, e } = opts;
+    days[ idx ].choosed = !days[ idx ].choosed;
+    if (!days[ idx ].choosed) {
+      days[ idx ].cancel = true; // 点击事件是否是取消日期选择
+      currentSelected = days[ idx ];
+      selectedDays = selectedDays.filter(item => item.day !== days[ idx ].day);
+    } else {
+      currentSelected = days[ idx ];
+      selectedDays.push(currentSelected);
+    }
+    if (onTapDay && typeof onTapDay === 'function') {
+      this.config.onTapDay(currentSelected, e);
+      return;
+    };
+    this.setData({
+      'calendar.days': days,
+      'calendar.selectedDay': selectedDays,
+    });
+  },
+  /**
+   * 多选
+   * @param {object} opts
+   */
+  whenSingleSelect(opts = {}) {
+    let { currentSelected, selectedDays } = opts;
+    let shouldMarkerTodoDay = [];
+    const { days, idx, onTapDay, e } = opts;
+    const { month: sMonth, year: sYear } = selectedDays[ 0 ];
+    const { month: dMonth, year: dYear } = days[ 0 ];
+    const { calendar = {} } = this.data;
+    if (sMonth === dMonth && sYear === dYear) {
+      if (this.weekMode) {
+        days.map((item, idx) => {
+          if (item.day === selectedDays[ 0 ].day) days[ idx ].choosed = false;
+        });
+      } else {
+        days[ selectedDays[ 0 ].day - 1 ].choosed = false;
+      }
+    }
+    if (calendar.todoLabels) {
+      // 过滤所有待办日期中当月有待办事项的日期
+      shouldMarkerTodoDay = calendar.todoLabels.filter(item => {
+        return item.year === dYear && item.month === dMonth;
+      });
+    }
+    shouldMarkerTodoDay.forEach(item => {
+      // hasTodo 是否有待办事项
+      if (this.weekMode) {
+        days.map((_item, idx) => {
+          if (_item.day === item.day) {
+            days[ idx ].hasTodo = true;
+            if (selectedDays[ 0 ].day === item.day) days[ idx ].showTodoLabel = true;
+          }
+        });
+      } else {
+        days[ item.day - 1 ].hasTodo = true;
+        // showTodoLabel 是否显示待办标记
+        if (selectedDays[ 0 ].day === item.day) days[ selectedDays[ 0 ].day - 1 ].showTodoLabel = true;
+      }
+    });
+    if (days[ idx ].showTodoLabel) days[ idx ].showTodoLabel = false;
+    days[ idx ].choosed = true;
+    currentSelected = days[ idx ];
+    if (onTapDay && typeof onTapDay === 'function') {
+      this.config.onTapDay(currentSelected, e);
+      return;
+    };
+    this.setData({
+      'calendar.days': days,
+      'calendar.selectedDay': [ currentSelected ],
+    });
   },
   /**
    * 设置代办事项标志
@@ -357,10 +428,10 @@ const conf = {
     if (!todos.length) return;
     const todoLabels = conf.filterTodos.call(this, todos);
     const { days, curYear, curMonth } = this.data.calendar;
+    const currentMonthTodoLabels = todoLabels.filter(item => curYear === item.year && curMonth === item.month);
     days.map(item => {
       item.showTodoLabel = false;
     });
-    const currentMonthTodoLabels = todoLabels.filter(item => curYear === item.year && curMonth === item.month);
     currentMonthTodoLabels.forEach(item => {
       days[ item.day - 1 ].showTodoLabel = !days[ item.day - 1 ].choosed;
     });
@@ -373,12 +444,13 @@ const conf = {
    * 清空所有日期的待办标识
    */
   clearTodoLabels() {
-    const { days } = this.data.calendar;
-    days.map(item => {
+    const { days = [] } = this.data.calendar;
+    const _days = [].concat(days);
+    _days.map(item => {
       item.showTodoLabel = false;
     });
     this.setData({
-      'calendar.days': days,
+      'calendar.days': _days,
       'calendar.todoLabels': [],
     });
   },
@@ -390,7 +462,7 @@ const conf = {
     const curYear = date.getFullYear();
     const curMonth = date.getMonth() + 1;
     const curDate = date.getDate();
-    const timestamp = new Date(`${curYear}-${curMonth}-${curDate}`).getTime();
+    const timestamp = newDate(curYear, curMonth, curDate).getTime();
     this.setData({
       'calendar.curYear': curYear,
       'calendar.curMonth': curMonth,
@@ -408,8 +480,8 @@ const conf = {
     conf.calculateEmptyGrids.call(this, curYear, curMonth);
     conf.calculateDays.call(this, curYear, curMonth, curDate);
     const { todoLabels } = this.data.calendar || {};
-    if (todoLabels && todoLabels instanceof Array) conf.setTodoLabels.call(this);
     const { afterCalendarRender } = this.config;
+    if (todoLabels && todoLabels instanceof Array) conf.setTodoLabels.call(this);
     if (afterCalendarRender && typeof afterCalendarRender === 'function' && !this.firstRender) {
       afterCalendarRender();
       this.firstRender = true;
@@ -431,6 +503,79 @@ const conf = {
     }
     if (isRightSlide.call(this, e)) {
       conf.choosePrevMonth.call(this);
+    }
+  },
+  /**
+   * 计算当前选中日期所在周，并重新渲染日历
+   * @param {object} currentDay 当前选择日期
+   */
+  selectedDayWeekAllDays(currentDay) {
+    const { days } = this.data.calendar;
+    const { year, month, day } = currentDay;
+    const firstWeekDays = conf.firstWeek(year, month);
+    const lastWeekDays = conf.lastWeek(year, month, day);
+    if (firstWeekDays.includes(day)) {
+      const daysCut = days.slice(firstWeekDays[0] - 1, firstWeekDays[ 1 ]);
+      this.setData({
+        'calendar.days': daysCut,
+        'calendar.lastEmptyGrids': [],
+      });
+    } else if (lastWeekDays.includes(day)) {
+      const daysCut = days.slice(lastWeekDays[0] - 1, lastWeekDays[ 1 ]);
+      this.setData({
+        'calendar.days': daysCut,
+        'calendar.empytGrids': [],
+      });
+    } else {
+      const week = conf.getDayOfWeek(year, month, day);
+      const range = [day - week, day + (6 - week)];
+      const daysCut = days.slice(range[0] - 1, range[ 1 ]);
+      this.setData({
+        'calendar.days': daysCut,
+        'calendar.lastEmptyGrids': [],
+        'calendar.empytGrids': [],
+      });
+    }
+  },
+  /**
+   * 当月第一周所有日期
+   * @param {number} year
+   * @param {number} month
+   * @param {number} day
+   */
+  firstWeek(year, month) {
+    const firstDay = conf.getDayOfWeek(year, month, 1);
+    const firstWeekDays = [1, 1 + (6 - firstDay)];
+    return firstWeekDays;
+  },
+  /**
+   * 当月最后一周所有日期
+   * @param {number} year
+   * @param {number} month
+   * @param {number} day
+   */
+  lastWeek(year, month, day) {
+    const lastDay = conf.getThisMonthDays(year, month);
+    const lastDayWeek = conf.getDayOfWeek(year, month, lastDay);
+    const lastWeekDays = [lastDay - lastDayWeek + 1, lastDay];
+    return lastWeekDays;
+  },
+  /**
+   * 周、月视图切换
+   * @param {string} view  视图 [week, month]
+   */
+  switchWeek(view) {
+    if (this.config.multi) return console.error('多选模式不能切换周月视图');
+    const { selectedDay = [] } = this.data.calendar;
+    if (!selectedDay.length) return;
+    const currentDay = selectedDay[ 0 ];
+    if (view === 'week') {
+      if (this.weekMode) return;
+      this.weekMode = true;
+      conf.selectedDayWeekAllDays.call(this, currentDay);
+    } else {
+      this.weekMode = false;
+      conf.calculateDays.call(this, currentDay.year, currentDay.month, currentDay.curDate);
     }
   },
 };
@@ -481,24 +626,41 @@ export const setTodoLabels = (todos) => {
   conf.setTodoLabels.call(self, todos);
 };
 
+/**
+ * 删除指定日期待办标记
+ * @param {array} todos 需要删除的待办日期数组
+ */
 export const deleteTodoLabels = (todos) => {
   const self = _getCurrentPage();
   conf.deleteTodoLabels.call(self, todos);
 };
 
+/**
+ * 清空所有待办标记
+ */
 export const clearTodoLabels = () => {
   const self = _getCurrentPage();
   conf.clearTodoLabels.call(self);
 };
 
+export const switchView = (view) => {
+  if (view === 'week') {
+    const self = _getCurrentPage();
+    conf.switchWeek.call(self, view);
+  } else {
+    const self = _getCurrentPage();
+    conf.switchWeek.call(self, view);
+  }
+};
+
 export default (config = {}) => {
   const weeksCh = [ '日', '一', '二', '三', '四', '五', '六' ];
+  const functionArray = [ 'tapDayItem', 'choosePrevMonth', 'chooseNextMonth', 'calendarTouchstart', 'calendarTouchmove' ];
   const self = _getCurrentPage();
   self.config = config;
   self.setData({
     'calendar.weeksCh': weeksCh,
   });
   conf.jumpToToday.call(self);
-  const functionArray = [ 'tapDayItem', 'choosePrevMonth', 'chooseNextMonth', 'calendarTouchstart', 'calendarTouchmove' ];
   bindFunctionToPage.call(self, functionArray);
 };

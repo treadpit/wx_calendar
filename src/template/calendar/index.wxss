@@ -99,12 +99,9 @@
   text-align: center;
 }
 
-.days {
-  height: 500rpx;
-}
-
 .grid {
-  width: 14.285714285714285%;
+  width: 105rpx;
+  height: 105rpx;
 }
 
 .day {
@@ -134,11 +131,11 @@
 }
 
 .disable-day-color {
-  color: #ddd;
+  color: #cacaca;
 }
 
 .disable-day-circle {
-  background-color: #fbfdff;
+  background-color: #f6f6f7;
 }
 
 .border-radius {
