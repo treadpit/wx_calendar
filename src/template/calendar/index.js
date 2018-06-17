@@ -515,17 +515,15 @@ const conf = {
     const firstWeekDays = conf.firstWeek.call(this, year, month);
     const lastWeekDays = conf.lastWeek.call(this, year, month, day);
     if (firstWeekDays.find(item => item.day === day)) {
-      const empytGrids = conf.calculatePrevMonthGrids.call(this, year, month);
+      conf.calculatePrevMonthGrids.call(this, year, month);
       this.setData({
         'calendar.days': firstWeekDays,
-        'calendar.empytGrids': empytGrids,
         'calendar.lastEmptyGrids': [],
       });
     } else if (lastWeekDays.find(item => item.day === day)) {
-      const lastEmptyGrids = conf.calculateNextMonthGrids.call(this, year, month);
+      conf.calculateNextMonthGrids.call(this, year, month);
       this.setData({
         'calendar.days': lastWeekDays,
-        'calendar.lastEmptyGrids': lastEmptyGrids,
         'calendar.empytGrids': [],
       });
     } else {
