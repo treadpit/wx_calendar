@@ -46,7 +46,7 @@ const conf = {
     });
   },
   /**
-   * 跳转至今天
+   * 周、月视图切换
    */
   switchView() {
     if (!this.weekView) {
@@ -57,5 +57,11 @@ const conf = {
       switchView('month');
     }
   },
+  /**
+   * 跳转至今天
+   */
+  jump() {
+    jumpToToday();
+  }
 };
 Page(conf);

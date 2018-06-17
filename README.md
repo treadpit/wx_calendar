@@ -24,6 +24,8 @@
 
 > 清空所有日期待办事项标记 `clearTodoLabels`；
 
+> 提供周月视图切换 `switchView('week')`，默认值为'month'；
+
 提供 `template` [模板引入](https://mp.weixin.qq.com/debug/wxadoc/dev/framework/view/wxml/template.html)
 
 1. 引入`wxml`及`wxss`
@@ -41,7 +43,7 @@
 
 2. 日历组件初始化
 ```js
-import initCalendar, { getSelectedDay, jumpToToday, setTodoLabels, deleteTodoLabels, clearTodoLabels } from '../../template/calendar/index';
+import initCalendar, { getSelectedDay, jumpToToday, switchView, setTodoLabels, deleteTodoLabels, clearTodoLabels } from '../../template/calendar/index';
 const conf = {
   onShow: function() {
     initCalendar({
@@ -101,6 +103,18 @@ const conf = {
     }]);
 
     // clearTodoLabels();
+  },
+  /**
+   * 周、月视图切换
+   */
+  switchView() {
+    if (!this.weekView) {
+      this.weekView = true;
+      switchView('week');
+    } else {
+      this.weekView = false;
+      switchView('month');
+    }
   },
   /**
    * 跳转至今天

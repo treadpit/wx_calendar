@@ -505,6 +505,10 @@ const conf = {
       conf.choosePrevMonth.call(this);
     }
   },
+  /**
+   * 计算当前选中日期所在周，并重新渲染日历
+   * @param {object} currentDay 当前选择日期
+   */
   selectedDayWeekAllDays(currentDay) {
     const { days } = this.data.calendar;
     const { year, month, day } = currentDay;
@@ -533,17 +537,33 @@ const conf = {
       });
     }
   },
+  /**
+   * 当月第一周所有日期
+   * @param {number} year
+   * @param {number} month
+   * @param {number} day
+   */
   firstWeek(year, month) {
     const firstDay = conf.getDayOfWeek(year, month, 1);
     const firstWeekDays = [1, 1 + (6 - firstDay)];
     return firstWeekDays;
   },
+  /**
+   * 当月最后一周所有日期
+   * @param {number} year
+   * @param {number} month
+   * @param {number} day
+   */
   lastWeek(year, month, day) {
     const lastDay = conf.getThisMonthDays(year, month);
     const lastDayWeek = conf.getDayOfWeek(year, month, lastDay);
     const lastWeekDays = [lastDay - lastDayWeek + 1, lastDay];
     return lastWeekDays;
   },
+  /**
+   * 周、月视图切换
+   * @param {string} view  视图 [week, month]
+   */
   switchWeek(view) {
     if (this.config.multi) return console.error('多选模式不能切换周月视图');
     const { selectedDay = [] } = this.data.calendar;
