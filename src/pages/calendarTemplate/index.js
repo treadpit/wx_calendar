@@ -1,4 +1,4 @@
-import initCalendar, { getSelectedDay, jumpToToday, setTodoLabels } from '../../template/calendar/index';
+import initCalendar, { getSelectedDay, jumpToToday, setTodoLabels, switchView } from '../../template/calendar/index';
 const conf = {
   onShow: function() {
     initCalendar({
@@ -48,8 +48,14 @@ const conf = {
   /**
    * 跳转至今天
    */
-  jump() {
-    jumpToToday();
+  switchView() {
+    if (!this.weekView) {
+      this.weekView = true;
+      switchView('week');
+    } else {
+      this.weekView = false;
+      switchView('month');
+    }
   },
 };
 Page(conf);

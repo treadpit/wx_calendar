@@ -17,5 +17,5 @@ function fileCopy() {
 
 gulp.task('default', fileCopy);
 gulp.task('watch', () => {
-  gulp.watch('src/**/*', fileCopy);
+  gulp.watch(['src/**/*', 'src/*'], fileCopy);
 });

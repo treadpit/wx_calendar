@@ -2,4 +2,5 @@
 
 <view class="calendar-wrap">
    <template is="calendar" data="{{...calendar}}" />
+  <button class="switchView" type="primary" bindtap="switchView">周/月视图</button>
 </view>
