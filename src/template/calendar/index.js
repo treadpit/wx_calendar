@@ -512,24 +512,26 @@ const conf = {
   selectedDayWeekAllDays(currentDay) {
     const { days } = this.data.calendar;
     const { year, month, day } = currentDay;
-    const firstWeekDays = conf.firstWeek(year, month);
-    const lastWeekDays = conf.lastWeek(year, month, day);
-    if (firstWeekDays.includes(day)) {
-      const daysCut = days.slice(firstWeekDays[0] - 1, firstWeekDays[ 1 ]);
+    const firstWeekDays = conf.firstWeek.call(this, year, month);
+    const lastWeekDays = conf.lastWeek.call(this, year, month, day);
+    if (firstWeekDays.find(item => item.day === day)) {
+      const empytGrids = conf.calculatePrevMonthGrids.call(this, year, month);
       this.setData({
-        'calendar.days': daysCut,
+        'calendar.days': firstWeekDays,
+        'calendar.empytGrids': empytGrids,
         'calendar.lastEmptyGrids': [],
       });
-    } else if (lastWeekDays.includes(day)) {
-      const daysCut = days.slice(lastWeekDays[0] - 1, lastWeekDays[ 1 ]);
+    } else if (lastWeekDays.find(item => item.day === day)) {
+      const lastEmptyGrids = conf.calculateNextMonthGrids.call(this, year, month);
       this.setData({
-        'calendar.days': daysCut,
+        'calendar.days': lastWeekDays,
+        'calendar.lastEmptyGrids': lastEmptyGrids,
         'calendar.empytGrids': [],
       });
     } else {
       const week = conf.getDayOfWeek(year, month, day);
-      const range = [day - week, day + (6 - week)];
-      const daysCut = days.slice(range[0] - 1, range[ 1 ]);
+      const range = [ day - week, day + (6 - week) ];
+      const daysCut = days.slice(range[ 0 ] - 1, range[ 1 ]);
       this.setData({
         'calendar.days': daysCut,
         'calendar.lastEmptyGrids': [],
@@ -538,18 +540,20 @@ const conf = {
     }
   },
   /**
-   * 当月第一周所有日期
+   * 当月第一周所有日期范围
    * @param {number} year
    * @param {number} month
    * @param {number} day
    */
   firstWeek(year, month) {
     const firstDay = conf.getDayOfWeek(year, month, 1);
-    const firstWeekDays = [1, 1 + (6 - firstDay)];
-    return firstWeekDays;
+    const firstWeekDays = [ 1, 1 + (6 - firstDay) ];
+    const { days } = this.data.calendar;
+    const daysCut = days.slice(firstWeekDays[ 0 ] - 1, firstWeekDays[ 1 ]);
+    return daysCut;
   },
   /**
-   * 当月最后一周所有日期
+   * 当月最后一周所有日期范围
    * @param {number} year
    * @param {number} month
    * @param {number} day
@@ -557,8 +561,10 @@ const conf = {
   lastWeek(year, month, day) {
     const lastDay = conf.getThisMonthDays(year, month);
     const lastDayWeek = conf.getDayOfWeek(year, month, lastDay);
-    const lastWeekDays = [lastDay - lastDayWeek + 1, lastDay];
-    return lastWeekDays;
+    const lastWeekDays = [ lastDay - lastDayWeek, lastDay ];
+    const { days } = this.data.calendar;
+    const daysCut = days.slice(lastWeekDays[ 0 ] - 1, lastWeekDays[ 1 ]);
+    return daysCut;
   },
   /**
    * 周、月视图切换
@@ -575,7 +581,7 @@ const conf = {
       conf.selectedDayWeekAllDays.call(this, currentDay);
     } else {
       this.weekMode = false;
-      conf.calculateDays.call(this, currentDay.year, currentDay.month, currentDay.curDate);
+      conf.renderCalendar.call(this, currentDay.year, currentDay.month, currentDay.curDate);
     }
   },
 };
@@ -644,13 +650,8 @@ export const clearTodoLabels = () => {
 };
 
 export const switchView = (view) => {
-  if (view === 'week') {
-    const self = _getCurrentPage();
-    conf.switchWeek.call(self, view);
-  } else {
-    const self = _getCurrentPage();
-    conf.switchWeek.call(self, view);
-  }
+  const self = _getCurrentPage();
+  conf.switchWeek.call(self, view);
 };
 
 export default (config = {}) => {

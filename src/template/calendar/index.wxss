@@ -60,6 +60,11 @@
   font-size: 36rpx;
 }
 
+.calendar {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .top-handle {
   height: 80rpx;
 }
