@@ -145,6 +145,23 @@ const conf = {
     return new Date(Date.UTC(year, month - 1, date)).getDay();
   },
   /**
+   * 渲染日历
+   * @param {number} curYear
+   * @param {number} curMonth
+   * @param {number} curDate
+   */
+  renderCalendar(curYear, curMonth, curDate) {
+    conf.calculateEmptyGrids.call(this, curYear, curMonth);
+    conf.calculateDays.call(this, curYear, curMonth, curDate);
+    const { todoLabels } = this.data.calendar || {};
+    const { afterCalendarRender } = this.config;
+    if (todoLabels && todoLabels instanceof Array) conf.setTodoLabels.call(this);
+    if (afterCalendarRender && typeof afterCalendarRender === 'function' && !this.firstRender) {
+      afterCalendarRender();
+      this.firstRender = true;
+    }
+  },
+  /**
 	 * 计算当前月份前后两月应占的格子
 	 * @param {number} year 年份
 	 * @param {number} month 月份
@@ -476,17 +493,6 @@ const conf = {
     });
     conf.renderCalendar.call(this, curYear, curMonth, curDate);
   },
-  renderCalendar(curYear, curMonth, curDate) {
-    conf.calculateEmptyGrids.call(this, curYear, curMonth);
-    conf.calculateDays.call(this, curYear, curMonth, curDate);
-    const { todoLabels } = this.data.calendar || {};
-    const { afterCalendarRender } = this.config;
-    if (todoLabels && todoLabels instanceof Array) conf.setTodoLabels.call(this);
-    if (afterCalendarRender && typeof afterCalendarRender === 'function' && !this.firstRender) {
-      afterCalendarRender();
-      this.firstRender = true;
-    }
-  },
   calendarTouchstart(e) {
     const t = e.touches[ 0 ];
     const startX = t.clientX;
@@ -510,10 +516,14 @@ const conf = {
    * @param {object} currentDay 当前选择日期
    */
   selectedDayWeekAllDays(currentDay) {
-    const { days } = this.data.calendar;
-    const { year, month, day } = currentDay;
+    const { days, curYear, curMonth } = this.data.calendar;
+    let { year, month, day } = currentDay;
+    // 判断选中日期的月份是否与当前月份一致
+    if (curYear !== year || curMonth !== month) day = 1;
+    if (curYear !== year) year = curYear;
+    if (curMonth !== month) month = curMonth;
     const firstWeekDays = conf.firstWeek.call(this, year, month);
-    const lastWeekDays = conf.lastWeek.call(this, year, month, day);
+    const lastWeekDays = conf.lastWeek.call(this, year, month);
     if (firstWeekDays.find(item => item.day === day)) {
       conf.calculatePrevMonthGrids.call(this, year, month);
       this.setData({
@@ -541,7 +551,6 @@ const conf = {
    * 当月第一周所有日期范围
    * @param {number} year
    * @param {number} month
-   * @param {number} day
    */
   firstWeek(year, month) {
     const firstDay = conf.getDayOfWeek(year, month, 1);
@@ -554,9 +563,8 @@ const conf = {
    * 当月最后一周所有日期范围
    * @param {number} year
    * @param {number} month
-   * @param {number} day
    */
-  lastWeek(year, month, day) {
+  lastWeek(year, month) {
     const lastDay = conf.getThisMonthDays(year, month);
     const lastDayWeek = conf.getDayOfWeek(year, month, lastDay);
     const lastWeekDays = [ lastDay - lastDayWeek, lastDay ];
@@ -570,7 +578,7 @@ const conf = {
    */
   switchWeek(view) {
     if (this.config.multi) return console.error('多选模式不能切换周月视图');
-    const { selectedDay = [] } = this.data.calendar;
+    const { selectedDay = [], curYear, curMonth } = this.data.calendar;
     if (!selectedDay.length) return;
     const currentDay = selectedDay[ 0 ];
     if (view === 'week') {
@@ -579,7 +587,9 @@ const conf = {
       conf.selectedDayWeekAllDays.call(this, currentDay);
     } else {
       this.weekMode = false;
-      conf.renderCalendar.call(this, currentDay.year, currentDay.month, currentDay.curDate);
+      let { year, month, day } = currentDay;
+      if (curMonth !== year || curMonth !== month) day = 1;
+      conf.renderCalendar.call(this, curYear, curMonth, day);
     }
   },
 };
