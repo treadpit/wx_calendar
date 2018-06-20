@@ -2,33 +2,26 @@
 
 ### 思路分析
 
-要实现一个日历，就需要先知道几个值：
+要实现一个简单的日历，需要先知道几个值：
 
 - 当月有多少天
 
 - 当月第一天星期几
 
+- 当月1号之前应有多少天属于上一个月
 
-> 根据常识我们得知，每月最多31天，最少28天，日历一排7个格子，则会有5排，但若是该月第一天为星期六，则会产生六排格子才对。
+- 当月最后一天星期几
 
-> 小程序没有DOM操作概念，故不能动态的往当月第一天的插入多少个空格子，只能通过在前面加入空格子的循环来控制，具体参考 `wxml` 文件。
+- 当月最后一天应由多少天属于下一个月
+
+> 每月最多31天，最少28天。
 
 ### 日历模板引入
 > 日历模板面板支持 ***手势左右滑动***；
 
-> 提供跳转至今天方法`jumpToToday`；
-
-> 设置日期待办事项标记 `setTodoLabels`；
-
-> 删除指定日期待办事项标记 `deleteTodoLabels`；
-
-> 清空所有日期待办事项标记 `clearTodoLabels`；
-
-> 提供周月视图切换 `switchView('week')`，默认值为'month'；
-
 提供 `template` [模板引入](https://mp.weixin.qq.com/debug/wxadoc/dev/framework/view/wxml/template.html)
 
-1. 引入`wxml`及`wxss`
+#### 1. 引入`wxml`及`wxss`
 ```xml
 // example.wxml
 <import src="../../template/calendar/index.wxml"/>
@@ -41,50 +34,61 @@
 @import '../../template/calendar/index.wxss';
 ```
 
-2. 日历组件初始化
+#### 2. 日历组件初始化
 ```js
-import initCalendar, { getSelectedDay, jumpToToday, switchView, setTodoLabels, deleteTodoLabels, clearTodoLabels } from '../../template/calendar/index';
+import initCalendar from '../../template/calendar/index';
 const conf = {
   onShow: function() {
-    // initCalendar(); // 使用默认配置初始化日历
-    initCalendar({ // 自定义配置
-      // multi: true, // 是否开启多选,
-      // disablePastDay: true, // 是否禁选过去日期
-      /**
-       * 选择日期后执行的事件
-       * @param { object } currentSelect 当前点击的日期
-       * @param { array } allSelectedDays 选择的所有日期（当mulit为true时，才有allSelectedDays参数）
-       */
-      afterTapDay: (currentSelect, allSelectedDays) => {},
-      /**
-       * 日期点击事件（此事件会完全接管点击事件）
-       * @param { object } currentSelect 当前点击的日期
-       * @param { object } event 日期点击事件对象
-       */
-      onTapDay(currentSelect, event) {},
-      /**
-       * 日历初次渲染完成后触发事件，如设置事件标记
-       */
-      afterCalendarRender() {
-        setTodoLabels({
-          pos: 'bottom',
-          dotColor: '#40',
-          days: [{
-            year: 2018,
-            month: 5,
-            day: 12,
-          }, {
-            year: 2018,
-            month: 5,
-            day: 15,
-          }],
-        });
-      },
-    });
-  },
-  deleteTodo() {
-    // 指定需要删除待办标识的日期
-    deleteTodoLabels([{
+    initCalendar(); // 使用默认配置初始化日历
+  }
+};
+Page(conf);
+```
+
+#### 3. 日历组件配置
+
+`initCalendar()` 可传入自定义配置
+
+```js
+  import initCalendar from '../../template/calendar/index';
+
+  const conf = { 
+    multi: true, // 是否开启多选,
+    disablePastDay: true, // 是否禁选过去日期
+    /**
+     * 选择日期后执行的事件
+     * @param { object } currentSelect 当前点击的日期
+     * @param { array } allSelectedDays 选择的所有日期（当mulit为true时，才有allSelectedDays参数）
+     */
+    afterTapDay: (currentSelect, allSelectedDays) => {},
+    /**
+     * 日期点击事件（此事件会完全接管点击事件）
+     * @param { object } currentSelect 当前点击的日期
+     * @param { object } event 日期点击事件对象
+     */
+    onTapDay(currentSelect, event) {},
+    /**
+     * 日历初次渲染完成后触发事件，如设置事件标记
+     */
+    afterCalendarRender() {},
+  }
+
+  initCalendar(conf);
+```
+
+#### 4. `jumpToToday()`，跳转至今天；
+
+#### 5. 待办事项
+
+##### 5.1 设置日期待办事项标记 `setTodoLabels`；
+
+```js
+  import { setTodoLabels } from '../../template/calendar/index';
+
+  setTodoLabels({
+    pos: 'bottom',
+    dotColor: '#40',
+    days: [{
       year: 2018,
       month: 5,
       day: 12,
@@ -92,41 +96,51 @@ const conf = {
       year: 2018,
       month: 5,
       day: 15,
-    }]);
-
-    // clearTodoLabels();
-  },
-  /**
-   * 周、月视图切换
-   */
-  switchView() {
-    if (!this.weekView) {
-      this.weekView = true;
-      switchView('week');
-    } else {
-      this.weekView = false;
-      switchView('month');
-    }
-  },
-  /**
-   * 跳转至今天
-   */
-  jump() {
-    jumpToToday();
-  },
-};
-Page(conf);
+    }],
+  });
 ```
+
+##### 5.2 删除指定日期待办事项标记 `deleteTodoLabels`；
+
+```js
+  import { deleteTodoLabels } from '../../template/calendar/index';
+
+  deleteTodoLabels([{
+    year: 2018,
+    month: 5,
+    day: 12,
+  }, {
+    year: 2018,
+    month: 5,
+    day: 15,
+  }]);
+```
+
+##### 5.3 清空所有日期待办事项标记 `clearTodoLabels()`；
+
+#### 6. 周月视图切换 `switchView('week')`，默认值为'month'；
+
+```js
+
+  import { switchView } from '../../template/calendar/index';
+  // 切换为周视图
+  switchView('week');
+
+  // 切换为月视图
+  switchView();
+  // 或者
+  switchView('month');
+```
+
+
 ### 日历选择器模板引入
 > 日历模板面板支持 ***手势左右滑动***；
-
-> 提供跳转至今天方法`jumpToToday`；
 
 > 此 `template` 带有 `input` 输入框，不影响模板的使用，可配置隐藏；
 
 > 日期选择 input 组件支持直接输入指定日期；
 
-1. 引入`wxml`及`wxss`
+#### 1. 引入`wxml`及`wxss`
 ```xml
 // example.wxml
 <import src="../../template/datepicker/index.wxml"/>
@@ -140,38 +154,52 @@ Page(conf);
 @import '../../template/datepicker/index.wxss';
 ```
 
-2. 日期选择器初始化
+#### 2. 日期选择器初始化
 ```js
-import initDatepicker, { getSelectedDay, jumpToToday } from '../../template/datepicker/index';
+import initDatepicker from '../../template/datepicker/index';
 const conf = {
   onShow: function() {
-    // initDatepicker(); // 使用默认配置初始化日历选择器
-    initDatepicker({ // 自定义配置
-      // disablePastDay: true, // 是否禁选过去日期
-      // showInput: false, // 默认为 true
-      // placeholder: '请选择日期', // input 输入框
-      // type: 'normal', // [normal 普通单选模式(默认), timearea 时间段选择模式(待开发), multiSelect 多选模式(待完善)]
-      /**
-       * 选择日期后执行的事件
-       * @param { object } currentSelect 当前点击的日期
-       */
-      afterTapDay: (currentSelect) => {},
-      /**
-       * 日期点击事件（此事件会完全接管点击事件）
-       * @param { object } currentSelect 当前点击的日期
-       * @param {object} event 日期点击事件对象
-       */
-      onTapDay(currentSelect, event) {},
-    });
+    initDatepicker(); // 使用默认配置初始化日历选择器
   },
-  /**
-   * 跳转至今天
-   */
-  jump() {
-    jumpToToday();
-  }
 };
 Page(conf);
+```
+
+#### 3. 日期选择器配置
+
+```js
+  import initDatepicker from '../../template/datepicker/index';
+
+  const conf = {
+    disablePastDay: true, // 是否禁选过去日期
+    showInput: false, // 默认为 true
+    placeholder: '请选择日期', // input 输入框
+    type: 'normal', // [normal 普通单选模式(默认), timearea 时间段选择模式(待开发), multiSelect 多选模式(待完善)]
+
+    /**
+     * 选择日期后执行的事件
+     * @param { object } currentSelect 当前点击的日期
+     */
+    afterTapDay: (currentSelect) => {},
+
+    /**
+     * 日期点击事件（此事件会完全接管点击事件）
+     * @param { object } currentSelect 当前点击的日期
+     * @param {object} event 日期点击事件对象
+     */
+    onTapDay(currentSelect, event) {},
+  }
+
+  initDatepicker(conf);
+```
+
+#### 4. `jumpToToday()`，跳转至今天；
+
+```js
+import { getSelectedDay, jumpToToday } from '../../template/datepicker/index';
+
+jumpToToday();
+
 ```
 
 #### 日历模板效果图
@@ -181,5 +209,3 @@ Page(conf);
 #### 日期选择器效果图
 
 ![日期选择器](https://raw.githubusercontent.com/treadpit/wx_calendar/develop/screenshot/screenshow_datepicker.gif)
-
-欢迎反馈...
