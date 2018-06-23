@@ -367,7 +367,7 @@ const conf = {
     if (calendar.todoLabels) {
       // 过滤所有待办日期中当月有待办事项的日期
       shouldMarkerTodoDay = calendar.todoLabels.filter(item => {
-        return item.year === dYear && item.month === dMonth;
+        return +item.year === dYear && +item.month === dMonth;
       });
     }
     shouldMarkerTodoDay.forEach(item => {
@@ -376,13 +376,13 @@ const conf = {
         days.map((_item, idx) => {
           if (_item.day === item.day) {
             days[ idx ].hasTodo = true;
-            if (selectedDays[ 0 ].day === item.day) days[ idx ].showTodoLabel = true;
+            if (selectedDays[ 0 ].day === +item.day) days[ idx ].showTodoLabel = true;
           }
         });
       } else {
         days[ item.day - 1 ].hasTodo = true;
         // showTodoLabel 是否显示待办标记
-        if (selectedDays[ 0 ].day === item.day) days[ selectedDays[ 0 ].day - 1 ].showTodoLabel = true;
+        if (selectedDays[ 0 ].day === +item.day) days[ selectedDays[ 0 ].day - 1 ].showTodoLabel = true;
       }
     });
     if (days[ idx ].showTodoLabel) days[ idx ].showTodoLabel = false;
@@ -445,7 +445,7 @@ const conf = {
     if (!todos.length) return;
     const todoLabels = conf.filterTodos.call(this, todos);
     const { days, curYear, curMonth } = this.data.calendar;
-    const currentMonthTodoLabels = todoLabels.filter(item => curYear === item.year && curMonth === item.month);
+    const currentMonthTodoLabels = todoLabels.filter(item => curYear === +item.year && curMonth === +item.month);
     days.map(item => {
       item.showTodoLabel = false;
     });

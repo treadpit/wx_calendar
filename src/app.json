@@ -1,7 +1,7 @@
 {
   "pages":[
-    "pages/index/index",
     "pages/calendarTemplate/index",
+    "pages/index/index",
     "pages/calendar/index",
     "pages/datepickerTemplate/index"
   ],

@@ -29,19 +29,23 @@ const conf = {
        * 日历初次渲染完成后触发事件，如设置事件标记
        */
       afterCalendarRender() {
-        setTodoLabels({
-          pos: 'bottom',
-          dotColor: '#40',
-          days: [{
-            year: 2018,
-            month: 5,
-            day: 12,
-          }, {
-            year: 2018,
-            month: 5,
-            day: 15,
-          }],
-        });
+        const data = [{
+          year: '2018',
+          month: '6',
+          day: '15',
+        }, {
+          year: 2018,
+          month: 6,
+          day: 18,
+        }];
+        // 异步请求
+        setTimeout(() => {
+          setTodoLabels({
+            pos: 'bottom',
+            dotColor: '#40',
+            days: data,
+          });
+        }, 1000);
       },
     });
   },
