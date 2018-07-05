@@ -74,7 +74,18 @@ Page(conf);
   initCalendar(conf);
 ```
 
-#### 4. `jumpToToday()`，跳转至今天；
+#### 4. `jump()`，跳转至指定日期；
+
+```js
+  import { jump } from '../../template/calendar/index';
+
+  // 不传入参数则默认跳转至今天
+  jump();
+  // 入参必须为数字
+  jump(2018, 6); // 跳转至2018-6
+  jump(2018, 6, 6); // 跳转至2018-6-6
+
+```
 
 #### 5. 待办事项
 
