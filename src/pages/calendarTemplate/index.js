@@ -1,4 +1,4 @@
-import initCalendar, { getSelectedDay, jumpToToday, setTodoLabels, switchView } from '../../template/calendar/index';
+import initCalendar, { getSelectedDay, jump, setTodoLabels, switchView } from '../../template/calendar/index';
 const conf = {
   onShow: function() {
     initCalendar({
@@ -62,10 +62,11 @@ const conf = {
     }
   },
   /**
-   * 跳转至今天
+   * 跳转至指定日期
    */
-  jump() {
-    jumpToToday();
+  jumpto() {
+    // jump();
+    jump(2018, 7, 6);
   }
 };
 Page(conf);

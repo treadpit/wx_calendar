@@ -176,9 +176,9 @@ const conf = {
 	 * @param {number} month 月份
 	 */
   calculatePrevMonthGrids(year, month) {
+    let empytGrids = [];
     const prevMonthDays = conf.getThisMonthDays(year, month - 1);
     const firstDayOfWeek = conf.getFirstDayOfWeek(year, month);
-    let empytGrids = [];
     if (firstDayOfWeek > 0) {
       const len = prevMonthDays - firstDayOfWeek;
       for (let i = prevMonthDays; i > len; i--) {
@@ -199,9 +199,9 @@ const conf = {
 	 * @param {number} month  月份
 	 */
   calculateNextMonthGrids(year, month) {
+    let lastEmptyGrids = [];
     const thisMonthDays = conf.getThisMonthDays(year, month);
     const lastDayWeek = newDate(year, month, thisMonthDays).getDay();
-    let lastEmptyGrids = [];
     if (+lastDayWeek !== 6) {
       const len = 7 - (lastDayWeek + 1);
       for (let i = 1; i <= len; i++) {
@@ -225,12 +225,12 @@ const conf = {
     let days = [];
     const { todayTimestamp } = this.data.calendar;
     const thisMonthDays = conf.getThisMonthDays(year, month);
-    const selectedDay = this.data.calendar.selectedDay || [ {
+    const selectedDay = curDate ? [ {
       day: curDate,
       choosed: true,
       year,
       month,
-    } ];
+    } ] : this.data.calendar.selectedDay;
     for (let i = 1; i <= thisMonthDays; i++) {
       days.push({
         day: i,
@@ -335,10 +335,7 @@ const conf = {
       currentSelected = days[ idx ];
       selectedDays.push(currentSelected);
     }
-    if (onTapDay && typeof onTapDay === 'function') {
-      this.config.onTapDay(currentSelected, e);
-      return;
-    };
+    if (onTapDay && typeof onTapDay === 'function') return this.config.onTapDay(currentSelected, e);
     this.setData({
       'calendar.days': days,
       'calendar.selectedDay': selectedDays,
@@ -363,9 +360,7 @@ const conf = {
     }
     if (calendar.todoLabels) {
       // 过滤所有待办日期中当月有待办事项的日期
-      shouldMarkerTodoDay = calendar.todoLabels.filter(item => {
-        return +item.year === dYear && +item.month === dMonth;
-      });
+      shouldMarkerTodoDay = calendar.todoLabels.filter(item => +item.year === dYear && +item.month === dMonth);
     }
     shouldMarkerTodoDay.forEach(item => {
       // hasTodo 是否有待办事项
@@ -385,10 +380,7 @@ const conf = {
     if (days[ idx ].showTodoLabel) days[ idx ].showTodoLabel = false;
     days[ idx ].choosed = true;
     currentSelected = days[ idx ];
-    if (onTapDay && typeof onTapDay === 'function') {
-      this.config.onTapDay(currentSelected, e);
-      return;
-    };
+    if (onTapDay && typeof onTapDay === 'function') return this.config.onTapDay(currentSelected, e);
     this.setData({
       'calendar.days': days,
       'calendar.selectedDay': [ currentSelected ],
@@ -400,10 +392,7 @@ const conf = {
    */
   setTodoLabels(options = {}) {
     const { calendar } = this.data;
-    if (!calendar || !calendar.days) {
-      console.error('请等待日历初始化完成后再调用该方法');
-      return;
-    }
+    if (!calendar || !calendar.days) return console.error('请等待日历初始化完成后再调用该方法');
     const days = calendar.days.slice();
     const { year, month } = days[ 0 ];
     const { days: todoDays = [], pos = 'bottom', dotColor = '' } = options;
@@ -438,8 +427,7 @@ const conf = {
    * @param {array} todos  需要删除待办标记的日期
    */
   deleteTodoLabels(todos) {
-    if (!(todos instanceof Array)) return;
-    if (!todos.length) return;
+    if (!(todos instanceof Array) || !todos.length) return;
     const todoLabels = conf.filterTodos.call(this, todos);
     const { days, curYear, curMonth } = this.data.calendar;
     const currentMonthTodoLabels = todoLabels.filter(item => curYear === +item.year && curMonth === +item.month);
@@ -515,10 +503,10 @@ const conf = {
    */
   updateCurrYearAndMonth(type) {
     let { days, curYear, curMonth } = this.data.calendar;
-    const { month: firstMonth, year: firstYear } = days[ 0 ];
-    const { month: lastMonth, year: lastYear } = days[ days.length - 1 ];
     let Uyear = curYear;
     let Umonth = curMonth;
+    const { month: firstMonth, year: firstYear } = days[ 0 ];
+    const { month: lastMonth, year: lastYear } = days[ days.length - 1 ];
     if (firstMonth !== lastMonth) {
       if (type === 'prev') {
         curYear = firstYear;
@@ -707,17 +695,17 @@ const conf = {
   selectedDayWeekAllDays(currentDay) {
     let { days, curYear, curMonth } = this.data.calendar;
     let { year, month, day } = currentDay;
+    let lastWeekDays = conf.lastWeekInMonth.call(this, year, month);
+    let empytGrids = [];
+    let lastEmptyGrids = [];
+    const firstWeekDays = conf.firstWeekInMonth.call(this, year, month);
     // 判断选中日期的月份是否与当前月份一致
     if (curYear !== year || curMonth !== month) day = 1;
     if (curYear !== year) year = curYear;
     if (curMonth !== month) month = curMonth;
-    const firstWeekDays = conf.firstWeekInMonth.call(this, year, month);
-    let lastWeekDays = conf.lastWeekInMonth.call(this, year, month);
-    let empytGrids = [];
-    let lastEmptyGrids = [];
     if (firstWeekDays.find(item => item.day === day)) { // 当前选择的日期为该月第一周
-      const lastDayInThisMonth = conf.getThisMonthDays(year, month);
       let temp = [];
+      const lastDayInThisMonth = conf.getThisMonthDays(year, month);
       const { Uyear, Umonth } = conf.updateCurrYearAndMonth.call(this, 'prev');
       curYear = Uyear;
       curMonth = Umonth;
@@ -805,10 +793,24 @@ export const getSelectedDay = () => {
   return self.data.calendar.selectedDay;
 };
 /**
- * 跳转至今天
+ * 跳转至指定日期
  */
-export const jumpToToday = () => {
+export const jump = (year, month, day) => {
   const self = _getCurrentPage();
+  const { selectedDay } = self.data.calendar;
+  if (+selectedDay[ 0 ].year === +year && +selectedDay[ 0 ].month === +month && +selectedDay[ 0 ].day === +day) return;
+  if (year && month) {
+    if (typeof (+year) !== 'number' || typeof (+month) !== 'number') return console.error('jump 函数年月日参数必须为数字');
+    let tmp = {
+      'calendar.curYear': year,
+      'calendar.curMonth': month,
+    };
+    self.setData(tmp, () => {
+      if (typeof (+day) === 'number') return conf.renderCalendar.call(self, year, month, day);
+      conf.renderCalendar.call(self, year, month);
+    });
+    return;
+  }
   conf.jumpToToday.call(self);
 };
 
