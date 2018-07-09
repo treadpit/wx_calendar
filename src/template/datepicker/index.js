@@ -194,19 +194,46 @@ const conf = {
     this.setData(tmp);
   },
   /**
+	 * 跳转至今天
+	 */
+  jumpToToday() {
+    const date = new Date();
+    const curYear = date.getFullYear();
+    const curMonth = date.getMonth() + 1;
+    const curDate = date.getDate();
+    conf.renderCalendar.call(this, curYear, curMonth, curDate);
+  },
+  /**
+   * 渲染日历
+   * @param {number} year
+   * @param {number} month
+   * @param {number} day
+   */
+  renderCalendar(year, month, day) {
+    const timestamp = new Date(`${year}-${month}-${day}`).getTime();
+    this.setData({
+      'datepicker.curYear': year,
+      'datepicker.curMonth': month,
+      'datepicker.todayTimestamp': timestamp,
+    });
+    conf.calculateEmptyGrids.call(this, year, month);
+    conf.calculateDays.call(this, year, month, day);
+  },
+  /**
 	 * 初始化日历选择器
 	 * @param {number} curYear
 	 * @param {number} curMonth
 	 * @param {number} curDate
 	 */
-  init(curYear = 2018, curMonth = 1, curDate = 1) {
+  init(curYear, curMonth, curDate) {
     const self = _getCurrentPage();
     const weeksCh = [ '日', '一', '二', '三', '四', '五', '六' ];
     self.setData({
       'datepicker.weeksCh': weeksCh,
       'datepicker.showDatePicker': true,
     });
-    conf.jumpToToday.call(self);
+    if (!curYear && !curMonth && !curDate) return conf.jumpToToday.call(self);
+    conf.renderCalendar.call(self, curYear, curMonth, curDate);
   },
   /**
 	 * 点击输入框调起日历选择器
@@ -226,9 +253,9 @@ const conf = {
 	 * @param {object} e  事件对象
 	 */
   onInputDate(e) {
+    const self = _getCurrentPage();
     this.inputTimer && clearTimeout(this.inputTimer);
     this.inputTimer = setTimeout(() => {
-      console.log(e);
       const v = e.detail.value;
       const _v = (v && v.split('-')) || [];
       const RegExpYear = /^\d{4}$/;
@@ -236,7 +263,7 @@ const conf = {
       const RegExpDay = /^(([0]?[1-9])|([1-2][0-9])|(3[0-1]))$/;
       if (_v && _v.length === 3) {
         if (RegExpYear.test(_v[ 0 ]) && RegExpMonth.test(_v[ 1 ]) && RegExpDay.test(_v[ 2 ])) {
-          conf.init(+_v[ 0 ], +_v[ 1 ], +_v[ 2 ]);
+          conf.renderCalendar.call(self, +_v[ 0 ], +_v[ 1 ], +_v[ 2 ]);
         }
       }
     }, 500);
@@ -358,23 +385,6 @@ const conf = {
     if (isRightSlide.call(this, e)) {
       conf.choosePrevMonth.call(this);
     }
-  },
-  /**
-	 * 跳转至今天
-	 */
-  jumpToToday() {
-    const date = new Date();
-    const curYear = date.getFullYear();
-    const curMonth = date.getMonth() + 1;
-    const curDate = date.getDate();
-    const timestamp = new Date(`${curYear}-${curMonth}-${curDate}`).getTime();
-    this.setData({
-      'datepicker.curYear': curYear,
-      'datepicker.curMonth': curMonth,
-      'datepicker.todayTimestamp': timestamp,
-    });
-    conf.calculateEmptyGrids.call(this, curYear, curMonth);
-    conf.calculateDays.call(this, curYear, curMonth, curDate);
   },
 };
 
