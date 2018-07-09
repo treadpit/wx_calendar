@@ -33,4 +33,4 @@ Page(conf);
 
 ### 日期选择器效果图
 
-![日期选择器](https://raw.githubusercontent.com/treadpit/wx_calendar/develop/screenshot/screenshow_datepicker.gif)
+![日期选择器](https://raw.githubusercontent.com/treadpit/wx_calendar/develop/screenshot/screenshot_datepicker.gif)
