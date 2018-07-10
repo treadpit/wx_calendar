@@ -297,7 +297,7 @@ const conf = {
     let currentSelected = {}; // 当前选中日期
     let { days, selectedDay: selectedDays } = this.data.calendar || []; // 所有选中日期
     const config = this.config;
-    const { multi, afterTapDay, onTapDay } = config;
+    const { multi, onTapDay } = config;
     const opts = {
       e,
       idx,
@@ -311,6 +311,10 @@ const conf = {
     } else {
       conf.whenSingleSelect.call(this, opts);
     }
+  },
+  afterTapDay(currentSelected, selectedDays) {
+    const config = this.config;
+    const { multi, afterTapDay } = config;
     if (afterTapDay && typeof afterTapDay === 'function') {
       if (!multi) {
         config.afterTapDay(currentSelected);
@@ -340,6 +344,7 @@ const conf = {
       'calendar.days': days,
       'calendar.selectedDay': selectedDays,
     });
+    conf.afterTapDay.call(this, currentSelected, selectedDays);
   },
   /**
    * 多选
@@ -385,6 +390,7 @@ const conf = {
       'calendar.days': days,
       'calendar.selectedDay': [ currentSelected ],
     });
+    conf.afterTapDay.call(this, currentSelected);
   },
   /**
    * 设置代办事项标志
