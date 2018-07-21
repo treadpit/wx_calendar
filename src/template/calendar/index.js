@@ -711,7 +711,7 @@ const conf = {
     if (curMonth !== month) month = curMonth;
     if (firstWeekDays.find(item => item.day === day)) { // 当前选择的日期为该月第一周
       let temp = [];
-      const lastDayInThisMonth = conf.getThisMonthDays(year, month);
+      const lastDayInThisMonth = conf.getThisMonthDays(year, month - 1);
       const { Uyear, Umonth } = conf.updateCurrYearAndMonth.call(this, 'prev');
       curYear = Uyear;
       curMonth = Umonth;
@@ -766,7 +766,7 @@ const conf = {
     } else {
       this.weekMode = false;
       let { year, month, day } = currentDay;
-      if (curMonth !== year || curMonth !== month) day = 1;
+      if (curYear !== year || curMonth !== month) day = 1;
       conf.renderCalendar.call(this, curYear, curMonth, day);
     }
   },
