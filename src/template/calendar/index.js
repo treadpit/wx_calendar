@@ -223,7 +223,7 @@ const conf = {
 	 */
   calculateDays(year, month, curDate) {
     let days = [];
-    const { todayTimestamp } = this.data.calendar;
+    const { todayTimestamp, disableDays = [] } = this.data.calendar;
     const thisMonthDays = conf.getThisMonthDays(year, month);
     const selectedDay = curDate ? [ {
       day: curDate,
@@ -240,11 +240,13 @@ const conf = {
       });
     }
     const selectedDayCol = selectedDay.map(d => `${d.year}-${d.month}-${d.day}`);
+    const disableDaysCol = disableDays.map(d => `${d.year}-${d.month}-${d.day}`);
     days.map(item => {
       const cur = `${item.year}-${item.month}-${item.day}`;
       if (selectedDayCol.indexOf(cur) !== -1) item.choosed = true;
       const timestamp = newDate(item.year, item.month, item.day).getTime();
-      if (this.config.disablePastDay && (timestamp - todayTimestamp < 0)) item.disable = true;
+      if (disableDaysCol.indexOf(cur) !== -1) item.disable = true;
+      if (this.config.disablePastDay && (timestamp - todayTimestamp < 0) && !item.disable) item.disable = true;
     });
     const tmp = { 'calendar.days': days };
     if (curDate) {
@@ -770,6 +772,24 @@ const conf = {
       conf.renderCalendar.call(this, curYear, curMonth, day);
     }
   },
+  /**
+   * 禁用指定日期
+   * @param {array} days  禁用
+   */
+  disableDays(data) {
+    const { disableDays = [], days } = this.data.calendar;
+    if (Object.prototype.toString.call(data) !== '[object Array]') return console.error('disableDays 参数为数组');
+    const _disableDays = data.concat(disableDays);
+    const disableDaysCol = _disableDays.map(d => `${d.year}-${d.month}-${d.day}`);
+    days.map(item => {
+      const cur = `${item.year}-${item.month}-${item.day}`;
+      if (disableDaysCol.indexOf(cur) !== -1) item.disable = true;
+    });
+    this.setData({
+      'calendar.days': days,
+      'calendar.disableDays': _disableDays,
+    });
+  },
 };
 
 /**
@@ -852,6 +872,17 @@ export const clearTodoLabels = () => {
 export const switchView = (view) => {
   const self = _getCurrentPage();
   conf.switchWeek.call(self, view);
+};
+/**
+ * 禁用指定日期
+ * @param {array} days 日期
+ * @param {number} [days.year]
+ * @param {number} [days.month]
+ * @param {number} [days.day]
+ */
+export const disableDay = (days = []) => {
+  const self = _getCurrentPage();
+  conf.disableDays.call(self, days);
 };
 
 export default (config = {}) => {
