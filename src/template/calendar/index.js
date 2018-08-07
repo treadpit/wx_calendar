@@ -402,16 +402,20 @@ const conf = {
     const { calendar } = this.data;
     if (!calendar || !calendar.days) return console.error('请等待日历初始化完成后再调用该方法');
     const days = calendar.days.slice();
-    const { year, month } = days[ 0 ];
+    const { curYear, curMonth } = calendar;
     const { days: todoDays = [], pos = 'bottom', dotColor = '' } = options;
     const { todoLabels = [], todoLabelPos, todoLabelColor } = calendar;
-    const shouldMarkerTodoDay = todoDays.filter(item => +item.year === year && +item.month === month);
+    const shouldMarkerTodoDay = todoDays.filter(item => +item.year === curYear && +item.month === curMonth);
     if ((!shouldMarkerTodoDay || !shouldMarkerTodoDay.length) && !todoLabels.length) return;
-    let temp = [];
-    let currentMonthTodoLabels = todoLabels.filter(item => +item.year === year && +item.month === month);
+    let currentMonthTodoLabels = todoLabels.filter(item => +item.year === curYear && +item.month === curMonth);
     shouldMarkerTodoDay.concat(currentMonthTodoLabels).forEach((item) => {
-      temp.push(days[ item.day - 1 ]);
-      days[ item.day - 1 ].showTodoLabel = !days[ item.day - 1 ].choosed;
+      let target = {};
+      if (this.weekMode) {
+        target = days.find(d => +d.day === +item.day);
+      } else {
+        target = days[ item.day - 1 ];
+      }
+      if (target) target.showTodoLabel = !target.choosed;
     });
     const o = {
       'calendar.days': days,
@@ -593,14 +597,16 @@ const conf = {
    */
   initSelectedDay(days) {
     const daysCopy = days.slice();
-    const { selectedDay } = this.data.calendar;
+    const { selectedDay = [], todoLabels = [] } = this.data.calendar;
     const selectedDayStr = selectedDay.map(item => `${item.year}+${item.month}+${item.day}`);
+    const todoLabelsCol = todoLabels.map(d => `${d.year}-${d.month}-${d.day}`);
     daysCopy.map(item => {
       if (selectedDayStr.indexOf(`${item.year}+${item.month}+${item.day}`) !== -1) {
         item.choosed = true;
       } else {
         item.choosed = false;
       }
+      if (todoLabelsCol.indexOf(`${item.year}-${item.month}-${item.day}`) !== -1) item.showTodoLabel = !item.choosed;
     });
     return daysCopy;
   },
