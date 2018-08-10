@@ -830,7 +830,7 @@ export const getSelectedDay = () => {
 export const jump = (year, month, day) => {
   const self = _getCurrentPage();
   const { selectedDay } = self.data.calendar;
-  if (+selectedDay[ 0 ].year === +year && +selectedDay[ 0 ].month === +month && +selectedDay[ 0 ].day === +day) return;
+  if (selectedDay && +selectedDay[ 0 ].year === +year && +selectedDay[ 0 ].month === +month && +selectedDay[ 0 ].day === +day) return;
   if (year && month) {
     if (typeof (+year) !== 'number' || typeof (+month) !== 'number') return console.error('jump 函数年月日参数必须为数字');
     let tmp = {
@@ -894,11 +894,25 @@ export const disableDay = (days = []) => {
 export default (config = {}) => {
   const weeksCh = [ '日', '一', '二', '三', '四', '五', '六' ];
   const functionArray = [ 'tapDayItem', 'choosePrevMonth', 'chooseNextMonth', 'calendarTouchstart', 'calendarTouchmove' ];
+  // const defaultTheme = {
+  //   color: '#88d2ac', // 日期色值
+  //   choosedColor: '#ff629a', // 日期选择色值
+  //   headColor: '#ff629a', // 年月及星期色值
+  // };
+  // if (!config.theme || typeof config.theme !== 'object') config.theme = {};
+  // const tmpTheme = Object.assign({}, defaultTheme, config.theme);
   const self = _getCurrentPage();
   self.config = config;
   self.setData({
     'calendar.weeksCh': weeksCh,
+    // 'calendar.theme': tmpTheme,
   });
-  conf.jumpToToday.call(self);
+  if (config.defaultDay && typeof config.defaultDay === 'string') {
+    const day = config.defaultDay.split('-');
+    if (day.length < 3) return console.error('配置 jumpTo 格式应为: 2018-4-2 或 2018-04-02');
+    jump(+day[0], +day[1], +day[2]);
+  } else {
+    conf.jumpToToday.call(self);
+  }
   bindFunctionToPage.call(self, functionArray);
 };
