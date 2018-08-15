@@ -141,7 +141,7 @@ disableDay([{
 import { enableDay } from '../../template/calendar/index';
 
 enableArea(['2018-8-12', '2018-08-30']);
-``
+```
 
 #### 8. 周月视图切换
 

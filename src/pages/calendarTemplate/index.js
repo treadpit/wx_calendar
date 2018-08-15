@@ -1,4 +1,4 @@
-import initCalendar, { getSelectedDay, jump, setTodoLabels, switchView, enableArea } from '../../template/calendar/index';
+import initCalendar, { getSelectedDay, setTodoLabels } from '../../template/calendar/index';
 const conf = {
   onShow: function() {
     initCalendar({
@@ -50,25 +50,5 @@ const conf = {
       },
     });
   },
-  /**
-   * 周、月视图切换
-   */
-  switchView() {
-    // if (!this.weekView) {
-    //   this.weekView = true;
-    //   switchView('week');
-    // } else {
-    //   this.weekView = false;
-    //   switchView('month');
-    // }
-    enableArea(['2018-8-12', '2018-8-19']);
-  },
-  /**
-   * 跳转至指定日期
-   */
-  jumpto() {
-    // jump();
-    jump(2018, 7, 6);
-  }
 };
 Page(conf);
