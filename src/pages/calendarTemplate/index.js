@@ -1,9 +1,10 @@
-import initCalendar, { getSelectedDay, jump, setTodoLabels, switchView } from '../../template/calendar/index';
+import initCalendar, { getSelectedDay, jump, setTodoLabels, switchView, enableArea } from '../../template/calendar/index';
 const conf = {
   onShow: function() {
     initCalendar({
       // multi: true, // 是否开启多选,
       // disablePastDay: true, // 是否禁选过去日期
+      // defaultDay: '2018-3-6', // 初始化日历时指定默认选中日期，如：'2018-3-6' 或 '2018-03-06'
       /**
        * 选择日期后执行的事件
        * @param { object } currentSelect 当前点击的日期
@@ -53,13 +54,14 @@ const conf = {
    * 周、月视图切换
    */
   switchView() {
-    if (!this.weekView) {
-      this.weekView = true;
-      switchView('week');
-    } else {
-      this.weekView = false;
-      switchView('month');
-    }
+    // if (!this.weekView) {
+    //   this.weekView = true;
+    //   switchView('week');
+    // } else {
+    //   this.weekView = false;
+    //   switchView('month');
+    // }
+    enableArea(['2018-8-12', '2018-8-19']);
   },
   /**
    * 跳转至指定日期
