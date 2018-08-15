@@ -223,7 +223,7 @@ const conf = {
 	 */
   calculateDays(year, month, curDate) {
     let days = [];
-    const { todayTimestamp, disableDays = [] } = this.data.calendar;
+    const { todayTimestamp, disableDays = [], enableArea = [] } = this.data.calendar;
     const thisMonthDays = conf.getThisMonthDays(year, month);
     const selectedDay = curDate ? [ {
       day: curDate,
@@ -246,6 +246,10 @@ const conf = {
       if (selectedDayCol.indexOf(cur) !== -1) item.choosed = true;
       const timestamp = newDate(item.year, item.month, item.day).getTime();
       if (disableDaysCol.indexOf(cur) !== -1) item.disable = true;
+      if (+enableArea[0] > +timestamp || +timestamp > +enableArea[1]) {
+        item.disable = true;
+        item.choosed = false;
+      }
       if (this.config.disablePastDay && (timestamp - todayTimestamp < 0) && !item.disable) item.disable = true;
     });
     const tmp = { 'calendar.days': days };
@@ -353,11 +357,11 @@ const conf = {
    * @param {object} opts
    */
   whenSingleSelect(opts = {}) {
-    let { currentSelected, selectedDays } = opts;
+    let { currentSelected, selectedDays = [] } = opts;
     let shouldMarkerTodoDay = [];
     const { days, idx, onTapDay, e } = opts;
-    const { month: sMonth, year: sYear } = selectedDays[ 0 ];
-    const { month: dMonth, year: dYear } = days[ 0 ];
+    const { month: sMonth, year: sYear } = selectedDays[ 0 ] || {};
+    const { month: dMonth, year: dYear } = days[ 0 ] || {};
     const { calendar = {} } = this.data;
     if ((sMonth === dMonth && sYear === dYear) && !this.weekMode) days[ selectedDays[ 0 ].day - 1 ].choosed = false;
     if (this.weekMode) {
@@ -891,6 +895,39 @@ export const disableDay = (days = []) => {
   conf.disableDays.call(self, days);
 };
 
+export const enableArea = (area = []) => {
+  if (area.length === 2) {
+    const start = area[0].split('-');
+    const end = area[1].split('-');
+    const startTimestamp = newDate(start[0], start[1], start[2]).getTime();
+    const endTimestamp = newDate(end[0], end[1], end[2]).getTime();
+    if (startTimestamp > endTimestamp) {
+      console.error('enableArea()参数最小日期大于了最大日期');
+    } else {
+      const self = _getCurrentPage();
+      let { days = [], selectedDay = [] } = self.data.calendar;
+      const daysCopy = days.slice();
+      daysCopy.map(item => {
+        const timestamp = newDate(item.year, item.month, item.day).getTime();
+        if (+startTimestamp > +timestamp || +timestamp > +endTimestamp) {
+          item.disable = true;
+          if (item.choosed) {
+            item.choosed = false;
+            selectedDay = selectedDay.filter(d => `${item.year}-${item.month}-${item.day}` !== `${d.year}-${d.month}-${d.day}`);
+          }
+        }
+      });
+      self.setData({
+        'calendar.days': daysCopy,
+        'calendar.selectedDay': selectedDay,
+        'calendar.enableArea': [startTimestamp, endTimestamp],
+      });
+    }
+  } else {
+    console.error('enableArea()参数需为时间范围数组，形如：["2018-8-4" , "2018-8-24"]');
+  }
+};
+
 export default (config = {}) => {
   const weeksCh = [ '日', '一', '二', '三', '四', '五', '六' ];
   const functionArray = [ 'tapDayItem', 'choosePrevMonth', 'chooseNextMonth', 'calendarTouchstart', 'calendarTouchmove' ];
@@ -915,4 +952,5 @@ export default (config = {}) => {
     conf.jumpToToday.call(self);
   }
   bindFunctionToPage.call(self, functionArray);
+  console.log('--- 使用中若遇问题 ---，请反馈至 https://github.com/treadpit/wx_calendar/issues ✍️');
 };

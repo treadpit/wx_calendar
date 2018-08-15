@@ -134,7 +134,16 @@ disableDay([{
 }]);
 ```
 
-#### 7. 周月视图切换
+
+#### 7. 指定可选日期范围
+
+```js
+import { enableDay } from '../../template/calendar/index';
+
+enableArea(['2018-8-12', '2018-08-30']);
+```
+
+#### 8. 周月视图切换
 
 `switchView('week')`，默认值为'month'；
 
