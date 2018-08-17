@@ -1,28 +1,21 @@
-let info;
-
-function getSystemInfo() {
-  if (info) return info;
-  info = wx.getSystemInfoSync();
-  return info;
-}
-
-export function isIos() {
-  const sys = getSystemInfo();
-  return /iphone|ios/i.test(sys.platform);
+function newDate(year, month, day) {
+  return new Date(year, month, day);
 }
 
 /**
- * new Date 区分平台
- * @param {number} year
- * @param {number} month
- * @param {number} day
+ *  todo 数组去重
+ * @param {array} array todo 数组
  */
-function newDate(year, month, day) {
-  let cur = `${year}-${month}-${day}`;
-  if (isIos()) {
-    cur = `${year}/${month}/${day}`;
+function uniqueTodoLabels(array = []) {
+  let uniqueObject = {};
+  let uniqueArray = [];
+  array.forEach(item => {
+    uniqueObject[ `${item.year}-${item.month}-${item.day}` ] = item;
+  });
+  for (let i in uniqueObject) {
+    uniqueArray.push(uniqueObject[ i ]);
   }
-  return new Date(cur);
+  return uniqueArray;
 }
 
 /**
@@ -101,21 +94,6 @@ export function isRightSlide(e) {
       return false;
     }
   }
-}
-/**
- *  todo 数组去重
- * @param {array} array todo 数组
- */
-function uniqueTodoLabels(array = []) {
-  let uniqueObject = {};
-  let uniqueArray = [];
-  array.forEach(item => {
-    uniqueObject[ `${item.year}-${item.month}-${item.day}` ] = item;
-  });
-  for (let i in uniqueObject) {
-    uniqueArray.push(uniqueObject[ i ]);
-  }
-  return uniqueArray;
 }
 
 const conf = {
@@ -246,7 +224,7 @@ const conf = {
       if (selectedDayCol.indexOf(cur) !== -1) item.choosed = true;
       const timestamp = newDate(item.year, item.month, item.day).getTime();
       if (disableDaysCol.indexOf(cur) !== -1) item.disable = true;
-      if (+enableArea[0] > +timestamp || +timestamp > +enableArea[1]) {
+      if (+enableArea[ 0 ] > +timestamp || +timestamp > +enableArea[ 1 ]) {
         item.disable = true;
         item.choosed = false;
       }
@@ -810,6 +788,7 @@ function _getCurrentPage() {
   const last = pages.length - 1;
   return pages[ last ];
 }
+
 /**
  * 绑定函数到当前页面实例上
  * @param {array} functionArray 函数数组
@@ -828,6 +807,7 @@ export const getSelectedDay = () => {
   const self = _getCurrentPage();
   return self.data.calendar.selectedDay;
 };
+
 /**
  * 跳转至指定日期
  */
@@ -879,10 +859,15 @@ export const clearTodoLabels = () => {
   conf.clearTodoLabels.call(self);
 };
 
+/**
+ * 切换周月视图
+ * @param {string} view 视图模式[week, month]
+ */
 export const switchView = (view) => {
   const self = _getCurrentPage();
   conf.switchWeek.call(self, view);
 };
+
 /**
  * 禁用指定日期
  * @param {array} days 日期
@@ -895,12 +880,22 @@ export const disableDay = (days = []) => {
   conf.disableDays.call(self, days);
 };
 
+/**
+ * 指定可选日期范围
+ * @param {array} area 日期访问数组
+ */
 export const enableArea = (area = []) => {
   if (area.length === 2) {
-    const start = area[0].split('-');
-    const end = area[1].split('-');
-    const startTimestamp = newDate(start[0], start[1], start[2]).getTime();
-    const endTimestamp = newDate(end[0], end[1], end[2]).getTime();
+    const start = area[ 0 ].split('-');
+    const end = area[ 1 ].split('-');
+    const startTimestamp = newDate(start[ 0 ], start[ 1 ], start[ 2 ]).getTime();
+    const endTimestamp = newDate(end[ 0 ], end[ 1 ], end[ 2 ]).getTime();
+    const startMonthDays = conf.getThisMonthDays(start[ 0 ], start[ 1 ]);
+    const endMonthDays = conf.getThisMonthDays(end[ 0 ], end[ 1 ]);
+    if (start[ 2 ] > startMonthDays || start[ 2 ] < 1) return console.error('enableArea() 开始日期错误，指定日期不在当前月份天数范围内');
+    if (start[ 1 ] > 12 || start[ 1 ] < 1) return console.error('enableArea() 开始日期错误，月份超出1-12月份');
+    if (end[ 2 ] > endMonthDays || end[ 2 ] < 1) return console.error('enableArea() 截止日期错误，指定日期不在当前月份天数范围内');
+    if (end[ 1 ] > 12 || end[ 1 ] < 1) return console.error('enableArea() 截止日期错误，月份超出1-12月份');
     if (startTimestamp > endTimestamp) {
       console.error('enableArea()参数最小日期大于了最大日期');
     } else {
@@ -920,7 +915,7 @@ export const enableArea = (area = []) => {
       self.setData({
         'calendar.days': daysCopy,
         'calendar.selectedDay': selectedDay,
-        'calendar.enableArea': [startTimestamp, endTimestamp],
+        'calendar.enableArea': [ startTimestamp, endTimestamp ],
       });
     }
   } else {
@@ -947,7 +942,7 @@ export default (config = {}) => {
   if (config.defaultDay && typeof config.defaultDay === 'string') {
     const day = config.defaultDay.split('-');
     if (day.length < 3) return console.error('配置 jumpTo 格式应为: 2018-4-2 或 2018-04-02');
-    jump(+day[0], +day[1], +day[2]);
+    jump(+day[ 0 ], +day[ 1 ], +day[ 2 ]);
   } else {
     conf.jumpToToday.call(self);
   }
