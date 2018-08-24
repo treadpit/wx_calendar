@@ -179,7 +179,7 @@ const conf = {
   calculateNextMonthGrids(year, month) {
     let lastEmptyGrids = [];
     const thisMonthDays = conf.getThisMonthDays(year, month);
-    const lastDayWeek = newDate(year, month, thisMonthDays).getDay();
+    const lastDayWeek = conf.getDayOfWeek(year, month, thisMonthDays);
     if (+lastDayWeek !== 6) {
       const len = 7 - (lastDayWeek + 1);
       for (let i = 1; i <= len; i++) {
