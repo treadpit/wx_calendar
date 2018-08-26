@@ -203,12 +203,18 @@ const conf = {
     let days = [];
     const { todayTimestamp, disableDays = [], enableArea = [] } = this.data.calendar;
     const thisMonthDays = conf.getThisMonthDays(year, month);
-    const selectedDay = curDate ? [ {
-      day: curDate,
-      choosed: true,
-      year,
-      month,
-    } ] : this.data.calendar.selectedDay;
+    let selectedDay = [];
+    if (this.config.defaultDay !== undefined && !this.config.defaultDay) {
+      selectedDay = [];
+      this.config.defaultDay = undefined;
+    } else {
+      selectedDay = curDate ? [ {
+        day: curDate,
+        choosed: true,
+        year,
+        month,
+      } ] : this.data.calendar.selectedDay;
+    }
     for (let i = 1; i <= thisMonthDays; i++) {
       days.push({
         day: i,
@@ -247,11 +253,11 @@ const conf = {
       newYear = curYear - 1;
       newMonth = 12;
     }
-    conf.renderCalendar.call(this, newYear, newMonth);
     this.setData({
       'calendar.curYear': newYear,
       'calendar.curMonth': newMonth,
     });
+    conf.renderCalendar.call(this, newYear, newMonth);
   },
   /**
    * 选择下一月
@@ -265,11 +271,11 @@ const conf = {
       newYear = curYear + 1;
       newMonth = 1;
     }
-    conf.renderCalendar.call(this, newYear, newMonth);
     this.setData({
       'calendar.curYear': newYear,
       'calendar.curMonth': newMonth
     });
+    conf.renderCalendar.call(this, newYear, newMonth);
   },
   /**
 	 * 选择具体日期
@@ -357,13 +363,13 @@ const conf = {
         days.map((_item, idx) => {
           if (+_item.day === +item.day) {
             days[ idx ].hasTodo = true;
-            if (+selectedDays[ 0 ].day === +item.day) days[ idx ].showTodoLabel = true;
+            if (selectedDays && selectedDays.length && +selectedDays[ 0 ].day === +item.day) days[ idx ].showTodoLabel = true;
           }
         });
       } else {
         days[ item.day - 1 ].hasTodo = true;
         // showTodoLabel 是否显示待办标记
-        if (+selectedDays[ 0 ].day === +item.day) days[ selectedDays[ 0 ].day - 1 ].showTodoLabel = true;
+        if (selectedDays && selectedDays.length && +selectedDays[ 0 ].day === +item.day) days[ selectedDays[ 0 ].day - 1 ].showTodoLabel = true;
       }
     });
     if (days[ idx ].showTodoLabel) days[ idx ].showTodoLabel = false;
