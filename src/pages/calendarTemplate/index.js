@@ -4,7 +4,7 @@ const conf = {
     initCalendar({
       // multi: true, // 是否开启多选,
       // disablePastDay: true, // 是否禁选过去日期
-      // defaultDay: '2018-3-6', // 初始化日历时指定默认选中日期，如：'2018-3-6' 或 '2018-03-06'
+      // defaultDay: '2018-8-8', // 初始化日历时指定默认选中日期，如：'2018-3-6' 或 '2018-03-06'
       /**
        * 选择日期后执行的事件
        * @param { object } currentSelect 当前点击的日期
@@ -32,11 +32,11 @@ const conf = {
       afterCalendarRender() {
         const data = [{
           year: '2018',
-          month: '6',
+          month: '8',
           day: '15',
         }, {
           year: 2018,
-          month: 6,
+          month: 8,
           day: 18,
         }];
         // 异步请求

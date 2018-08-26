@@ -42,7 +42,11 @@ import initCalendar from '../../template/calendar/index';
 const conf = { 
   multi: true, // 是否开启多选,
   disablePastDay: true, // 是否禁选过去的日期
-  defaultDay: '2018-3-6', // 初始化日历时指定默认选中日期，如：'2018-3-6' 或 '2018-03-06'
+  /**
+   * 初始化日历时指定默认选中日期，如：'2018-3-6' 或 '2018-03-06'
+   * 注意：若想初始化时不默认选中当天，则将该值配置为除 undefined 以外的其他非值即可，如：空字符串, 0 ,false等。
+  */
+  defaultDay: '2018-3-6',
   /**
    * 选择日期后执行的事件
    * @param { object } currentSelect 当前点击的日期
