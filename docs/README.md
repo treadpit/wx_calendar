@@ -86,12 +86,6 @@ jump(2018, 6, 6); // 跳转至2018-6-6
 import { getSelectedDay } from '../../template/calendar/index';
 
 console.log(getSelectedDay());
-// {
-//   choosed: true
-//   day: 13
-//   month: 9
-//   year: 2018
-// }
 ```
 
 #### 6. 待办事项
