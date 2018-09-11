@@ -80,9 +80,17 @@ jump(2018, 6); // 跳转至2018-6
 jump(2018, 6, 6); // 跳转至2018-6-6
 ```
 
-#### 5. 待办事项
+#### 5. 获取当前选择的日期
 
-##### 5.1 设置待办标记
+```js
+import { getSelectedDay } from '../../template/calendar/index';
+
+console.log(getSelectedDay());
+```
+
+#### 6. 待办事项
+
+##### 6.1 设置待办标记
 
 ```js
 import { setTodoLabels } from '../../template/calendar/index';
@@ -102,7 +110,7 @@ setTodoLabels({
  });
 ```
 
-##### 5.2 删除代办标记
+##### 6.2 删除代办标记
 
 ```js
 import { deleteTodoLabels } from '../../template/calendar/index';
@@ -118,7 +126,7 @@ deleteTodoLabels([{
 }]);
 ```
 
-##### 5.3 清空代办标记
+##### 6.3 清空代办标记
 
 ```js
 import { clearTodoLabels } from '../../template/calendar/index';
@@ -126,7 +134,7 @@ import { clearTodoLabels } from '../../template/calendar/index';
 clearTodoLabels();
 ```
 
-#### 6. 禁选指定日期
+#### 7. 禁选指定日期
 
 ```js
 import { disableDay } from '../../template/calendar/index';
@@ -139,7 +147,7 @@ disableDay([{
 ```
 
 
-#### 7. 指定可选日期范围
+#### 8. 指定可选日期范围
 
 ```js
 import { enableDay } from '../../template/calendar/index';
@@ -147,7 +155,7 @@ import { enableDay } from '../../template/calendar/index';
 enableArea(['2018-8-12', '2018-08-30']);
 ```
 
-#### 8. 周月视图切换
+#### 9. 周月视图切换
 
 `switchView('week')`，默认值为'month'；
 
