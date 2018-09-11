@@ -394,7 +394,6 @@ const conf = {
     const { days: todoDays = [], pos = 'bottom', dotColor = '' } = options;
     const { todoLabels = [], todoLabelPos, todoLabelColor } = calendar;
     const shouldMarkerTodoDay = todoDays.filter(item => +item.year === curYear && +item.month === curMonth);
-    if ((!shouldMarkerTodoDay || !shouldMarkerTodoDay.length) && !todoLabels.length) return;
     let currentMonthTodoLabels = todoLabels.filter(item => +item.year === curYear && +item.month === curMonth);
     shouldMarkerTodoDay.concat(currentMonthTodoLabels).forEach((item) => {
       let target = {};
