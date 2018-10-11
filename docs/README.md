@@ -54,6 +54,12 @@ const conf = {
    */
   afterTapDay: (currentSelect, allSelectedDays) => {},
   /**
+   * 当改变月份时触发
+   * @param { object } current 当前年月
+   * @param { object } next 切换后的年月
+   */
+  whenChangeMonth: (current, next) => {},
+  /**
    * 日期点击事件（此事件会完全接管点击事件）
    * @param { object } currentSelect 当前点击的日期
    * @param { object } event 日期点击事件对象
@@ -145,7 +151,6 @@ disableDay([{
   day: 31,
 }]);
 ```
-
 
 #### 8. 指定可选日期范围
 

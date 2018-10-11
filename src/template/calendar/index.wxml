@@ -10,8 +10,8 @@
 					<view class="next-handle box box-lr box-align-center box-pack-center">》</view>
 				</view>
 			</view>
-			<view class="weeks box box-lr box-pack-center box-align-center">
-				<view class="flex week fs28" wx:for="{{weeksCh}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
+			<view class="weeks box box-lr box-align-center">
+				<view class="week fs28" wx:for="{{weeksCh}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
 			</view>
 			<view class="days box box-lr box-wrap" bindtouchstart="calendarTouchstart" bindtouchmove="calendarTouchmove">
 				<view wx:if="{{empytGrids}}" class="grid disable-day-color box box-align-center box-pack-center"

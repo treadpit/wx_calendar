@@ -1,4 +1,4 @@
-import initCalendar, { getSelectedDay, setTodoLabels } from '../../template/calendar/index';
+import initCalendar, { getSelectedDay, setTodoLabels, disableDay } from '../../template/calendar/index';
 const conf = {
   onShow: function() {
     initCalendar({
@@ -16,6 +16,10 @@ const conf = {
         console.log('当前点击的日期是否有事件标记: ', currentSelect.hasTodo || false);
         allSelectedDays && console.log('选择的所有日期', allSelectedDays);
         console.log('getSelectedDay方法', getSelectedDay());
+      },
+      whenChangeMonth(current, next) {
+        // console.log(current);
+        // console.log(next);
       },
       /**
        * 日期点击事件（此事件会完全接管点击事件）
@@ -46,6 +50,7 @@ const conf = {
             dotColor: '#40',
             days: data,
           });
+          disableDay(1);
         }, 1000);
       },
     });
