@@ -54,7 +54,7 @@ const conf = {
    */
   afterTapDay: (currentSelect, allSelectedDays) => {},
   /**
-   * 当改变月份是触发
+   * 当改变月份时触发
    * @param { object } current 当前年月
    * @param { object } next 切换后的年月
    */
