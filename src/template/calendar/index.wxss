@@ -102,9 +102,11 @@
 
 .week {
   text-align: center;
+  line-height: 105rpx;
 }
 
-.grid {
+.grid,
+.week {
   width: 105rpx;
   height: 105rpx;
 }
