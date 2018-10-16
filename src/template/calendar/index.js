@@ -540,38 +540,27 @@ const conf = {
    */
   updateCurrYearAndMonth(type) {
     let { days, curYear, curMonth } = this.data.calendar;
-    let Uyear = curYear;
-    let Umonth = curMonth;
-    const { month: firstMonth, year: firstYear } = days[ 0 ];
-    const { month: lastMonth, year: lastYear } = days[ days.length - 1 ];
-    if (firstMonth !== lastMonth) {
-      if (type === 'prev') {
-        curYear = firstYear;
-        Umonth = firstMonth;
-      } else {
-        curYear = lastYear;
-        Umonth = lastMonth;
-      }
-    }
+    const { month: firstMonth } = days[ 0 ];
+    const { month: lastMonth } = days[ days.length - 1 ];
     const lastDayOfThisMonth = conf.getThisMonthDays(curYear, curMonth);
     const lastDayOfThisWeek = days[ days.length - 1 ];
     const firstDayOfThisWeek = days[ 0 ];
-    if ((lastDayOfThisMonth === +lastDayOfThisWeek.day || lastDayOfThisWeek.day + 7 > lastDayOfThisMonth) && type === 'next') {
-      Umonth = Umonth + 1;
-      if (Umonth > 12) {
-        Uyear = Uyear + 1;
-        Umonth = 12;
+    if ((lastDayOfThisWeek.day + 7 > lastDayOfThisMonth || (curMonth === firstMonth && firstMonth !== lastMonth)) && type === 'next') {
+      curMonth = curMonth + 1;
+      if (curMonth > 12) {
+        curYear = curYear + 1;
+        curMonth = 1;
       }
-    } else if (+firstDayOfThisWeek.day <= 7 && type === 'prev') {
-      Umonth = Umonth - 1;
-      if (Umonth <= 0) {
-        Uyear = Uyear - 1;
-        Umonth = 12;
+    } else if ((+firstDayOfThisWeek.day <= 7 || (curMonth === lastMonth && firstMonth !== lastMonth)) && type === 'prev') {
+      curMonth = curMonth - 1;
+      if (curMonth <= 0) {
+        curYear = curYear - 1;
+        curMonth = 12;
       }
     }
     return {
-      Uyear,
-      Umonth,
+      Uyear: curYear,
+      Umonth: curMonth,
     };
   },
   /**
