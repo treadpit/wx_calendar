@@ -155,7 +155,7 @@ disableDay([{
 #### 8. 指定可选日期范围
 
 ```js
-import { enableDay } from '../../template/calendar/index';
+import { enableArea } from '../../template/calendar/index';
 
 enableArea(['2018-8-12', '2018-08-30']);
 ```
