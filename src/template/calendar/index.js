@@ -1,5 +1,28 @@
+let info;
+
+function getSystemInfo() {
+  if (info) return info;
+  info = wx.getSystemInfoSync();
+  return info;
+}
+
+export function isIos() {
+  const sys = getSystemInfo();
+  return /iphone|ios/i.test(sys.platform);
+}
+
+/**
+ * new Date 区分平台
+ * @param {number} year
+ * @param {number} month
+ * @param {number} day
+ */
 function newDate(year, month, day) {
-  return new Date(year, month, day);
+  let cur = `${year}-${month}-${day}`;
+  if (isIos()) {
+    cur = `${year}/${month}/${day}`;
+  }
+  return new Date(cur);
 }
 
 /**
