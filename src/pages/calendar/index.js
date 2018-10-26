@@ -1,4 +1,3 @@
-
 let chooseYear = null;
 let chooseMonth = null;
 const conf = {
@@ -10,7 +9,7 @@ const conf = {
     const date = new Date();
     const curYear = date.getFullYear();
     const curMonth = date.getMonth() + 1;
-    const weeksCh = [ '日', '一', '二', '三', '四', '五', '六' ];
+    const weeksCh = ["日", "一", "二", "三", "四", "五", "六"];
     this.calculateEmptyGrids(curYear, curMonth);
     this.calculateDays(curYear, curMonth);
     this.setData({
@@ -63,7 +62,7 @@ const conf = {
     const handle = e.currentTarget.dataset.handle;
     const curYear = this.data.curYear;
     const curMonth = this.data.curMonth;
-    if (handle === 'prev') {
+    if (handle === "prev") {
       let newMonth = curMonth - 1;
       let newYear = curYear;
       if (newMonth < 1) {
@@ -98,9 +97,9 @@ const conf = {
   tapDayItem(e) {
     const idx = e.currentTarget.dataset.idx;
     const days = this.data.days;
-    days[ idx ].choosed = !days[ idx ].choosed;
+    days[idx].choosed = !days[idx].choosed;
     this.setData({
-      days,
+      days
     });
   },
   chooseYearAndMonth() {
@@ -117,10 +116,10 @@ const conf = {
     const idxYear = pickerYear.indexOf(curYear);
     const idxMonth = pickerMonth.indexOf(curMonth);
     this.setData({
-      pickerValue: [ idxYear, idxMonth ],
+      pickerValue: [idxYear, idxMonth],
       pickerYear,
       pickerMonth,
-      showPicker: true,
+      showPicker: true
     });
   },
   pickerChange(e) {
@@ -131,9 +130,9 @@ const conf = {
   tapPickerBtn(e) {
     const type = e.currentTarget.dataset.type;
     const o = {
-      showPicker: false,
+      showPicker: false
     };
-    if (type === 'confirm') {
+    if (type === "confirm") {
       o.curYear = chooseYear;
       o.curMonth = chooseMonth;
       this.calculateEmptyGrids(chooseYear, chooseMonth);
@@ -144,9 +143,9 @@ const conf = {
   },
   onShareAppMessage() {
     return {
-      title: '小程序日历',
-      desc: '还是新鲜的日历哟',
-      path: 'pages/index/index'
+      title: "小程序日历",
+      desc: "还是新鲜的日历哟",
+      path: "pages/index/index"
     };
   }
 };
