@@ -161,7 +161,7 @@
 }
 
 .right-triangle::after {
-  content: "";
+  content: '';
   display: block;
   width: 0;
   height: 0;
@@ -173,7 +173,7 @@
 }
 
 .left-triangle::before {
-  content: "";
+  content: '';
   display: block;
   width: 0;
   height: 0;

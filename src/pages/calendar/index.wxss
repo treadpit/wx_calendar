@@ -196,7 +196,7 @@ page {
 }
 
 .right-triangle::after {
-  content: "";
+  content: '';
   display: block;
   width: 0;
   height: 0;
@@ -208,7 +208,7 @@ page {
 }
 
 .left-triangle::before {
-  content: "";
+  content: '';
   display: block;
   width: 0;
   height: 0;
