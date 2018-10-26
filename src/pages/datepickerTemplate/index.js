@@ -1,7 +1,7 @@
 import initDatepicker, {
   getSelectedDay,
   jumpToToday
-} from "../../template/datepicker/index";
+} from '../../template/datepicker/index';
 const conf = {
   onShow: function() {
     initDatepicker({
@@ -14,8 +14,8 @@ const conf = {
        * @param { object } currentSelect 当前点击的日期
        */
       afterTapDay: currentSelect => {
-        console.log("当前点击的日期", currentSelect);
-        console.log("getSelectedDay方法", getSelectedDay());
+        console.log('当前点击的日期', currentSelect);
+        console.log('getSelectedDay方法', getSelectedDay());
       }
       /**
        * 日期点击事件（此事件会完全接管点击事件）

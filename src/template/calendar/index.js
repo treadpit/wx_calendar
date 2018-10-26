@@ -125,17 +125,17 @@ export function isRightSlide(e) {
 
 function warn(msg) {
   console.log(
-    "%cWarn: %c" + msg,
-    "color:#FF6600;font-weight:bold",
-    "color: #FF9933"
+    '%cWarn: %c' + msg,
+    'color:#FF6600;font-weight:bold',
+    'color: #FF9933'
   );
 }
 
 function tips(msg) {
   console.log(
-    "%cTips: %c" + msg,
-    "color:#00B200;font-weight:bold",
-    "color: #00CC33"
+    '%cTips: %c' + msg,
+    'color:#00B200;font-weight:bold',
+    'color: #00CC33'
   );
 }
 
@@ -176,12 +176,13 @@ const conf = {
     conf.calculateDays.call(this, curYear, curMonth, curDate);
     const { todoLabels } = this.data.calendar || {};
     const { afterCalendarRender } = this.config;
-    if (todoLabels && todoLabels instanceof Array)
+    if (todoLabels && todoLabels instanceof Array) {
       conf.setTodoLabels.call(this);
+    }
 
     if (
       afterCalendarRender &&
-      typeof afterCalendarRender === "function" &&
+      typeof afterCalendarRender === 'function' &&
       !this.firstRender
     ) {
       afterCalendarRender();
@@ -212,11 +213,11 @@ const conf = {
         empytGrids.push(i);
       }
       this.setData({
-        "calendar.empytGrids": empytGrids.reverse()
+        'calendar.empytGrids': empytGrids.reverse()
       });
     } else {
       this.setData({
-        "calendar.empytGrids": null
+        'calendar.empytGrids': null
       });
     }
   },
@@ -235,11 +236,11 @@ const conf = {
         lastEmptyGrids.push(i);
       }
       this.setData({
-        "calendar.lastEmptyGrids": lastEmptyGrids
+        'calendar.lastEmptyGrids': lastEmptyGrids
       });
     } else {
       this.setData({
-        "calendar.lastEmptyGrids": null
+        'calendar.lastEmptyGrids': null
       });
     }
   },
@@ -299,12 +300,13 @@ const conf = {
         this.config.disablePastDay &&
         timestamp - todayTimestamp < 0 &&
         !item.disable
-      )
+      ) {
         item.disable = true;
+      }
     });
-    const tmp = { "calendar.days": days };
+    const tmp = { 'calendar.days': days };
     if (curDate) {
-      tmp["calendar.selectedDay"] = selectedDay;
+      tmp['calendar.selectedDay'] = selectedDay;
     }
     this.setData(tmp);
   },
@@ -314,7 +316,7 @@ const conf = {
    */
   whenChangeMonth({ curYear, curMonth, newYear, newMonth }) {
     const { whenChangeMonth } = this.config || {};
-    if (typeof whenChangeMonth === "function") {
+    if (typeof whenChangeMonth === 'function') {
       whenChangeMonth(
         {
           year: curYear,
@@ -340,8 +342,8 @@ const conf = {
     }
     conf.whenChangeMonth.call(this, { curYear, curMonth, newYear, newMonth });
     this.setData({
-      "calendar.curYear": newYear,
-      "calendar.curMonth": newMonth
+      'calendar.curYear': newYear,
+      'calendar.curMonth': newMonth
     });
     conf.renderCalendar.call(this, newYear, newMonth);
   },
@@ -358,8 +360,8 @@ const conf = {
     }
     conf.whenChangeMonth.call(this, { curYear, curMonth, newYear, newMonth });
     this.setData({
-      "calendar.curYear": newYear,
-      "calendar.curMonth": newMonth
+      'calendar.curYear': newYear,
+      'calendar.curMonth': newMonth
     });
     conf.renderCalendar.call(this, newYear, newMonth);
   },
@@ -391,7 +393,7 @@ const conf = {
   afterTapDay(currentSelected, selectedDays) {
     const config = this.config;
     const { multi, afterTapDay } = config;
-    if (afterTapDay && typeof afterTapDay === "function") {
+    if (afterTapDay && typeof afterTapDay === 'function') {
       if (!multi) {
         config.afterTapDay(currentSelected);
       } else {
@@ -415,11 +417,12 @@ const conf = {
       currentSelected = days[idx];
       selectedDays.push(currentSelected);
     }
-    if (onTapDay && typeof onTapDay === "function")
+    if (onTapDay && typeof onTapDay === 'function') {
       return this.config.onTapDay(currentSelected, e);
+    }
     this.setData({
-      "calendar.days": days,
-      "calendar.selectedDay": selectedDays
+      'calendar.days': days,
+      'calendar.selectedDay': selectedDays
     });
     conf.afterTapDay.call(this, currentSelected, selectedDays);
   },
@@ -434,8 +437,9 @@ const conf = {
     const { month: sMonth, year: sYear } = selectedDays[0] || {};
     const { month: dMonth, year: dYear } = days[0] || {};
     const { calendar = {} } = this.data;
-    if (sMonth === dMonth && sYear === dYear && !this.weekMode)
+    if (sMonth === dMonth && sYear === dYear && !this.weekMode) {
       days[selectedDays[0].day - 1].choosed = false;
+    }
     if (this.weekMode) {
       days.map((item, idx) => {
         if (item.day === selectedDays[0].day) days[idx].choosed = false;
@@ -457,8 +461,9 @@ const conf = {
               selectedDays &&
               selectedDays.length &&
               +selectedDays[0].day === +item.day
-            )
+            ) {
               days[idx].showTodoLabel = true;
+            }
           }
         });
       } else {
@@ -468,18 +473,20 @@ const conf = {
           selectedDays &&
           selectedDays.length &&
           +selectedDays[0].day === +item.day
-        )
+        ) {
           days[selectedDays[0].day - 1].showTodoLabel = true;
+        }
       }
     });
     if (days[idx].showTodoLabel) days[idx].showTodoLabel = false;
     days[idx].choosed = true;
     currentSelected = days[idx];
-    if (onTapDay && typeof onTapDay === "function")
+    if (onTapDay && typeof onTapDay === 'function') {
       return this.config.onTapDay(currentSelected, e);
+    }
     this.setData({
-      "calendar.days": days,
-      "calendar.selectedDay": [currentSelected]
+      'calendar.days': days,
+      'calendar.selectedDay': [currentSelected]
     });
     conf.afterTapDay.call(this, currentSelected);
   },
@@ -489,11 +496,12 @@ const conf = {
    */
   setTodoLabels(options = {}) {
     const { calendar } = this.data;
-    if (!calendar || !calendar.days)
-      return warn("请等待日历初始化完成后再调用该方法");
+    if (!calendar || !calendar.days) {
+      return warn('请等待日历初始化完成后再调用该方法');
+    }
     const days = calendar.days.slice();
     const { curYear, curMonth } = calendar;
-    const { days: todoDays = [], pos = "bottom", dotColor = "" } = options;
+    const { days: todoDays = [], pos = 'bottom', dotColor = '' } = options;
     const { todoLabels = [], todoLabelPos, todoLabelColor } = calendar;
     const shouldMarkerTodoDay = todoDays.filter(
       item => +item.year === curYear && +item.month === curMonth
@@ -511,12 +519,13 @@ const conf = {
       if (target) target.showTodoLabel = !target.choosed;
     });
     const o = {
-      "calendar.days": days,
-      "calendar.todoLabels": uniqueTodoLabels(todoDays.concat(todoLabels))
+      'calendar.days': days,
+      'calendar.todoLabels': uniqueTodoLabels(todoDays.concat(todoLabels))
     };
-    if (pos && pos !== todoLabelPos) o["calendar.todoLabelPos"] = pos;
-    if (dotColor && dotColor !== todoLabelColor)
-      o["calendar.todoLabelColor"] = dotColor;
+    if (pos && pos !== todoLabelPos) o['calendar.todoLabelPos'] = pos;
+    if (dotColor && dotColor !== todoLabelColor) {
+      o['calendar.todoLabelColor'] = dotColor;
+    }
     this.setData(o);
   },
   /**
@@ -551,8 +560,8 @@ const conf = {
       days[item.day - 1].showTodoLabel = !days[item.day - 1].choosed;
     });
     this.setData({
-      "calendar.days": days,
-      "calendar.todoLabels": todoLabels
+      'calendar.days': days,
+      'calendar.todoLabels': todoLabels
     });
   },
   /**
@@ -565,8 +574,8 @@ const conf = {
       item.showTodoLabel = false;
     });
     this.setData({
-      "calendar.days": _days,
-      "calendar.todoLabels": []
+      'calendar.days': _days,
+      'calendar.todoLabels': []
     });
   },
   /**
@@ -579,9 +588,9 @@ const conf = {
     const curDate = date.getDate();
     const timestamp = newDate(curYear, curMonth, curDate).getTime();
     this.setData({
-      "calendar.curYear": curYear,
-      "calendar.curMonth": curMonth,
-      "calendar.selectedDay": [
+      'calendar.curYear': curYear,
+      'calendar.curMonth': curMonth,
+      'calendar.selectedDay': [
         {
           day: curDate,
           choosed: true,
@@ -589,7 +598,7 @@ const conf = {
           month: curMonth
         }
       ],
-      "calendar.todayTimestamp": timestamp
+      'calendar.todayTimestamp': timestamp
     });
     conf.renderCalendar.call(this, curYear, curMonth, curDate);
   },
@@ -603,8 +612,8 @@ const conf = {
     const startY = t.clientY;
     this.slideLock = true; // 滑动事件加锁
     this.setData({
-      "gesture.startX": startX,
-      "gesture.startY": startY
+      'gesture.startX': startX,
+      'gesture.startY': startY
     });
   },
   /**
@@ -634,7 +643,7 @@ const conf = {
     if (
       (lastDayOfThisWeek.day + 7 > lastDayOfThisMonth ||
         (curMonth === firstMonth && firstMonth !== lastMonth)) &&
-      type === "next"
+      type === 'next'
     ) {
       curMonth = curMonth + 1;
       if (curMonth > 12) {
@@ -644,7 +653,7 @@ const conf = {
     } else if (
       (+firstDayOfThisWeek.day <= 7 ||
         (curMonth === lastMonth && firstMonth !== lastMonth)) &&
-      type === "prev"
+      type === 'prev'
     ) {
       curMonth = curMonth - 1;
       if (curMonth <= 0) {
@@ -720,8 +729,9 @@ const conf = {
       }
       if (
         todoLabelsCol.indexOf(`${item.year}-${item.month}-${item.day}`) !== -1
-      )
+      ) {
         item.showTodoLabel = !item.choosed;
+      }
     });
     return daysCopy;
   },
@@ -741,8 +751,9 @@ const conf = {
         this.config.disablePastDay &&
         timestamp - todayTimestamp < 0 &&
         !item.disable
-      )
+      ) {
         item.disable = true;
+      }
     });
   },
   /**
@@ -755,7 +766,7 @@ const conf = {
     let { curYear, curMonth } = this.data.calendar;
     let days = [];
     if (lastDayInThisMonth - lastDayInThisWeek >= 7) {
-      const { Uyear, Umonth } = conf.updateCurrYearAndMonth.call(this, "next");
+      const { Uyear, Umonth } = conf.updateCurrYearAndMonth.call(this, 'next');
       curYear = Uyear;
       curMonth = Umonth;
       for (let i = lastDayInThisWeek + 1; i <= lastDayInThisWeek + 7; i++) {
@@ -773,7 +784,7 @@ const conf = {
           day: i
         });
       }
-      const { Uyear, Umonth } = conf.updateCurrYearAndMonth.call(this, "next");
+      const { Uyear, Umonth } = conf.updateCurrYearAndMonth.call(this, 'next');
       curYear = Uyear;
       curMonth = Umonth;
       for (let i = 1; i <= 7 - (lastDayInThisMonth - lastDayInThisWeek); i++) {
@@ -787,9 +798,9 @@ const conf = {
     days = conf.initSelectedDay.call(this, days);
     conf.setEnableAreaOnWeekMode.call(this, days);
     this.setData({
-      "calendar.curYear": curYear,
-      "calendar.curMonth": curMonth,
-      "calendar.days": days
+      'calendar.curYear': curYear,
+      'calendar.curMonth': curMonth,
+      'calendar.days': days
     });
   },
   /**
@@ -801,7 +812,7 @@ const conf = {
     let days = [];
 
     if (firstDayInThisWeek - 7 > 0) {
-      const { Uyear, Umonth } = conf.updateCurrYearAndMonth.call(this, "prev");
+      const { Uyear, Umonth } = conf.updateCurrYearAndMonth.call(this, 'prev');
       curYear = Uyear;
       curMonth = Umonth;
       for (let i = firstDayInThisWeek - 7; i < firstDayInThisWeek; i++) {
@@ -820,7 +831,7 @@ const conf = {
           day: i
         });
       }
-      const { Uyear, Umonth } = conf.updateCurrYearAndMonth.call(this, "prev");
+      const { Uyear, Umonth } = conf.updateCurrYearAndMonth.call(this, 'prev');
       curYear = Uyear;
       curMonth = Umonth;
       const prevMonthDays = conf.getThisMonthDays(curYear, curMonth);
@@ -840,9 +851,9 @@ const conf = {
     days = conf.initSelectedDay.call(this, days);
     conf.setEnableAreaOnWeekMode.call(this, days);
     this.setData({
-      "calendar.curYear": curYear,
-      "calendar.curMonth": curMonth,
-      "calendar.days": days
+      'calendar.curYear': curYear,
+      'calendar.curMonth': curMonth,
+      'calendar.days': days
     });
   },
   /**
@@ -864,7 +875,7 @@ const conf = {
       // 当前选择的日期为该月第一周
       let temp = [];
       const lastDayInThisMonth = conf.getThisMonthDays(year, month - 1);
-      const { Uyear, Umonth } = conf.updateCurrYearAndMonth.call(this, "prev");
+      const { Uyear, Umonth } = conf.updateCurrYearAndMonth.call(this, 'prev');
       curYear = Uyear;
       curMonth = Umonth;
       for (
@@ -885,7 +896,7 @@ const conf = {
       if (lastWeekDays && lastWeekDays.length < 7) {
         const { Uyear, Umonth } = conf.updateCurrYearAndMonth.call(
           this,
-          "next"
+          'next'
         );
         curYear = Uyear;
         curMonth = Umonth;
@@ -905,9 +916,9 @@ const conf = {
     }
     days = conf.initSelectedDay.call(this, days);
     this.setData({
-      "calendar.days": days,
-      "calendar.empytGrids": empytGrids,
-      "calendar.lastEmptyGrids": lastEmptyGrids
+      'calendar.days': days,
+      'calendar.empytGrids': empytGrids,
+      'calendar.lastEmptyGrids': lastEmptyGrids
     });
   },
   /**
@@ -915,11 +926,11 @@ const conf = {
    * @param {string} view  视图 [week, month]
    */
   switchWeek(view) {
-    if (this.config.multi) return warn("多选模式不能切换周月视图");
+    if (this.config.multi) return warn('多选模式不能切换周月视图');
     const { selectedDay = [], curYear, curMonth } = this.data.calendar;
     if (!selectedDay.length) return;
     const currentDay = selectedDay[0];
-    if (view === "week") {
+    if (view === 'week') {
       if (this.weekMode) return;
       this.weekMode = true;
       conf.selectedDayWeekAllDays.call(this, currentDay);
@@ -936,8 +947,9 @@ const conf = {
    */
   disableDays(data) {
     const { disableDays = [], days } = this.data.calendar;
-    if (Object.prototype.toString.call(data) !== "[object Array]")
-      return warn("disableDays 参数为数组");
+    if (Object.prototype.toString.call(data) !== '[object Array]') {
+      return warn('disableDays 参数为数组');
+    }
     const _disableDays = data.concat(disableDays);
     const disableDaysCol = _disableDays.map(
       d => `${d.year}-${d.month}-${d.day}`
@@ -947,8 +959,8 @@ const conf = {
       if (disableDaysCol.indexOf(cur) !== -1) item.disable = true;
     });
     this.setData({
-      "calendar.days": days,
-      "calendar.disableDays": _disableDays
+      'calendar.days': days,
+      'calendar.disableDays': _disableDays
     });
   }
 };
@@ -992,18 +1004,21 @@ export const jump = (year, month, day) => {
     +selectedDay[0].year === +year &&
     +selectedDay[0].month === +month &&
     +selectedDay[0].day === +day
-  )
+  ) {
     return;
+  }
   if (year && month) {
-    if (typeof +year !== "number" || typeof +month !== "number")
-      return warn("jump 函数年月日参数必须为数字");
+    if (typeof +year !== 'number' || typeof +month !== 'number') {
+      return warn('jump 函数年月日参数必须为数字');
+    }
     let tmp = {
-      "calendar.curYear": year,
-      "calendar.curMonth": month
+      'calendar.curYear': year,
+      'calendar.curMonth': month
     };
     self.setData(tmp, () => {
-      if (typeof +day === "number")
+      if (typeof +day === 'number') {
         return conf.renderCalendar.call(self, year, month, day);
+      }
       conf.renderCalendar.call(self, year, month);
     });
     return;
@@ -1067,22 +1082,26 @@ export const disableDay = (days = []) => {
  */
 export const enableArea = (area = []) => {
   if (area.length === 2) {
-    const start = area[0].split("-");
-    const end = area[1].split("-");
+    const start = area[0].split('-');
+    const end = area[1].split('-');
     const startTimestamp = newDate(start[0], start[1], start[2]).getTime();
     const endTimestamp = newDate(end[0], end[1], end[2]).getTime();
     const startMonthDays = conf.getThisMonthDays(start[0], start[1]);
     const endMonthDays = conf.getThisMonthDays(end[0], end[1]);
-    if (start[2] > startMonthDays || start[2] < 1)
-      return warn("enableArea() 开始日期错误，指定日期不在当前月份天数范围内");
-    if (start[1] > 12 || start[1] < 1)
-      return warn("enableArea() 开始日期错误，月份超出1-12月份");
-    if (end[2] > endMonthDays || end[2] < 1)
-      return warn("enableArea() 截止日期错误，指定日期不在当前月份天数范围内");
-    if (end[1] > 12 || end[1] < 1)
-      return warn("enableArea() 截止日期错误，月份超出1-12月份");
+    if (start[2] > startMonthDays || start[2] < 1) {
+      return warn('enableArea() 开始日期错误，指定日期不在当前月份天数范围内');
+    }
+    if (start[1] > 12 || start[1] < 1) {
+      return warn('enableArea() 开始日期错误，月份超出1-12月份');
+    }
+    if (end[2] > endMonthDays || end[2] < 1) {
+      return warn('enableArea() 截止日期错误，指定日期不在当前月份天数范围内');
+    }
+    if (end[1] > 12 || end[1] < 1) {
+      return warn('enableArea() 截止日期错误，月份超出1-12月份');
+    }
     if (startTimestamp > endTimestamp) {
-      warn("enableArea()参数最小日期大于了最大日期");
+      warn('enableArea()参数最小日期大于了最大日期');
     } else {
       const self = _getCurrentPage();
       let { days = [], selectedDay = [] } = self.data.calendar;
@@ -1102,9 +1121,9 @@ export const enableArea = (area = []) => {
         }
       });
       self.setData({
-        "calendar.days": daysCopy,
-        "calendar.selectedDay": selectedDay,
-        "calendar.enableArea": [startTimestamp, endTimestamp]
+        'calendar.days': daysCopy,
+        'calendar.selectedDay': selectedDay,
+        'calendar.enableArea': [startTimestamp, endTimestamp]
       });
     }
   } else {
@@ -1114,15 +1133,15 @@ export const enableArea = (area = []) => {
 
 export default (config = {}) => {
   tips(
-    "使用中若遇问题请反馈至 https://github.com/treadpit/wx_calendar/issues ✍️"
+    '使用中若遇问题请反馈至 https://github.com/treadpit/wx_calendar/issues ✍️'
   );
-  const weeksCh = ["日", "一", "二", "三", "四", "五", "六"];
+  const weeksCh = ['日', '一', '二', '三', '四', '五', '六'];
   const functionArray = [
-    "tapDayItem",
-    "choosePrevMonth",
-    "chooseNextMonth",
-    "calendarTouchstart",
-    "calendarTouchmove"
+    'tapDayItem',
+    'choosePrevMonth',
+    'chooseNextMonth',
+    'calendarTouchstart',
+    'calendarTouchmove'
   ];
   // const defaultTheme = {
   //   color: '#88d2ac', // 日期色值
@@ -1134,13 +1153,14 @@ export default (config = {}) => {
   const self = _getCurrentPage();
   self.config = config;
   self.setData({
-    "calendar.weeksCh": weeksCh
+    'calendar.weeksCh': weeksCh
     // 'calendar.theme': tmpTheme,
   });
-  if (config.defaultDay && typeof config.defaultDay === "string") {
-    const day = config.defaultDay.split("-");
-    if (day.length < 3)
-      return warn("配置 jumpTo 格式应为: 2018-4-2 或 2018-04-02");
+  if (config.defaultDay && typeof config.defaultDay === 'string') {
+    const day = config.defaultDay.split('-');
+    if (day.length < 3) {
+      return warn('配置 jumpTo 格式应为: 2018-4-2 或 2018-04-02');
+    }
     jump(+day[0], +day[1], +day[2]);
   } else {
     conf.jumpToToday.call(self);

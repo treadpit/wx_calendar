@@ -5,19 +5,13 @@ module.exports = {
     sourceType: 'module'
   },
   env: {
-    browser: true,
+    es6: true,
+    node: true
   },
-  extends: [
-    'standard',
-    'plugin:prettier/recommended'
-  ],
+  extends: ['standard', 'prettier', 'prettier/standard'],
+  plugins: ['prettier', 'standard'],
   rules: {
-    'semi': [2, 'always', { 'omitLastInOneLineBlock': true }],
-    'comma-dangle': [2, 'only-multiline'],
     'prefer-promise-reject-errors': 0,
-    'space-before-function-paren': 0,
-		'arrow-parens': 0,
-		"no-tabs": 0,
     'prettier/prettier': 1
   },
   globals: {
@@ -26,5 +20,5 @@ module.exports = {
     getApp: true,
     getCurrentPages: true,
     wx: true
-  },
-}
+  }
+};

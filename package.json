@@ -15,8 +15,11 @@
     "eslint-plugin-standard": "^3.0.1",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-debug": "^3.2.0",
+    "husky": "^1.1.2",
+    "lint-staged": "^7.3.0",
     "prettier": "^1.14.3",
     "stylelint": "^8.4.0",
+    "stylelint-config-prettier": "^4.0.0",
     "stylelint-config-standard": "^18.0.0",
     "stylelint-config-wxss": "^2.4.0",
     "stylelint-no-z-index": "^1.1.2"
@@ -25,7 +28,18 @@
     "build": "rm -rf dist && gulp",
     "dev": "gulp watch",
     "lint": "eslint src && stylelint \"src/**/*.wxss\"",
-    "fix": "eslint src --fix && stylelint \"src/**/*.wxss\" --fix && prettier \"src/**/*.wxss\" --parser css --write"
+    "fix": "eslint src --fix && stylelint \"src/**/*.wxss\" --fix"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,css}": [
+      "prettier --single-quote --write",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",

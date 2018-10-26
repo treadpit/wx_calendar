@@ -9,7 +9,7 @@ const conf = {
     const date = new Date();
     const curYear = date.getFullYear();
     const curMonth = date.getMonth() + 1;
-    const weeksCh = ["日", "一", "二", "三", "四", "五", "六"];
+    const weeksCh = ['日', '一', '二', '三', '四', '五', '六'];
     this.calculateEmptyGrids(curYear, curMonth);
     this.calculateDays(curYear, curMonth);
     this.setData({
@@ -62,7 +62,7 @@ const conf = {
     const handle = e.currentTarget.dataset.handle;
     const curYear = this.data.curYear;
     const curMonth = this.data.curMonth;
-    if (handle === "prev") {
+    if (handle === 'prev') {
       let newMonth = curMonth - 1;
       let newYear = curYear;
       if (newMonth < 1) {
@@ -132,7 +132,7 @@ const conf = {
     const o = {
       showPicker: false
     };
-    if (type === "confirm") {
+    if (type === 'confirm') {
       o.curYear = chooseYear;
       o.curMonth = chooseMonth;
       this.calculateEmptyGrids(chooseYear, chooseMonth);
@@ -143,9 +143,9 @@ const conf = {
   },
   onShareAppMessage() {
     return {
-      title: "小程序日历",
-      desc: "还是新鲜的日历哟",
-      path: "pages/index/index"
+      title: '小程序日历',
+      desc: '还是新鲜的日历哟',
+      path: 'pages/index/index'
     };
   }
 };

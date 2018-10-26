@@ -4,7 +4,7 @@ import initCalendar, {
   disableDay,
   switchView,
   enableArea
-} from "../../template/calendar/index";
+} from '../../template/calendar/index';
 const conf = {
   onShow: function() {
     initCalendar({
@@ -17,14 +17,14 @@ const conf = {
        * @param { array } allSelectedDays 选择的所有日期（当mulit为true时，才有allSelectedDays参数）
        */
       afterTapDay: (currentSelect, allSelectedDays) => {
-        console.log("===============================");
-        console.log("当前点击的日期", currentSelect);
+        console.log('===============================');
+        console.log('当前点击的日期', currentSelect);
         console.log(
-          "当前点击的日期是否有事件标记: ",
+          '当前点击的日期是否有事件标记: ',
           currentSelect.hasTodo || false
         );
-        allSelectedDays && console.log("选择的所有日期", allSelectedDays);
-        console.log("getSelectedDay方法", getSelectedDay());
+        allSelectedDays && console.log('选择的所有日期', allSelectedDays);
+        console.log('getSelectedDay方法', getSelectedDay());
       },
       whenChangeMonth(current, next) {
         // console.log(current);
@@ -45,9 +45,9 @@ const conf = {
       afterCalendarRender() {
         const data = [
           {
-            year: "2018",
-            month: "8",
-            day: "15"
+            year: '2018',
+            month: '8',
+            day: '15'
           },
           {
             year: 2018,
@@ -58,19 +58,19 @@ const conf = {
         // 异步请求
         setTimeout(() => {
           setTodoLabels({
-            pos: "bottom",
-            dotColor: "#40",
+            pos: 'bottom',
+            dotColor: '#40',
             days: data
           });
           disableDay(1);
         }, 1000);
-        enableArea(["2018-10-7", "2018-10-28"]);
+        enableArea(['2018-10-7', '2018-10-28']);
       }
     });
   },
   switchView() {
     if (!this.weekMode) {
-      switchView("week");
+      switchView('week');
     } else {
       switchView();
     }

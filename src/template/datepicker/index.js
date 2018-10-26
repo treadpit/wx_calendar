@@ -117,11 +117,11 @@ const conf = {
         empytGrids.push(i);
       }
       this.setData({
-        "datepicker.empytGrids": empytGrids.reverse()
+        'datepicker.empytGrids': empytGrids.reverse()
       });
     } else {
       this.setData({
-        "datepicker.empytGrids": null
+        'datepicker.empytGrids': null
       });
     }
   },
@@ -140,11 +140,11 @@ const conf = {
         lastEmptyGrids.push(i);
       }
       this.setData({
-        "datepicker.lastEmptyGrids": lastEmptyGrids
+        'datepicker.lastEmptyGrids': lastEmptyGrids
       });
     } else {
       this.setData({
-        "datepicker.lastEmptyGrids": null
+        'datepicker.lastEmptyGrids': null
       });
     }
   },
@@ -185,10 +185,10 @@ const conf = {
       }
     });
     const tmp = {
-      "datepicker.days": days
+      'datepicker.days': days
     };
     if (curDate) {
-      tmp["datepicker.selectedDay"] = [
+      tmp['datepicker.selectedDay'] = [
         {
           day: curDate,
           choosed: true,
@@ -218,9 +218,9 @@ const conf = {
   renderCalendar(year, month, day) {
     const timestamp = new Date(`${year}-${month}-${day}`).getTime();
     this.setData({
-      "datepicker.curYear": year,
-      "datepicker.curMonth": month,
-      "datepicker.todayTimestamp": timestamp
+      'datepicker.curYear': year,
+      'datepicker.curMonth': month,
+      'datepicker.todayTimestamp': timestamp
     });
     conf.calculateEmptyGrids.call(this, year, month);
     conf.calculateDays.call(this, year, month, day);
@@ -233,10 +233,10 @@ const conf = {
    */
   init(curYear, curMonth, curDate) {
     const self = _getCurrentPage();
-    const weeksCh = ["日", "一", "二", "三", "四", "五", "六"];
+    const weeksCh = ['日', '一', '二', '三', '四', '五', '六'];
     self.setData({
-      "datepicker.weeksCh": weeksCh,
-      "datepicker.showDatePicker": true
+      'datepicker.weeksCh': weeksCh,
+      'datepicker.showDatePicker': true
     });
     if (!curYear && !curMonth && !curDate) return conf.jumpToToday.call(self);
     conf.renderCalendar.call(self, curYear, curMonth, curDate);
@@ -247,8 +247,8 @@ const conf = {
    */
   showDatepicker(e) {
     const value = e.detail.value;
-    if (value && typeof value === "string") {
-      const tmp = value.split("-");
+    if (value && typeof value === 'string') {
+      const tmp = value.split('-');
       conf.init(+tmp[0], +tmp[1], +tmp[2]);
     } else {
       conf.init();
@@ -263,7 +263,7 @@ const conf = {
     this.inputTimer && clearTimeout(this.inputTimer);
     this.inputTimer = setTimeout(() => {
       const v = e.detail.value;
-      const _v = (v && v.split("-")) || [];
+      const _v = (v && v.split('-')) || [];
       const RegExpYear = /^\d{4}$/;
       const RegExpMonth = /^(([0]?[1-9])|([1][0-2]))$/;
       const RegExpDay = /^(([0]?[1-9])|([1-2][0-9])|(3[0-1]))$/;
@@ -294,8 +294,8 @@ const conf = {
     conf.calculateEmptyGrids.call(this, newYear, newMonth);
 
     this.setData({
-      "datepicker.curYear": newYear,
-      "datepicker.curMonth": newMonth
+      'datepicker.curYear': newYear,
+      'datepicker.curMonth': newMonth
     });
   },
   /**
@@ -313,8 +313,8 @@ const conf = {
     conf.calculateEmptyGrids.call(this, newYear, newMonth);
 
     this.setData({
-      "datepicker.curYear": newYear,
-      "datepicker.curMonth": newMonth
+      'datepicker.curYear': newYear,
+      'datepicker.curMonth': newMonth
     });
   },
   /**
@@ -323,7 +323,7 @@ const conf = {
    */
   handleCalendar(e) {
     const handle = e.currentTarget.dataset.handle;
-    if (handle === "prev") {
+    if (handle === 'prev') {
       conf.choosePrevMonth.call(this);
     } else {
       conf.chooseNextMonth.call(this);
@@ -341,32 +341,32 @@ const conf = {
     const { curYear, curMonth, days } = this.data.datepicker;
     const key = `datepicker.days[${idx}].choosed`;
     const selectedValue = `${curYear}-${curMonth}-${days[idx].day}`;
-    if (this.config.type === "timearea") {
-      if (onTapDay && typeof onTapDay === "function") {
+    if (this.config.type === 'timearea') {
+      if (onTapDay && typeof onTapDay === 'function') {
         config.onTapDay(this.data.datepicker.days[idx], e);
         return;
       }
       this.setData({
         [key]: !days[idx].choosed
       });
-    } else if (this.config.type === "normal" && !days[idx].choosed) {
+    } else if (this.config.type === 'normal' && !days[idx].choosed) {
       const prev = days.filter(item => item.choosed)[0];
       const prevKey = prev && `datepicker.days[${prev.day - 1}].choosed`;
-      if (onTapDay && typeof onTapDay === "function") {
+      if (onTapDay && typeof onTapDay === 'function') {
         config.onTapDay(days[idx], e);
         return;
       }
       const data = {
         [key]: true,
-        "datepicker.selectedValue": selectedValue,
-        "datepicker.selectedDay": [days[idx]]
+        'datepicker.selectedValue': selectedValue,
+        'datepicker.selectedDay': [days[idx]]
       };
       if (prevKey) {
         data[prevKey] = false;
       }
       this.setData(data);
     }
-    if (afterTapDay && typeof afterTapDay === "function") {
+    if (afterTapDay && typeof afterTapDay === 'function') {
       config.afterTapDay(days[idx]);
     }
   },
@@ -375,7 +375,7 @@ const conf = {
    */
   closeDatePicker() {
     this.setData({
-      "datepicker.showDatePicker": false
+      'datepicker.showDatePicker': false
     });
   },
   datepickerTouchstart(e) {
@@ -384,8 +384,8 @@ const conf = {
     const startY = t.clientY;
     this.slideLock = true; // 滑动事件加锁
     this.setData({
-      "gesture.startX": startX,
-      "gesture.startY": startY
+      'gesture.startX': startX,
+      'gesture.startY': startY
     });
   },
   datepickerTouchmove(e) {
@@ -414,13 +414,13 @@ export const jumpToToday = () => {
 
 export default (config = {}) => {
   const self = _getCurrentPage();
-  if (!config.type) config.type = "normal";
+  if (!config.type) config.type = 'normal';
   self.config = config;
   self.setData({
     datepicker: {
       showDatePicker: false,
       showInput: config.showInput === true || config.showInput === undefined,
-      placeholder: config.placeholder || "请选择日期"
+      placeholder: config.placeholder || '请选择日期'
     }
   });
   self.datepickerTouchstart = conf.datepickerTouchstart.bind(self);
