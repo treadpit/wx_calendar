@@ -31,7 +31,7 @@ const conf = {
 Page(conf);
 ```
 
-更多配置及功能请 [参考文档](http://isfeer.com)
+更多配置及功能请 [参考文档](http://calendar.isfeer.com)
 
 ### 日历模板效果图
 

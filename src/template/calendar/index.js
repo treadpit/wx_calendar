@@ -1,4 +1,5 @@
 let info;
+let currentPage = {};
 
 function getSystemInfo() {
   if (info) return info;
@@ -6,9 +7,18 @@ function getSystemInfo() {
   return info;
 }
 
-export function isIos() {
+function isIos() {
   const sys = getSystemInfo();
   return /iphone|ios/i.test(sys.platform);
+}
+
+/**
+ * 获取当前页面实例
+ */
+function getCurrentPage() {
+  const pages = getCurrentPages();
+  const last = pages.length - 1;
+  return pages[last];
 }
 
 /**
@@ -366,7 +376,7 @@ const conf = {
     conf.renderCalendar.call(this, newYear, newMonth);
   },
   /**
-   * 选择具体日期
+   * 日期点击事件
    * @param {!object} e 事件对象
    */
   tapDayItem(e) {
@@ -390,6 +400,11 @@ const conf = {
       conf.whenSingleSelect.call(this, opts);
     }
   },
+  /**
+   * 点击日期后触发事件
+   * @param {object} currentSelected 当前选择的日期
+   * @param {array} selectedDays  多选状态下选中的日期
+   */
   afterTapDay(currentSelected, selectedDays) {
     const config = this.config;
     const { multi, afterTapDay } = config;
@@ -610,8 +625,8 @@ const conf = {
     const t = e.touches[0];
     const startX = t.clientX;
     const startY = t.clientY;
-    this.slideLock = true; // 滑动事件加锁
-    this.setData({
+    currentPage.slideLock = true; // 滑动事件加锁
+    currentPage.setData({
       'gesture.startX': startX,
       'gesture.startY': startY
     });
@@ -621,13 +636,14 @@ const conf = {
    * @param {object} e
    */
   calendarTouchmove(e) {
-    if (isLeftSlide.call(this, e)) {
-      if (this.weekMode) return conf.calculateNextWeekDays.call(this);
-      conf.chooseNextMonth.call(this);
+    const self = currentPage;
+    if (isLeftSlide.call(self, e)) {
+      if (self.weekMode) return conf.calculateNextWeekDays.call(self);
+      conf.chooseNextMonth.call(self);
     }
-    if (isRightSlide.call(this, e)) {
-      if (this.weekMode) return conf.calculatePrevWeekDays.call(this);
-      conf.choosePrevMonth.call(this);
+    if (isRightSlide.call(self, e)) {
+      if (self.weekMode) return conf.calculatePrevWeekDays.call(self);
+      conf.choosePrevMonth.call(self);
     }
   },
   /**
@@ -964,40 +980,17 @@ const conf = {
     });
   }
 };
-
-/**
- * 获取当前页面实例
- */
-function _getCurrentPage() {
-  const pages = getCurrentPages();
-  const last = pages.length - 1;
-  return pages[last];
-}
-
-/**
- * 绑定函数到当前页面实例上
- * @param {array} functionArray 函数数组
- */
-function bindFunctionToPage(functionArray) {
-  if (!functionArray || !functionArray.length) return;
-  functionArray.forEach(item => {
-    this[item] = conf[item].bind(this);
-  });
-}
-
 /**
  * 获取已选择的日期
  */
 export const getSelectedDay = () => {
-  const self = _getCurrentPage();
-  return self.data.calendar.selectedDay;
+  return currentPage && currentPage.data.calendar.selectedDay;
 };
-
 /**
  * 跳转至指定日期
  */
 export const jump = (year, month, day) => {
-  const self = _getCurrentPage();
+  const self = currentPage;
   const { selectedDay } = self.data.calendar;
   if (
     selectedDay &&
@@ -1025,7 +1018,6 @@ export const jump = (year, month, day) => {
   }
   conf.jumpToToday.call(self);
 };
-
 /**
  * 设置代办事项日期标记
  * @param {object} todos  待办事项配置
@@ -1034,36 +1026,28 @@ export const jump = (year, month, day) => {
  * @param {object[]} todos.days 需要标记的所有日期，如：[{year: 2015, month: 5, day: 12}]，其中年月日字段必填
  */
 export const setTodoLabels = todos => {
-  const self = _getCurrentPage();
-  conf.setTodoLabels.call(self, todos);
+  conf.setTodoLabels.call(currentPage, todos);
 };
-
 /**
  * 删除指定日期待办标记
  * @param {array} todos 需要删除的待办日期数组
  */
 export const deleteTodoLabels = todos => {
-  const self = _getCurrentPage();
-  conf.deleteTodoLabels.call(self, todos);
+  conf.deleteTodoLabels.call(currentPage, todos);
 };
-
 /**
  * 清空所有待办标记
  */
 export const clearTodoLabels = () => {
-  const self = _getCurrentPage();
-  conf.clearTodoLabels.call(self);
+  conf.clearTodoLabels.call(currentPage);
 };
-
 /**
  * 切换周月视图
  * @param {string} view 视图模式[week, month]
  */
 export const switchView = view => {
-  const self = _getCurrentPage();
-  conf.switchWeek.call(self, view);
+  conf.switchWeek.call(currentPage, view);
 };
-
 /**
  * 禁用指定日期
  * @param {array} days 日期
@@ -1072,10 +1056,8 @@ export const switchView = view => {
  * @param {number} [days.day]
  */
 export const disableDay = (days = []) => {
-  const self = _getCurrentPage();
-  conf.disableDays.call(self, days);
+  conf.disableDays.call(currentPage, days);
 };
-
 /**
  * 指定可选日期范围
  * @param {array} area 日期访问数组
@@ -1103,7 +1085,7 @@ export const enableArea = (area = []) => {
     if (startTimestamp > endTimestamp) {
       warn('enableArea()参数最小日期大于了最大日期');
     } else {
-      const self = _getCurrentPage();
+      const self = currentPage;
       let { days = [], selectedDay = [] } = self.data.calendar;
       const daysCopy = days.slice();
       daysCopy.map(item => {
@@ -1130,19 +1112,22 @@ export const enableArea = (area = []) => {
     warn('enableArea()参数需为时间范围数组，形如：["2018-8-4" , "2018-8-24"]');
   }
 };
+/**
+ * 注册日历事件至当前页面实例
+ * @param {array} events 需要注册的事件
+ */
+function bindFunctionToPage(events) {
+  if (!events || !events.length) return;
+  events.forEach(item => {
+    this[item] = conf[item].bind(this);
+  });
+}
 
 export default (config = {}) => {
   tips(
     '使用中若遇问题请反馈至 https://github.com/treadpit/wx_calendar/issues ✍️'
   );
   const weeksCh = ['日', '一', '二', '三', '四', '五', '六'];
-  const functionArray = [
-    'tapDayItem',
-    'choosePrevMonth',
-    'chooseNextMonth',
-    'calendarTouchstart',
-    'calendarTouchmove'
-  ];
   // const defaultTheme = {
   //   color: '#88d2ac', // 日期色值
   //   choosedColor: '#ff629a', // 日期选择色值
@@ -1150,9 +1135,9 @@ export default (config = {}) => {
   // };
   // if (!config.theme || typeof config.theme !== 'object') config.theme = {};
   // const tmpTheme = Object.assign({}, defaultTheme, config.theme);
-  const self = _getCurrentPage();
-  self.config = config;
-  self.setData({
+  currentPage = getCurrentPage();
+  currentPage.config = config;
+  currentPage.setData({
     'calendar.weeksCh': weeksCh
     // 'calendar.theme': tmpTheme,
   });
@@ -1163,7 +1148,14 @@ export default (config = {}) => {
     }
     jump(+day[0], +day[1], +day[2]);
   } else {
-    conf.jumpToToday.call(self);
+    conf.jumpToToday.call(currentPage);
   }
-  bindFunctionToPage.call(self, functionArray);
+  const events = [
+    'tapDayItem',
+    'choosePrevMonth',
+    'chooseNextMonth',
+    'calendarTouchstart',
+    'calendarTouchmove'
+  ];
+  bindFunctionToPage.call(currentPage, events);
 };
