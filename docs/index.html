@@ -8,15 +8,6 @@
   <title>微信小程序日历</title>
   <link rel="shortcut icon" href="http://isfeer.com/favicon.ico">
   <link rel="stylesheet" href="https://unpkg.com/docute@3/dist/docute.css">
-  <script>
-  var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "https://hm.baidu.com/hm.js?ee6dca3377adda57d57b8c22c0ac251c";
-      var s = document.getElementsByTagName("script")[0]; 
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
 </head>
 <body>
   <div id="app"></div>
@@ -26,6 +17,15 @@
       url: docute.isDev ? location.origin : 'http://calendar.isfeer.com',
       routerMode: 'history'
     })
+  </script>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ee6dca3377adda57d57b8c22c0ac251c";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
   </script>
 </body>
 </html>
