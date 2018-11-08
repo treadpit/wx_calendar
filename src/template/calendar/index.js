@@ -264,9 +264,15 @@ const conf = {
     const {
       todayTimestamp,
       disableDays = [],
-      enableArea = []
+      enableArea = [],
+      enableDays = [],
+      enableAreaTimestamp = []
     } = this.data.calendar;
     const thisMonthDays = conf.getThisMonthDays(year, month);
+    let expectEnableDaysTimestamp = converEnableDaysToTimestamp(enableDays);
+    if (enableArea.length) {
+      expectEnableDaysTimestamp = delRepeatedEnableDay(enableDays, enableArea);
+    }
     let selectedDay = [];
     if (this.config.defaultDay !== undefined && !this.config.defaultDay) {
       selectedDay = [];
@@ -302,7 +308,19 @@ const conf = {
       if (selectedDayCol.indexOf(cur) !== -1) item.choosed = true;
       if (disableDaysCol.indexOf(cur) !== -1) item.disable = true;
       const timestamp = newDate(item.year, item.month, item.day).getTime();
-      if (+enableArea[0] > +timestamp || +timestamp > +enableArea[1]) {
+      let setDisable = false;
+      if (enableAreaTimestamp.length) {
+        if (
+          (+enableAreaTimestamp[0] > +timestamp ||
+            +timestamp > +enableAreaTimestamp[1]) &&
+          !expectEnableDaysTimestamp.includes(+timestamp)
+        ) {
+          setDisable = true;
+        }
+      } else if (!expectEnableDaysTimestamp.includes(+timestamp)) {
+        setDisable = true;
+      }
+      if (setDisable) {
         item.disable = true;
         item.choosed = false;
       }
@@ -756,10 +774,27 @@ const conf = {
    * @param {object} days 当前展示的日期
    */
   setEnableAreaOnWeekMode(days) {
-    let { todayTimestamp, enableArea } = this.data.calendar;
+    let {
+      todayTimestamp,
+      enableAreaTimestamp = [],
+      enableDaysTimestamp = []
+    } = this.data.calendar;
     days.map(item => {
       const timestamp = newDate(item.year, item.month, item.day).getTime();
-      if (+enableArea[0] > +timestamp || +timestamp > +enableArea[1]) {
+
+      let setDisable = false;
+      if (enableAreaTimestamp.length) {
+        if (
+          (+enableAreaTimestamp[0] > +timestamp ||
+            +timestamp > +enableAreaTimestamp[1]) &&
+          !enableDaysTimestamp.includes(+timestamp)
+        ) {
+          setDisable = true;
+        }
+      } else if (!enableDaysTimestamp.includes(+timestamp)) {
+        setDisable = true;
+      }
+      if (setDisable) {
         item.disable = true;
         item.choosed = false;
       }
@@ -1058,16 +1093,80 @@ export const switchView = view => {
 export const disableDay = (days = []) => {
   conf.disableDays.call(currentPage, days);
 };
+
+/**
+ * 指定可选日期及可选日期数组去重
+ * @param {array} enableDays 特定可选日期数组
+ * @param {array} enableArea 可选日期区域数组
+ */
+function delRepeatedEnableDay(enableDays = [], enableArea = []) {
+  let _startTimestamp;
+  let _endTimestamp;
+  if (enableArea.length === 2) {
+    const { startTimestamp, endTimestamp } = convertEnableAreaToTimestamp(
+      enableArea
+    );
+    _startTimestamp = startTimestamp;
+    _endTimestamp = endTimestamp;
+  }
+  const enableDaysTimestamp = converEnableDaysToTimestamp(enableDays);
+  const tmp = enableDaysTimestamp.filter(
+    item => item < _startTimestamp || item > _endTimestamp
+  );
+  return tmp;
+}
+/**
+ *  指定日期区域转时间戳
+ * @param {array} timearea 时间区域
+ */
+function convertEnableAreaToTimestamp(timearea) {
+  if (!timearea || !timearea.length) return;
+  const start = timearea[0].split('-');
+  const end = timearea[1].split('-');
+  const startTimestamp = newDate(start[0], start[1], start[2]).getTime();
+  const endTimestamp = newDate(end[0], end[1], end[2]).getTime();
+  return {
+    start,
+    end,
+    startTimestamp,
+    endTimestamp
+  };
+}
+
+/**
+ *  指定特定日期数组转时间戳
+ * @param {array} enableDays 指定时间数组
+ */
+function converEnableDaysToTimestamp(enableDays = []) {
+  const enableDaysTimestamp = [];
+  enableDays.forEach(item => {
+    if (typeof item !== 'string') return warn('enableDays()入参日期格式错误');
+    const tmp = item.split('-');
+    if (tmp.length !== 3) return warn('enableDays()入参日期格式错误');
+    const timestamp = newDate(tmp[0], tmp[1], tmp[2]).getTime();
+    enableDaysTimestamp.push(timestamp);
+  });
+  return enableDaysTimestamp;
+}
+
 /**
  * 指定可选日期范围
  * @param {array} area 日期访问数组
  */
 export const enableArea = (area = []) => {
+  const self = currentPage;
+  const { enableDays = [] } = self.data.calendar;
+  let expectEnableDaysTimestamp = [];
+  if (enableDays.length) {
+    expectEnableDaysTimestamp = delRepeatedEnableDay(enableDays, area);
+  }
   if (area.length === 2) {
-    const start = area[0].split('-');
-    const end = area[1].split('-');
-    const startTimestamp = newDate(start[0], start[1], start[2]).getTime();
-    const endTimestamp = newDate(end[0], end[1], end[2]).getTime();
+    const {
+      start,
+      end,
+      startTimestamp,
+      endTimestamp
+    } = convertEnableAreaToTimestamp(area);
     const startMonthDays = conf.getThisMonthDays(start[0], start[1]);
     const endMonthDays = conf.getThisMonthDays(end[0], end[1]);
     if (start[2] > startMonthDays || start[2] < 1) {
@@ -1085,12 +1184,14 @@ export const enableArea = (area = []) => {
     if (startTimestamp > endTimestamp) {
       warn('enableArea()参数最小日期大于了最大日期');
     } else {
-      const self = currentPage;
       let { days = [], selectedDay = [] } = self.data.calendar;
       const daysCopy = days.slice();
       daysCopy.map(item => {
         const timestamp = newDate(item.year, item.month, item.day).getTime();
-        if (+startTimestamp > +timestamp || +timestamp > +endTimestamp) {
+        if (
+          (+startTimestamp > +timestamp || +timestamp > +endTimestamp) &&
+          !expectEnableDaysTimestamp.includes(+timestamp)
+        ) {
           item.disable = true;
           if (item.choosed) {
             item.choosed = false;
@@ -1100,18 +1201,71 @@ export const enableArea = (area = []) => {
                 `${d.year}-${d.month}-${d.day}`
             );
           }
+        } else if (item.disable) {
+          item.disable = false;
         }
       });
       self.setData({
         'calendar.days': daysCopy,
         'calendar.selectedDay': selectedDay,
-        'calendar.enableArea': [startTimestamp, endTimestamp]
+        'calendar.enableArea': area,
+        'calendar.enableAreaTimestamp': [startTimestamp, endTimestamp]
       });
     }
   } else {
     warn('enableArea()参数需为时间范围数组，形如：["2018-8-4" , "2018-8-24"]');
   }
 };
+/**
+ * 指定特定日期可选
+ * @param {array} days 指定日期数组
+ */
+export function enableDays(days = []) {
+  const self = currentPage;
+  const { enableArea = [], enableAreaTimestamp = [] } = self.data.calendar;
+  let expectEnableDaysTimestamp = [];
+  if (enableArea.length) {
+    expectEnableDaysTimestamp = delRepeatedEnableDay(days, enableArea);
+  } else {
+    expectEnableDaysTimestamp = converEnableDaysToTimestamp(days);
+  }
+  let { days: allDays = [], selectedDay = [] } = self.data.calendar;
+  const daysCopy = allDays.slice();
+  daysCopy.map(item => {
+    const timestamp = newDate(item.year, item.month, item.day).getTime();
+    let setDisable = false;
+    if (enableAreaTimestamp.length) {
+      if (
+        (+enableAreaTimestamp[0] > +timestamp ||
+          +timestamp > +enableAreaTimestamp[1]) &&
+        !expectEnableDaysTimestamp.includes(+timestamp)
+      ) {
+        setDisable = true;
+      }
+    } else if (!expectEnableDaysTimestamp.includes(+timestamp)) {
+      setDisable = true;
+    }
+    if (setDisable) {
+      item.disable = true;
+      if (item.choosed) {
+        item.choosed = false;
+        selectedDay = selectedDay.filter(
+          d =>
+            `${item.year}-${item.month}-${item.day}` !==
+            `${d.year}-${d.month}-${d.day}`
+        );
+      }
+    } else {
+      item.disable = false;
+    }
+  });
+  self.setData({
+    'calendar.days': daysCopy,
+    'calendar.selectedDay': selectedDay,
+    'calendar.enableDays': days,
+    'calendar.enableDaysTimestamp': expectEnableDaysTimestamp
+  });
+}
 /**
  * 注册日历事件至当前页面实例
  * @param {array} events 需要注册的事件

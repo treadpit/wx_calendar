@@ -152,12 +152,14 @@ disableDay([{
 }]);
 ```
 
-#### 8. 指定可选日期范围
+#### 8. 指定可选日期
 
 ```js
-import { enableArea } from '../../template/calendar/index';
-
-enableArea(['2018-8-12', '2018-08-30']);
+import { enableArea, enableDays } from '../../template/calendar/index';
+// 指定可选时间区域
+enableArea(['2018-11-12', '2018-11-30']);
+// 指定特定可选日期
+enableDays(['2018-11-12', '2018-12-3', '2019-1-3']);
 ```
 
 #### 9. 周月视图切换
