@@ -317,7 +317,10 @@ const conf = {
         ) {
           setDisable = true;
         }
-      } else if (!expectEnableDaysTimestamp.includes(+timestamp)) {
+      } else if (
+        expectEnableDaysTimestamp.length &&
+        !expectEnableDaysTimestamp.includes(+timestamp)
+      ) {
         setDisable = true;
       }
       if (setDisable) {
@@ -656,13 +659,26 @@ const conf = {
   calendarTouchmove(e) {
     const self = currentPage;
     if (isLeftSlide.call(self, e)) {
+      self.setData({
+        'calendar.leftSwipe': 1
+      });
       if (self.weekMode) return conf.calculateNextWeekDays.call(self);
       conf.chooseNextMonth.call(self);
     }
     if (isRightSlide.call(self, e)) {
+      self.setData({
+        'calendar.rightSwipe': 1
+      });
       if (self.weekMode) return conf.calculatePrevWeekDays.call(self);
       conf.choosePrevMonth.call(self);
     }
+  },
+  calendarTouchend(e) {
+    const self = currentPage;
+    self.setData({
+      'calendar.leftSwipe': 0,
+      'calendar.rightSwipe': 0
+    });
   },
   /**
    * 更新当前年月
@@ -791,7 +807,10 @@ const conf = {
         ) {
           setDisable = true;
         }
-      } else if (!enableDaysTimestamp.includes(+timestamp)) {
+      } else if (
+        enableDaysTimestamp.length &&
+        !enableDaysTimestamp.includes(+timestamp)
+      ) {
         setDisable = true;
       }
       if (setDisable) {
@@ -1309,7 +1328,8 @@ export default (config = {}) => {
     'choosePrevMonth',
     'chooseNextMonth',
     'calendarTouchstart',
-    'calendarTouchmove'
+    'calendarTouchmove',
+    'calendarTouchend'
   ];
   bindFunctionToPage.call(currentPage, events);
 };
