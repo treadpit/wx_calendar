@@ -13,32 +13,37 @@
 			<view class="weeks box box-lr box-align-center">
 				<view class="week fs28" wx:for="{{weeksCh}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
 			</view>
-			<view class="days box box-lr box-wrap" bindtouchstart="calendarTouchstart" bindtouchmove="calendarTouchmove">
-				<view wx:if="{{empytGrids}}" class="grid disable-day-color box box-align-center box-pack-center"
-          wx:for="{{empytGrids}}"
-          wx:key="{{index}}"
-          data-idx="{{index}}">
-            <view class="day box box-align-center box-pack-center">{{item}}</view>
+      <view class="perspective">
+        <view class="days box box-lr box-wrap {{leftSwipe ? 'leftRoate' : ''}}  {{rightSwipe ? 'rightRoate' : ''}}"
+          bindtouchstart="calendarTouchstart"
+          bindtouchmove="calendarTouchmove"
+          bindtouchend="calendarTouchend">
+          <view wx:if="{{empytGrids}}" class="grid disable-day-color box box-align-center box-pack-center"
+            wx:for="{{empytGrids}}"
+            wx:key="{{index}}"
+            data-idx="{{index}}">
+              <view class="day box box-align-center box-pack-center">{{item}}</view>
+          </view>
+          <view class="grid normal-day-color box box-align-center box-pack-center"
+            wx:for="{{days}}"
+            wx:key="{{index}}"
+            data-disable="{{item.disable}}"
+            data-idx="{{index}}"
+            bindtap="tapDayItem">
+              <view class="day-with-dot box box-tb box-align-center box-pack-center">
+                <view wx:if="{{item.showTodoLabel && todoLabelPos === 'top'}}" class="todo-dot" style="background-color: {{todoLabelColor}}"></view>
+                <view class="day border-radius {{item.choosed ? 'day-choosed-color pink-bg' : ''}} {{ item.disable ? 'disable-day-color disable-day-circle' : '' }} box box-align-center box-pack-center">{{item.day}}</view>
+                <view wx:if="{{item.showTodoLabel && todoLabelPos === 'bottom'}}" class="todo-dot" style="background-color: {{todoLabelColor}}"></view>
+              </view>
+          </view>
+          <view class="grid disable-day-color box box-align-center box-pack-center"
+            wx:for="{{lastEmptyGrids}}"
+            wx:key="{{index}}"
+            data-idx="{{index}}">
+              <view class="day box box-align-center box-pack-center">{{item}}</view>
+          </view>
         </view>
-				<view class="grid normal-day-color box box-align-center box-pack-center"
-          wx:for="{{days}}"
-          wx:key="{{index}}"
-          data-disable="{{item.disable}}"
-          data-idx="{{index}}"
-          bindtap="tapDayItem">
-            <view class="day-with-dot box box-tb box-align-center box-pack-center">
-              <view wx:if="{{item.showTodoLabel && todoLabelPos === 'top'}}" class="todo-dot" style="background-color: {{todoLabelColor}}"></view>
-              <view class="day border-radius {{item.choosed ? 'day-choosed-color pink-bg' : ''}} {{ item.disable ? 'disable-day-color disable-day-circle' : '' }} box box-align-center box-pack-center">{{item.day}}</view>
-              <view wx:if="{{item.showTodoLabel && todoLabelPos === 'bottom'}}" class="todo-dot" style="background-color: {{todoLabelColor}}"></view>
-            </view>
-				</view>
-				<view class="grid disable-day-color box box-align-center box-pack-center"
-          wx:for="{{lastEmptyGrids}}"
-          wx:key="{{index}}"
-          data-idx="{{index}}">
-            <view class="day box box-align-center box-pack-center">{{item}}</view>
-        </view>
-			</view>
+      </view>
 		</view>
 	</view>
 </template>

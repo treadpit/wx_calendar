@@ -102,13 +102,13 @@
 
 .week {
   text-align: center;
-  line-height: 105rpx;
+  line-height: 104rpx;
 }
 
 .grid,
 .week {
-  width: 105rpx;
-  height: 105rpx;
+  width: 104rpx;
+  height: 104rpx;
 }
 
 .day {
@@ -154,6 +154,24 @@
 
 .pink-bg {
   background-color: #ff629a;
+  transition: all 0.3s;
+  animation-name: choosed;
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+}
+
+@keyframes choosed
+{
+	from {
+    transform: scale(1)
+  }
+  50% {
+    transform: scale(0.9)
+  }
+	to {
+    transform: scale(1)
+  }
 }
 
 .purple-bg {
@@ -234,4 +252,18 @@
 .right-border-radius {
   border-top-right-radius: 20rpx;
   border-bottom-right-radius: 20rpx;
+}
+
+.perspective {
+  perspective: 750rpx;
+}
+
+.leftRoate {
+  transition: all 1s;
+  transform: rotateY(-5deg);
+}
+
+.rightRoate {
+  transition: all 1s;
+  transform: rotateY(5deg);
 }
