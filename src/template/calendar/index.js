@@ -493,6 +493,7 @@ const conf = {
         days.map((_item, idx) => {
           if (+_item.day === +item.day) {
             days[idx].hasTodo = true;
+            days[idx].todoText = item.todoText;
             if (
               selectedDays &&
               selectedDays.length &&
@@ -504,6 +505,7 @@ const conf = {
         });
       } else {
         days[item.day - 1].hasTodo = true;
+        days[item.day - 1].todoText = item.todoText;
         // showTodoLabel 是否显示待办标记
         if (
           selectedDays &&
@@ -552,7 +554,10 @@ const conf = {
       } else {
         target = days[item.day - 1];
       }
+      // debugger;
       if (target) target.showTodoLabel = !target.choosed;
+      if (target.showTodoLabel && item.todoText)
+        target.todoText = item.todoText;
     });
     const o = {
       'calendar.days': days,
@@ -777,10 +782,13 @@ const conf = {
       } else {
         item.choosed = false;
       }
-      if (
-        todoLabelsCol.indexOf(`${item.year}-${item.month}-${item.day}`) !== -1
-      ) {
+      const idx = todoLabelsCol.indexOf(
+        `${item.year}-${item.month}-${item.day}`
+      );
+      if (idx !== -1) {
         item.showTodoLabel = !item.choosed;
+        if (item.showTodoLabel && todoLabels[idx].todoText)
+          item.todoText = todoLabels[idx].todoText;
       }
     });
     return daysCopy;

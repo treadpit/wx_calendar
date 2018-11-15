@@ -101,13 +101,16 @@ console.log(getSelectedDay());
 ```js
 import { setTodoLabels } from '../../template/calendar/index';
 
+// 待办事项中若有 todoText 字段，则会在待办日期下面显示指定文字，如自定义节日等。
+
 setTodoLabels({
   pos: 'bottom',
   dotColor: '#40',
   days: [{
     year: 2018,
-    month: 5,
-    day: 12,
+    month: 1,
+    day: 1,
+    todoText: '待办'
   }, {
     year: 2018,
     month: 5,
