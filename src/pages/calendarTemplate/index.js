@@ -2,8 +2,8 @@ import initCalendar, {
   getSelectedDay,
   setTodoLabels,
   disableDay,
-  switchView,
-  enableArea
+  switchView
+  // enableArea
 } from '../../template/calendar/index';
 const conf = {
   onShow: function() {
@@ -51,8 +51,9 @@ const conf = {
           },
           {
             year: 2018,
-            month: 8,
-            day: 18
+            month: 11,
+            day: 18,
+            todoText: '待办'
           }
         ];
         // 异步请求
@@ -64,7 +65,7 @@ const conf = {
           });
           disableDay(1);
         }, 1000);
-        enableArea(['2018-10-7', '2018-10-28']);
+        // enableArea(['2018-10-7', '2018-10-28']);
       }
     });
   },

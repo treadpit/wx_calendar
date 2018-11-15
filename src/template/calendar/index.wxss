@@ -133,6 +133,11 @@
   background-color: #cc5226;
 }
 
+.todo-text {
+  font-size: 22rpx;
+  color: #c2c2c2;
+}
+
 .day-with-dot {
   height: 72rpx;
 }
