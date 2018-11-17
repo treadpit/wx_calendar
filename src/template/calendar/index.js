@@ -303,7 +303,7 @@ const conf = {
     const disableDaysCol = disableDays.map(
       d => `${d.year}-${d.month}-${d.day}`
     );
-    days.map(item => {
+    days.forEach(item => {
       const cur = `${item.year}-${item.month}-${item.day}`;
       if (selectedDayCol.indexOf(cur) !== -1) item.choosed = true;
       if (disableDaysCol.indexOf(cur) !== -1) item.disable = true;
@@ -477,7 +477,7 @@ const conf = {
       days[selectedDays[0].day - 1].choosed = false;
     }
     if (this.weekMode) {
-      days.map((item, idx) => {
+      days.forEach((item, idx) => {
         if (item.day === selectedDays[0].day) days[idx].choosed = false;
       });
     }
@@ -490,35 +490,38 @@ const conf = {
     shouldMarkerTodoDay.forEach(item => {
       // hasTodo 是否有待办事项
       if (this.weekMode) {
-        days.map((_item, idx) => {
+        days.forEach((_item, idx) => {
           if (+_item.day === +item.day) {
-            days[idx].hasTodo = true;
-            days[idx].todoText = item.todoText;
+            const day = days[idx];
+            day.hasTodo = true;
+            day.todoText = item.todoText;
             if (
               selectedDays &&
               selectedDays.length &&
               +selectedDays[0].day === +item.day
             ) {
-              days[idx].showTodoLabel = true;
+              day.showTodoLabel = true;
             }
           }
         });
       } else {
-        days[item.day - 1].hasTodo = true;
-        days[item.day - 1].todoText = item.todoText;
-        // showTodoLabel 是否显示待办标记
+        const day = days[item.day - 1];
+        day.hasTodo = true;
+        day.todoText = item.todoText;
         if (
           selectedDays &&
           selectedDays.length &&
           +selectedDays[0].day === +item.day
         ) {
+          // showTodoLabel 是否显示待办标记
           days[selectedDays[0].day - 1].showTodoLabel = true;
         }
       }
     });
-    if (days[idx].showTodoLabel) days[idx].showTodoLabel = false;
-    days[idx].choosed = true;
-    currentSelected = days[idx];
+    const currentDay = days[idx];
+    if (currentDay.showTodoLabel) currentDay.showTodoLabel = false;
+    currentDay.choosed = true;
+    currentSelected = currentDay;
     if (onTapDay && typeof onTapDay === 'function') {
       return this.config.onTapDay(currentSelected, e);
     }
@@ -554,7 +557,6 @@ const conf = {
       } else {
         target = days[item.day - 1];
       }
-      // debugger;
       if (target) target.showTodoLabel = !target.choosed;
       if (target.showTodoLabel && item.todoText)
         target.todoText = item.todoText;
@@ -594,7 +596,7 @@ const conf = {
     const currentMonthTodoLabels = todoLabels.filter(
       item => curYear === +item.year && curMonth === +item.month
     );
-    days.map(item => {
+    days.forEach(item => {
       item.showTodoLabel = false;
     });
     currentMonthTodoLabels.forEach(item => {
@@ -611,7 +613,7 @@ const conf = {
   clearTodoLabels() {
     const { days = [] } = this.data.calendar;
     const _days = [].concat(days);
-    _days.map(item => {
+    _days.forEach(item => {
       item.showTodoLabel = false;
     });
     this.setData({
@@ -633,10 +635,10 @@ const conf = {
       'calendar.curMonth': curMonth,
       'calendar.selectedDay': [
         {
-          day: curDate,
-          choosed: true,
           year: curYear,
-          month: curMonth
+          day: curDate,
+          month: curMonth,
+          choosed: true
         }
       ],
       'calendar.todayTimestamp': timestamp
@@ -774,7 +776,7 @@ const conf = {
       item => `${item.year}+${item.month}+${item.day}`
     );
     const todoLabelsCol = todoLabels.map(d => `${d.year}-${d.month}-${d.day}`);
-    daysCopy.map(item => {
+    daysCopy.forEach(item => {
       if (
         selectedDayStr.indexOf(`${item.year}+${item.month}+${item.day}`) !== -1
       ) {
@@ -803,7 +805,7 @@ const conf = {
       enableAreaTimestamp = [],
       enableDaysTimestamp = []
     } = this.data.calendar;
-    days.map(item => {
+    days.forEach(item => {
       const timestamp = newDate(item.year, item.month, item.day).getTime();
 
       let setDisable = false;
@@ -1032,7 +1034,7 @@ const conf = {
     const disableDaysCol = _disableDays.map(
       d => `${d.year}-${d.month}-${d.day}`
     );
-    days.map(item => {
+    days.forEach(item => {
       const cur = `${item.year}-${item.month}-${item.day}`;
       if (disableDaysCol.indexOf(cur) !== -1) item.disable = true;
     });
@@ -1213,7 +1215,7 @@ export const enableArea = (area = []) => {
     } else {
       let { days = [], selectedDay = [] } = self.data.calendar;
       const daysCopy = days.slice();
-      daysCopy.map(item => {
+      daysCopy.forEach(item => {
         const timestamp = newDate(item.year, item.month, item.day).getTime();
         if (
           (+startTimestamp > +timestamp || +timestamp > +endTimestamp) &&
@@ -1258,7 +1260,7 @@ export function enableDays(days = []) {
   }
   let { days: allDays = [], selectedDay = [] } = self.data.calendar;
   const daysCopy = allDays.slice();
-  daysCopy.map(item => {
+  daysCopy.forEach(item => {
     const timestamp = newDate(item.year, item.month, item.day).getTime();
     let setDisable = false;
     if (enableAreaTimestamp.length) {
@@ -1309,18 +1311,10 @@ export default (config = {}) => {
     '使用中若遇问题请反馈至 https://github.com/treadpit/wx_calendar/issues ✍️'
   );
   const weeksCh = ['日', '一', '二', '三', '四', '五', '六'];
-  // const defaultTheme = {
-  //   color: '#88d2ac', // 日期色值
-  //   choosedColor: '#ff629a', // 日期选择色值
-  //   headColor: '#ff629a', // 年月及星期色值
-  // };
-  // if (!config.theme || typeof config.theme !== 'object') config.theme = {};
-  // const tmpTheme = Object.assign({}, defaultTheme, config.theme);
   currentPage = getCurrentPage();
   currentPage.config = config;
   currentPage.setData({
     'calendar.weeksCh': weeksCh
-    // 'calendar.theme': tmpTheme,
   });
   if (config.defaultDay && typeof config.defaultDay === 'string') {
     const day = config.defaultDay.split('-');
