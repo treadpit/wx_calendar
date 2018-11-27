@@ -1,10 +1,10 @@
 # 小程序日历
 
-### 日历
-
 源码见[https://github.com/treadpit/wx_calendar ](https://github.com/treadpit/wx_calendar)
 
-<p class="tip">日历模板面板支持手势左右滑动</p>
+<p class="tip">日历面板支持手势左右滑动</p>
+
+### 日历模板(Template)
 
 提供 `template` [模板引入](https://mp.weixin.qq.com/debug/wxadoc/dev/framework/view/wxml/template.html)
 
@@ -21,7 +21,7 @@
 @import '../../template/calendar/index.wxss';
 ```
 
-#### 2. 日历组件初始化
+#### 2. 日历模板初始化
 ```js
 import initCalendar from '../../template/calendar/index';
 const conf = {
@@ -32,7 +32,7 @@ const conf = {
 Page(conf);
 ```
 
-#### 3. 日历组件配置
+#### 3. 日历模板配置
 
 `initCalendar()` 可传入自定义配置
 
@@ -180,8 +180,35 @@ switchView();
 switchView('month');
 ```
 
+### 日历组件(Component)
 
-### 日期选择器
+支持 `Component` 引入 [自定义组件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/)
+
+<p class="tip">除引入方式不一致外，日历配置及其他方法调用参考日历模板文档</p>
+ 
+#### 1. 引入组件
+
+```json
+{
+  "usingComponents": {
+    "calendar": "../../component/calendar/index"
+  }
+}
+```
+
+#### 2. 日历组件初始化
+
+```js
+import initCalendar from '../../component/calendar/main.js';
+const conf = {
+  onShow: function() {
+    initCalendar(); // 使用默认配置初始化日历
+  }
+};
+Page(conf);
+```
+
+### 日期选择器(Template)
 
 > 日期选择 input 组件支持直接输入指定日期
 

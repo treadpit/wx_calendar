@@ -3,7 +3,7 @@
     "pages/index/index",
     "pages/calendar/index",
     "pages/calendarTemplate/index",
-    "pages/datepickerTemplate/index"
+    "pages/calendarComponent/index"
   ],
   "window":{
     "backgroundTextStyle":"light",
