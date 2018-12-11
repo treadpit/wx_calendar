@@ -392,13 +392,13 @@ const conf = {
       currentSelected = days[idx];
       selectedDays.push(currentSelected);
     }
-    if (onTapDay && typeof onTapDay === 'function') {
-      return this.config.onTapDay(currentSelected, e);
-    }
     this.setData({
       'calendar.days': days,
       'calendar.selectedDay': selectedDays
     });
+    if (onTapDay && typeof onTapDay === 'function') {
+      return this.config.onTapDay(currentSelected, e);
+    }
     conf.afterTapDay.call(this, currentSelected, selectedDays);
   },
   /**
@@ -461,13 +461,13 @@ const conf = {
     if (currentDay.showTodoLabel) currentDay.showTodoLabel = false;
     currentDay.choosed = true;
     currentSelected = currentDay;
+    this.setData({
+        'calendar.days': days,
+        'calendar.selectedDay': [currentSelected]
+    });
     if (onTapDay && typeof onTapDay === 'function') {
       return this.config.onTapDay(currentSelected, e);
     }
-    this.setData({
-      'calendar.days': days,
-      'calendar.selectedDay': [currentSelected]
-    });
     conf.afterTapDay.call(this, currentSelected);
   },
   /**
