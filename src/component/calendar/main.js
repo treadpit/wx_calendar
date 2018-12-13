@@ -962,7 +962,7 @@ export const jump = (year, month, day) => {
   const self = currentPage;
   const { selectedDay } = self.data.calendar;
   if (
-    selectedDay &&
+    selectedDay && selectedDay[0]
     +selectedDay[0].year === +year &&
     +selectedDay[0].month === +month &&
     +selectedDay[0].day === +day
