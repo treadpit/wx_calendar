@@ -195,7 +195,7 @@ const conf = {
       typeof afterCalendarRender === 'function' &&
       !this.firstRender
     ) {
-      afterCalendarRender();
+      afterCalendarRender(this);
       this.firstRender = true;
     }
   },

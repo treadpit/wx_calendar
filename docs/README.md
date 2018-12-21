@@ -67,8 +67,9 @@ const conf = {
   onTapDay(currentSelect, event) {},
   /**
    * 日历初次渲染完成后触发事件，如设置事件标记
+   * @param { object } ctx 当前页面
    */
-  afterCalendarRender() {},
+  afterCalendarRender(ctx) {},
 }
 
 initCalendar(conf);
