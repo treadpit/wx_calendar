@@ -42,7 +42,7 @@ const conf = {
       /**
        * 日历初次渲染完成后触发事件，如设置事件标记
        */
-      afterCalendarRender() {
+      afterCalendarRender(ctx) {
         const data = [
           {
             year: '2018',
