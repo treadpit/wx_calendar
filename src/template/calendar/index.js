@@ -274,9 +274,9 @@ const conf = {
       expectEnableDaysTimestamp = delRepeatedEnableDay(enableDays, enableArea);
     }
     let selectedDay = [];
-    if (this.config.defaultDay !== undefined && !this.config.defaultDay) {
+    if (this.config.noDefault) {
       selectedDay = [];
-      this.config.defaultDay = undefined;
+      this.config.noDefault = false;
     } else {
       selectedDay = curDate
         ? [
@@ -446,9 +446,15 @@ const conf = {
     const { days, idx, onTapDay, e } = opts;
     days[idx].choosed = !days[idx].choosed;
     if (!days[idx].choosed) {
-      days[idx].cancel = true; // 点击事件是否是取消日期选择
+      days[idx].cancel = true; // 该次点击是否为取消日期操作
       currentSelected = days[idx];
-      selectedDays = selectedDays.filter(item => item.day !== days[idx].day);
+      selectedDays = selectedDays.filter(
+        item =>
+          `${item.year}-${item.month}-${item.day}` !==
+          `${currentSelected.year}-${currentSelected.month}-${
+            currentSelected.day
+          }`
+      );
     } else {
       currentSelected = days[idx];
       selectedDays.push(currentSelected);
