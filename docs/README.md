@@ -81,6 +81,7 @@ initCalendar(conf);
 在初始化日历后，调用日历暴露的方法可采用 ***两种*** 方式，以 `jump` 函数为例
 
  - (1) 手动引入方法
+
 ```js
 import initCalendar, { jump } from '../../template/calendar/index';
 
@@ -95,6 +96,7 @@ import initCalendar, { jump } from '../../template/calendar/index';
 ```
 
 - (2) 调用当前页面实例上的方法
+
 ```js
 import initCalendar from '../../template/calendar/index';
 
