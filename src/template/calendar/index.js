@@ -1302,7 +1302,7 @@ export function enableDays(days = []) {
   });
 }
 /**
- * 注册日历事件至当前页面实例
+ * 注册日历事件至当前页面
  * @param {array} events 需要注册的事件
  */
 function bindFunctionToPage(events) {
@@ -1310,6 +1310,24 @@ function bindFunctionToPage(events) {
   events.forEach(item => {
     this[item] = conf[item].bind(this);
   });
+}
+
+/**
+ * 绑定日历事件至当前页面实例
+ * @param {object} page 当前页面实例
+ */
+function mountEventsOnPage(page) {
+  page.calendar = {
+    jump,
+    switchView,
+    disableDay,
+    enableArea,
+    enableDays,
+    getSelectedDay,
+    setTodoLabels,
+    deleteTodoLabels,
+    clearTodoLabels
+  };
 }
 
 export default (config = {}) => {
@@ -1340,4 +1358,5 @@ export default (config = {}) => {
     'calendarTouchend'
   ];
   bindFunctionToPage.call(currentPage, events);
+  mountEventsOnPage(currentPage);
 };

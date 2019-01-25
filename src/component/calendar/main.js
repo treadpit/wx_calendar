@@ -1207,6 +1207,24 @@ export function enableDays(days = []) {
   });
 }
 
+/**
+ * 绑定日历事件至当前页面实例
+ * @param {object} page 当前页面实例
+ */
+function mountEventsOnPage(page) {
+  page.calendar = {
+    jump,
+    switchView,
+    disableDay,
+    enableArea,
+    enableDays,
+    getSelectedDay,
+    setTodoLabels,
+    deleteTodoLabels,
+    clearTodoLabels
+  };
+}
+
 export default (config = {}) => {
   tips(
     '使用中若遇问题请反馈至 https://github.com/treadpit/wx_calendar/issues ✍️'
@@ -1226,4 +1244,5 @@ export default (config = {}) => {
   } else {
     conf.jumpToToday.call(currentPage);
   }
+  mountEventsOnPage(currentPage);
 };
