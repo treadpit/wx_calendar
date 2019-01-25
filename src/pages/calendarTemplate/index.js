@@ -45,13 +45,13 @@ const conf = {
       afterCalendarRender(ctx) {
         const data = [
           {
-            year: '2018',
-            month: '8',
+            year: '2019',
+            month: '1',
             day: '15'
           },
           {
-            year: 2018,
-            month: 11,
+            year: 2019,
+            month: 1,
             day: 18,
             todoText: '待办'
           }
