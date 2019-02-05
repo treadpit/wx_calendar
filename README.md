@@ -25,7 +25,7 @@ const conf = {
 Page(conf);
 ```
 
-更多配置及功能请 [参考文档](http://calendar.isfeer.com)
+更多配置及功能请 [参考文档](https://treadpit.github.io)
 
 ### 日历模板效果图
 
