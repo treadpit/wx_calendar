@@ -1,9 +1,8 @@
 <view class="wrap">
-    <text>示例目前有独立页面和 template 两种模式,
+    <text>日历控件目前有 Component 和 template 两种方式引入,
       <text class="comments">(模板介绍参考微信小程序官方文档)</text>
     引入方法见 README</text>
-	  <navigator class="navigator" url="/pages/calendarTemplate/index">日历控件template 示例</navigator>
-	  <navigator class="navigator" url="/pages/calendarComponent/index">日历控件Component 示例</navigator>
-	  <navigator class="navigator" url="/pages/datepickerTemplate/index">日期选择器template 示例</navigator>
-	  <navigator class="navigator" url="/pages/calendar/index">日历独立页面(不维护)</navigator>
+	  <navigator class="navigator" url="/pages/calendarTemplate/index">日历控件 Template 示例</navigator>
+	  <navigator class="navigator" url="/pages/calendarComponent/index">日历控件 Component 示例</navigator>
+	  <navigator class="navigator" url="/pages/datepickerTemplate/index">日期选择器 Template 示例</navigator>
 </view>

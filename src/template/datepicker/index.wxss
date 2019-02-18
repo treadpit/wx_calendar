@@ -152,7 +152,7 @@
   color: #ddd;
 }
 
-.disable-day-circle {
+.disable-day-bg {
   background-color: #fbfdff;
 }
 
@@ -163,7 +163,7 @@
   top: 0;
 }
 
-.pink-bg {
+.day-choosed-bg {
   background-color: #ff629a;
 }
 

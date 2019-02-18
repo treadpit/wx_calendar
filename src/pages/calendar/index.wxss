@@ -187,7 +187,7 @@ page {
   color: #fff;
 }
 
-.pink-bg {
+.day-choosed-bg {
   background-color: #ff629a;
 }
 

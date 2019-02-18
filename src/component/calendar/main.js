@@ -487,7 +487,12 @@ const conf = {
     }
     const days = calendar.days.slice();
     const { curYear, curMonth } = calendar;
-    const { days: todoDays = [], pos = 'bottom', dotColor = '' } = options;
+    const {
+      days: todoDays = [],
+      pos = 'bottom',
+      dotColor = '',
+      circle
+    } = options;
     const { todoLabels = [], todoLabelPos, todoLabelColor } = calendar;
     const shouldMarkerTodoDay = todoDays.filter(
       item => +item.year === curYear && +item.month === curMonth
@@ -510,9 +515,13 @@ const conf = {
       'calendar.days': days,
       'calendar.todoLabels': uniqueTodoLabels(todoDays.concat(todoLabels))
     };
-    if (pos && pos !== todoLabelPos) o['calendar.todoLabelPos'] = pos;
-    if (dotColor && dotColor !== todoLabelColor) {
-      o['calendar.todoLabelColor'] = dotColor;
+    if (!circle) {
+      if (pos && pos !== todoLabelPos) o['calendar.todoLabelPos'] = pos;
+      if (dotColor && dotColor !== todoLabelColor) {
+        o['calendar.todoLabelColor'] = dotColor;
+      }
+    } else {
+      o['calendar.todoLabelCircle'] = circle;
     }
     this.setData(o);
   },
@@ -1015,6 +1024,12 @@ export const deleteTodoLabels = todos => {
  */
 export const clearTodoLabels = () => {
   conf.clearTodoLabels.call(currentPage);
+};
+/**
+ * 获取所有 TODO 日期
+ */
+export const getTodoLabels = () => {
+  return currentPage && currentPage.data.calendar.todoLabels;
 };
 /**
  * 切换周月视图

@@ -16,7 +16,7 @@
             <view wx:if="{{hasEmptyGrid}}" class="grid white-color box box-align-center box-pack-center" wx:for="{{empytGrids}}" wx:key="{{index}}" data-idx="{{index}}">
             </view>
             <view class="grid white-color box box-align-center box-pack-center" wx:for="{{days}}" wx:key="{{index}}" data-idx="{{index}}" bindtap="tapDayItem">
-                <view class="day {{item.choosed ? 'border-radius pink-bg' : ''}} box box-align-center box-pack-center">{{item.day}}</view>
+                <view class="day {{item.choosed ? 'border-radius day-choosed-bg' : ''}} box box-align-center box-pack-center">{{item.day}}</view>
             </view>
         </view>
     </view>
