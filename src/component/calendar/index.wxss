@@ -138,7 +138,7 @@
   color: #c2c2c2;
 }
 
-.day-with-dot {
+.dot-day-height {
   height: 72rpx;
 }
 
@@ -146,8 +146,13 @@
   color: #cacaca;
 }
 
-.disable-day-circle {
+.disable-day-bg {
   background-color: #f6f6f7;
+}
+
+.day-circle {
+  border: 1rpx solid #88d2ac;
+  box-sizing: border-box;
 }
 
 .border-radius {
@@ -157,7 +162,7 @@
   top: 0;
 }
 
-.pink-bg {
+.day-choosed-bg {
   background-color: #ff629a;
   transition: all 0.3s;
   animation-name: choosed;

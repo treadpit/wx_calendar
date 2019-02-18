@@ -46,12 +46,12 @@ const conf = {
         const data = [
           {
             year: '2019',
-            month: '1',
+            month: '2',
             day: '15'
           },
           {
             year: 2019,
-            month: 1,
+            month: 2,
             day: 18,
             todoText: '待办'
           }
@@ -61,6 +61,7 @@ const conf = {
           setTodoLabels({
             pos: 'bottom',
             dotColor: '#40',
+            circle: true,
             days: data
           });
           disableDay(1);

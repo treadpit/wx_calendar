@@ -140,8 +140,11 @@ import { setTodoLabels } from '../../template/calendar/index';
 // 待办事项中若有 todoText 字段，则会在待办日期下面显示指定文字，如自定义节日等。
 
 setTodoLabels({
-  pos: 'bottom',
-  dotColor: '#40',
+  // 待办点标记设置
+  pos: 'bottom', // 待办点标记位置 ['top', 'bottom']
+  dotColor: '#40', // 待办点标记颜色
+  // 待办圆圈标记设置（如圆圈标记已签到日期），该设置与点标记设置互斥
+  circle: true, // 待办
   days: [{
     year: 2018,
     month: 1,
@@ -177,6 +180,13 @@ deleteTodoLabels([{
 import { clearTodoLabels } from '../../template/calendar/index';
 
 clearTodoLabels();
+```
+
+##### 6.4 获取所有代办日期
+```js
+import { getTodoLabels } from '../../template/calendar/index';
+
+getTodoLabels();
 ```
 
 #### 7. 禁选指定日期
