@@ -3,27 +3,27 @@
 源码见[https://github.com/treadpit/wx_calendar ](https://github.com/treadpit/wx_calendar)
 
 <p class="tip">日历面板支持手势左右滑动</p>
+<p class="tip">建议使用组件方式引入，模板引入方式未维护</p>
 
-### 日历模板(Template)
+### 日历组件(Component)
 
-提供 `template` [模板引入](https://mp.weixin.qq.com/debug/wxadoc/dev/framework/view/wxml/template.html)
+支持 `Component` 引入 [自定义组件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/)
 
-#### 1. 引入`wxml`及`wxss`
-```xml
-// example.wxml
-<import src="../../template/calendar/index.wxml"/>
-<view class="calendar-wrap">
-   <template is="calendar" data="{{...calendar}}" />
-</view>
+ 
+#### 1. 引入组件
+
+```json
+{
+  "usingComponents": {
+    "calendar": "../../component/calendar/index"
+  }
+}
 ```
-```css
-/* example.wxss */
-@import '../../template/calendar/index.wxss';
-```
 
-#### 2. 日历模板初始化
+#### 2. 日历组件初始化
+
 ```js
-import initCalendar from '../../template/calendar/index';
+import initCalendar from '../../component/calendar/main.js';
 const conf = {
   onShow: function() {
     initCalendar(); // 使用默认配置初始化日历
@@ -32,12 +32,12 @@ const conf = {
 Page(conf);
 ```
 
-#### 3. 日历模板配置
+#### 3. 自定义配置
 
 `initCalendar()` 可传入自定义配置
 
 ```js
-import initCalendar from '../../template/calendar/index';
+import initCalendar from '../../component/calendar/main.js';
 
 const conf = { 
   multi: true, // 是否开启多选,
@@ -68,7 +68,7 @@ const conf = {
   onTapDay(currentSelect, event) {},
   /**
    * 日历初次渲染完成后触发事件，如设置事件标记
-   * @param { object } ctx 当前页面
+   * @param { object } ctx 当前页面实例
    */
   afterCalendarRender(ctx) {},
 }
@@ -83,7 +83,7 @@ initCalendar(conf);
  - (1) 手动引入方法
 
 ```js
-import initCalendar, { jump } from '../../template/calendar/index';
+import initCalendar, { jump } from '../../component/calendar/main.js';
 
 Page({
   onLoad() {
@@ -98,7 +98,7 @@ import initCalendar, { jump } from '../../template/calendar/index';
 - (2) 调用当前页面实例上的方法
 
 ```js
-import initCalendar from '../../template/calendar/index';
+import initCalendar from '../../component/calendar/main.js';
 
 Page({
   onLoad() {
@@ -113,7 +113,7 @@ import initCalendar from '../../template/calendar/index';
 #### 4. 跳转至指定日期
 
 ```js
-import { jump } from '../../template/calendar/index';
+import { jump } from '../../component/calendar/main.js';
 
 // 不传入参数则默认跳转至今天
 jump();
@@ -125,7 +125,7 @@ jump(2018, 6, 6); // 跳转至2018-6-6
 #### 5. 获取当前选择的日期
 
 ```js
-import { getSelectedDay } from '../../template/calendar/index';
+import { getSelectedDay } from '../../component/calendar/main.js';
 
 console.log(getSelectedDay());
 ```
@@ -135,7 +135,7 @@ console.log(getSelectedDay());
 ##### 6.1 设置待办标记
 
 ```js
-import { setTodoLabels } from '../../template/calendar/index';
+import { setTodoLabels } from '../../component/calendar/main.js';
 
 // 待办事项中若有 todoText 字段，则会在待办日期下面显示指定文字，如自定义节日等。
 
@@ -161,7 +161,7 @@ setTodoLabels({
 ##### 6.2 删除代办标记
 
 ```js
-import { deleteTodoLabels } from '../../template/calendar/index';
+import { deleteTodoLabels } from '../../component/calendar/main.js';
 
 deleteTodoLabels([{
   year: 2018,
@@ -177,14 +177,14 @@ deleteTodoLabels([{
 ##### 6.3 清空代办标记
 
 ```js
-import { clearTodoLabels } from '../../template/calendar/index';
+import { clearTodoLabels } from '../../component/calendar/main.js';
 
 clearTodoLabels();
 ```
 
 ##### 6.4 获取所有代办日期
 ```js
-import { getTodoLabels } from '../../template/calendar/index';
+import { getTodoLabels } from '../../component/calendar/main.js';
 
 getTodoLabels();
 ```
@@ -192,7 +192,7 @@ getTodoLabels();
 #### 7. 禁选指定日期
 
 ```js
-import { disableDay } from '../../template/calendar/index';
+import { disableDay } from '../../component/calendar/main.js';
 
 disableDay([{
   year: 2018,
@@ -204,19 +204,40 @@ disableDay([{
 #### 8. 指定可选日期
 
 ```js
-import { enableArea, enableDays } from '../../template/calendar/index';
+import { enableArea, enableDays } from '../../component/calendar/main.js';
 // 指定可选时间区域
 enableArea(['2018-11-12', '2018-11-30']);
 // 指定特定可选日期
 enableDays(['2018-11-12', '2018-12-3', '2019-1-3']);
 ```
 
-#### 9. 周月视图切换
+#### 9. 选中指定日期
+
+<p class="tip">该方法仅在多选模式下可用，初始化日历时请配置 multi。参数为数组，不传参则默认全选当前月份所有日期</p>
+
+```js
+import { setSelectedDays } from '../../component/calendar/main.js';
+const toSet = [
+  {
+    year: '2019',
+    month: '3',
+    day: '15'
+  },
+  {
+    year: 2019,
+    month: 3,
+    day: 18
+  }
+]
+setSelectedDays(toSet);
+```
+
+#### 10. 周月视图切换
 
 `switchView('week')`，默认值为'month'；
 
 ```js
-import { switchView } from '../../template/calendar/index';
+import { switchView } from '../../component/calendar/main.js';
 // 切换为周视图
 switchView('week');
 
@@ -226,26 +247,28 @@ switchView();
 switchView('month');
 ```
 
-### 日历组件(Component)
+### 日历模板(Template)
 
-支持 `Component` 引入 [自定义组件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/)
+提供 `template` [模板引入](https://mp.weixin.qq.com/debug/wxadoc/dev/framework/view/wxml/template.html)
 
-<p class="tip">除引入方式不一致外，日历配置及其他方法调用参考日历模板文档</p>
- 
-#### 1. 引入组件
+<p class="tip">除引入方式不一致外，日历配置及其他方法调用参考日历组件文档</p>
 
-```json
-{
-  "usingComponents": {
-    "calendar": "../../component/calendar/index"
-  }
-}
+#### 1. 引入`wxml`及`wxss`
+```xml
+// example.wxml
+<import src="../../template/calendar/index.wxml"/>
+<view class="calendar-wrap">
+   <template is="calendar" data="{{...calendar}}" />
+</view>
+```
+```css
+/* example.wxss */
+@import '../../template/calendar/index.wxss';
 ```
 
-#### 2. 日历组件初始化
-
+#### 2. 日历模板初始化
 ```js
-import initCalendar from '../../component/calendar/main.js';
+import initCalendar from '../../template/calendar/index';
 const conf = {
   onShow: function() {
     initCalendar(); // 使用默认配置初始化日历

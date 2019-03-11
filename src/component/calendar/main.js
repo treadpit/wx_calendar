@@ -39,7 +39,7 @@ function newDate(year, month, day) {
  *  todo 数组去重
  * @param {array} array todo 数组
  */
-function uniqueTodoLabels(array = []) {
+function uniqueArrayByDate(array = []) {
   let uniqueObject = {};
   let uniqueArray = [];
   array.forEach(item => {
@@ -281,20 +281,22 @@ const conf = {
       selectedDay = curDate
         ? [
             {
+              year,
+              month,
               day: curDate,
               choosed: true,
-              year,
-              month
+              week: conf.getDayOfWeek(year, month, curDate)
             }
           ]
         : this.data.calendar.selectedDay;
     }
     for (let i = 1; i <= thisMonthDays; i++) {
       days.push({
+        year,
+        month,
         day: i,
         choosed: false,
-        year,
-        month
+        week: conf.getDayOfWeek(year, month, i)
       });
     }
     const selectedDayCol = selectedDay.map(
@@ -381,7 +383,7 @@ const conf = {
    * @param {object} opts
    */
   whenMulitSelect(opts = {}) {
-    let { currentSelected, selectedDays } = opts;
+    let { currentSelected, selectedDays = [] } = opts;
     const { days, idx, onTapDay, e } = opts;
     days[idx].choosed = !days[idx].choosed;
     if (!days[idx].choosed) {
@@ -394,8 +396,21 @@ const conf = {
             currentSelected.day
           }`
       );
+      if (opts.todoLabels) {
+        opts.todoLabels.forEach(item => {
+          if (
+            `${currentSelected.year}-${currentSelected.month}-${
+              currentSelected.day
+            }` === `${item.year}-${item.month}-${item.day}`
+          ) {
+            currentSelected.showTodoLabel = true;
+          }
+        });
+      }
     } else {
       currentSelected = days[idx];
+      currentSelected.cancel = false;
+      currentSelected.showTodoLabel = false;
       selectedDays.push(currentSelected);
     }
     if (onTapDay && typeof onTapDay === 'function') {
@@ -513,7 +528,7 @@ const conf = {
     });
     const o = {
       'calendar.days': days,
-      'calendar.todoLabels': uniqueTodoLabels(todoDays.concat(todoLabels))
+      'calendar.todoLabels': uniqueArrayByDate(todoDays.concat(todoLabels))
     };
     if (!circle) {
       if (pos && pos !== todoLabelPos) o['calendar.todoLabelPos'] = pos;
@@ -1222,6 +1237,48 @@ export function enableDays(days = []) {
   });
 }
 
+export function setSelectedDays(selected) {
+  const self = currentPage;
+  if (!self.config.multi) {
+    return warn('单选模式下不能设置多日期选中，请配置 multi');
+  }
+  const { selectedDay, days } = self.data.calendar;
+  let newSelectedDay = [];
+  if (!selected) {
+    days.map(item => {
+      item.choosed = true;
+      item.showTodoLabel = false;
+    });
+    newSelectedDay = days;
+  } else if (selected && selected.length) {
+    if (selectedDay && selectedDay.length) {
+      newSelectedDay = uniqueArrayByDate(selectedDay.concat(selected));
+    } else {
+      newSelectedDay = selected;
+    }
+    const { year: curYear, month: curMonth } = days[0];
+    const currentSelectedDays = [];
+    newSelectedDay.forEach(item => {
+      if (+item.year === +curYear && +item.month === +curMonth) {
+        currentSelectedDays.push(`${item.year}-${item.month}-${item.day}`);
+      }
+    });
+    days.map(item => {
+      if (
+        currentSelectedDays.includes(`${item.year}-${item.month}-${item.day}`)
+      ) {
+        item.choosed = true;
+        item.showTodoLabel = false;
+      }
+    });
+  }
+  self.config.multi = true;
+  self.setData({
+    'calendar.days': days,
+    'calendar.selectedDay': newSelectedDay
+  });
+}
+
 /**
  * 绑定日历事件至当前页面实例
  * @param {object} page 当前页面实例
@@ -1236,7 +1293,8 @@ function mountEventsOnPage(page) {
     getSelectedDay,
     setTodoLabels,
     deleteTodoLabels,
-    clearTodoLabels
+    clearTodoLabels,
+    setSelectedDays
   };
 }
 

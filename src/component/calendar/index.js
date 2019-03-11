@@ -84,7 +84,8 @@ Component({
       const { idx, disable } = e.currentTarget.dataset;
       if (disable) return;
       let currentSelected = {}; // 当前选中日期
-      let { days, selectedDay: selectedDays } = this.data.calendar || []; // 所有选中日期
+      let { days, selectedDay: selectedDays, todoLabels } =
+        this.data.calendar || []; // 所有选中日期
       const config = currentPage.config;
       const { multi, onTapDay } = config;
       const opts = {
@@ -93,6 +94,7 @@ Component({
         onTapDay,
         currentSelected,
         selectedDays,
+        todoLabels,
         days: days.slice()
       };
       if (multi) {

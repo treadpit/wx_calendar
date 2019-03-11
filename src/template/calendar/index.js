@@ -281,20 +281,22 @@ const conf = {
       selectedDay = curDate
         ? [
             {
+              year,
+              month,
               day: curDate,
               choosed: true,
-              year,
-              month
+              week: conf.getDayOfWeek(year, month, curDate)
             }
           ]
         : this.data.calendar.selectedDay;
     }
     for (let i = 1; i <= thisMonthDays; i++) {
       days.push({
+        year,
+        month,
         day: i,
         choosed: false,
-        year,
-        month
+        week: conf.getDayOfWeek(year, month, i)
       });
     }
     const selectedDayCol = selectedDay.map(

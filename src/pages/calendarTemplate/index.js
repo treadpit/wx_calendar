@@ -1,9 +1,7 @@
 import initCalendar, {
   getSelectedDay,
   setTodoLabels,
-  disableDay,
   switchView
-  // enableArea
 } from '../../template/calendar/index';
 const conf = {
   onShow: function() {
@@ -46,12 +44,12 @@ const conf = {
         const data = [
           {
             year: '2019',
-            month: '2',
+            month: '3',
             day: '15'
           },
           {
             year: 2019,
-            month: 2,
+            month: 3,
             day: 18,
             todoText: '待办'
           }
@@ -59,12 +57,9 @@ const conf = {
         // 异步请求
         setTimeout(() => {
           setTodoLabels({
-            pos: 'bottom',
-            dotColor: '#40',
             circle: true,
             days: data
           });
-          disableDay(1);
         }, 1000);
         // enableArea(['2018-10-7', '2018-10-28']);
       }
