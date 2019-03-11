@@ -1,4 +1,3 @@
-/* pages/calendar/calendar.wxss */
 .box {
   display: flex;
 }
@@ -136,10 +135,22 @@
 .todo-text {
   font-size: 22rpx;
   color: #c2c2c2;
+  position: absolute;
+}
+
+.todo-text-bottom {
+  bottom: -8rpx;
+}
+
+.todo-text-top {
+  top: -8rpx;
 }
 
 .dot-day-height {
   height: 72rpx;
+  position: relative;
+  left: 0;
+  top: 0;
 }
 
 .disable-day-color {
@@ -183,98 +194,4 @@
   to {
     transform: scale(1);
   }
-}
-
-.purple-bg {
-  background-color: #b8b8f1;
-}
-
-.right-triangle::after {
-  content: '';
-  display: block;
-  width: 0;
-  height: 0;
-  border: 15rpx solid transparent;
-  border-left-color: #ff629a;
-  position: absolute;
-  right: -22rpx;
-  top: 18rpx;
-}
-
-.left-triangle::before {
-  content: '';
-  display: block;
-  width: 0;
-  height: 0;
-  border: 15rpx solid transparent;
-  border-right-color: #ff629a;
-  position: absolute;
-  left: -22rpx;
-  top: 18rpx;
-}
-
-.tips {
-  text-align: center;
-  margin-top: 20rpx;
-  margin-bottom: 20rpx;
-}
-
-.types {
-  background-color: #ffedf4;
-  height: 50rpx;
-}
-
-.types-desc {
-  padding: 0 20rpx;
-}
-
-.type-name {
-  margin-top: 50rpx;
-  margin-bottom: 30rpx;
-}
-
-.type-desc {
-  padding: 0 35rpx;
-  line-height: 38rpx;
-}
-
-.explain {
-  border-top: 1px solid #eee;
-  width: 90%;
-  margin: 20rpx 5% 20rpx 5%;
-  padding: 20rpx 0;
-}
-
-.explain-title {
-  font-weight: bold;
-  margin-bottom: 15rpx;
-}
-
-.explain-item {
-  padding: 8rpx 20rpx;
-  color: #fff;
-}
-
-.left-border-radius {
-  border-top-left-radius: 20rpx;
-  border-bottom-left-radius: 20rpx;
-}
-
-.right-border-radius {
-  border-top-right-radius: 20rpx;
-  border-bottom-right-radius: 20rpx;
-}
-
-.perspective {
-  perspective: 750rpx;
-}
-
-.leftRoate {
-  transition: all 1s;
-  transform: rotateY(-5deg);
-}
-
-.rightRoate {
-  transition: all 1s;
-  transform: rotateY(5deg);
 }
