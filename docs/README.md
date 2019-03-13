@@ -12,12 +12,19 @@
  
 #### 1. 引入组件
 
+在页面 `json` 文件中配置组件
+
 ```json
 {
   "usingComponents": {
     "calendar": "../../component/calendar/index"
   }
 }
+```
+
+在页面 `wxml` 中引入组件
+```xml
+<calendar calendar="{{calendar}}" gesture="{{gesture}}"></calendar>
 ```
 
 #### 2. 日历组件初始化
