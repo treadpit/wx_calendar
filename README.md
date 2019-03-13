@@ -15,7 +15,7 @@
 > 每月最多31天，最少28天。
 
 
-#### 1. 引入组件
+### 引入组件
 
 在页面 `json` 文件中配置组件
 
@@ -32,7 +32,7 @@
 <calendar calendar="{{calendar}}" gesture="{{gesture}}"></calendar>
 ```
 
-#### 2. 初始化
+### 初始化
 
 ```js
 import initCalendar from '../../component/calendar/main.js';
