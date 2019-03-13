@@ -2,7 +2,7 @@
 
 ### 思路分析
 
-要实现一个简单的日历，需要先知道几个值：
+要实现一个简单的小程序日历，需要先知道几个值：
 
 - 每月有多少天
 
@@ -14,23 +14,38 @@
 
 > 每月最多31天，最少28天。
 
-### 引入 wxml 及 wxss后初始化日历组件直接使用
+
+#### 1. 引入组件
+
+在页面 `json` 文件中配置组件
+
+```json
+{
+  "usingComponents": {
+    "calendar": "../../component/calendar/index"
+  }
+}
+```
+
+在页面 `wxml` 中引入组件
+```xml
+<calendar calendar="{{calendar}}" gesture="{{gesture}}"></calendar>
+```
+
+#### 2. 初始化
+
 ```js
-import initCalendar from '../../template/calendar/index';
+import initCalendar from '../../component/calendar/main.js';
 const conf = {
-  onShow() {
-    initCalendar(); // 使用默认配置初始化日历
+  onShow: function() {
+    initCalendar(); //  自定义配置 initCalendar({ multi: true, ... })
   }
 };
 Page(conf);
 ```
 
-更多配置及功能请 [参考文档](http://calendar.isfeer.com)
+更多自定义配置及功能 [请查阅日历文档](http://calendar.isfeer.com)
 
-### 日历模板效果图
+### 效果图
 
 ![日历效果图](https://raw.githubusercontent.com/treadpit/wx_calendar/develop/screenshot/screenshot_calendar.gif)
-
-### 日期选择器效果图
-
-![日期选择器](https://raw.githubusercontent.com/treadpit/wx_calendar/develop/screenshot/screenshot_datepicker.gif)
