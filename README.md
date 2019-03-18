@@ -48,8 +48,8 @@ Page(conf);
 
 ### 效果图
 
-![日历效果图](https://raw.githubusercontent.com/treadpit/wx_calendar/develop/screenshot/calendar.png)
+![日历效果图](https://raw.githubusercontent.com/treadpit/wx_calendar/reconstruction/screenshot/calendar.png)
 
-![日历效果图](https://raw.githubusercontent.com/treadpit/wx_calendar/develop/screenshot/calendar_multi.png)
+![日历效果图](https://raw.githubusercontent.com/treadpit/wx_calendar/reconstruction/screenshot/calendar_multi.png)
 
-![日历效果图](https://raw.githubusercontent.com/treadpit/wx_calendar/develop/screenshot/datepicker.png)
+![日历效果图](https://raw.githubusercontent.com/treadpit/wx_calendar/reconstruction/screenshot/datepicker.png)
