@@ -2,8 +2,7 @@
 
 源码见[https://github.com/treadpit/wx_calendar ](https://github.com/treadpit/wx_calendar)
 
-<p class="tip">日历面板支持手势左右滑动</p>
-<p class="tip">建议使用组件方式引入，模板引入方式未维护</p>
+<p class="tip">支持手势左右滑动</p>
 
 ### 日历组件(Component)
 
@@ -254,41 +253,7 @@ switchView();
 switchView('month');
 ```
 
-### 日历模板(Template)
-
-提供 `template` [模板引入](https://mp.weixin.qq.com/debug/wxadoc/dev/framework/view/wxml/template.html)
-
-<p class="tip">除引入方式不一致外，日历配置及其他方法调用参考日历组件文档</p>
-
-#### 1. 引入`wxml`及`wxss`
-```xml
-// example.wxml
-<import src="../../template/calendar/index.wxml"/>
-<view class="calendar-wrap">
-   <template is="calendar" data="{{...calendar}}" />
-</view>
-```
-```css
-/* example.wxss */
-@import '../../template/calendar/index.wxss';
-```
-
-#### 2. 日历模板初始化
-```js
-import initCalendar from '../../template/calendar/index';
-const conf = {
-  onShow: function() {
-    initCalendar(); // 使用默认配置初始化日历
-  }
-};
-Page(conf);
-```
-
-### 日期选择器(Template)
-
-> 日期选择 input 组件支持直接输入指定日期
-
-> 日历模板面板支持手势左右滑动
+### 日期选择器(未维护)
 
 <p class="tip">此 `template` 带有 `input` 输入框，不影响模板的使用，可配置隐藏</p>
 
