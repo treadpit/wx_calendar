@@ -1,153 +1,15 @@
-let info;
+import {
+  warn,
+  tips,
+  newDate,
+  getCurrentPage,
+  uniqueArrayByDate,
+  delRepeatedEnableDay,
+  converEnableDaysToTimestamp,
+  convertEnableAreaToTimestamp
+} from './utils';
+
 let currentPage = {};
-
-function getSystemInfo() {
-  if (info) return info;
-  info = wx.getSystemInfoSync();
-  return info;
-}
-
-function isIos() {
-  const sys = getSystemInfo();
-  return /iphone|ios/i.test(sys.platform);
-}
-
-/**
- * 获取当前页面实例
- */
-export function getCurrentPage() {
-  const pages = getCurrentPages();
-  const last = pages.length - 1;
-  return pages[last];
-}
-
-/**
- * new Date 区分平台
- * @param {number} year
- * @param {number} month
- * @param {number} day
- */
-function newDate(year, month, day) {
-  let cur = `${year}-${month}-${day}`;
-  if (isIos()) {
-    cur = `${year}/${month}/${day}`;
-  }
-  return new Date(cur);
-}
-
-/**
- *  todo 数组去重
- * @param {array} array todo 数组
- */
-function uniqueArrayByDate(array = []) {
-  let uniqueObject = {};
-  let uniqueArray = [];
-  array.forEach(item => {
-    uniqueObject[`${item.year}-${item.month}-${item.day}`] = item;
-  });
-  for (let i in uniqueObject) {
-    uniqueArray.push(uniqueObject[i]);
-  }
-  return uniqueArray;
-}
-
-/**
- * 上滑
- * @param {object} e 事件对象
- * @returns {boolean} 布尔值
- */
-export function isUpSlide(e) {
-  const { startX, startY } = getData('gesture');
-  if (currentPage.slideLock) {
-    const t = e.touches[0];
-    const deltaX = t.clientX - startX;
-    const deltaY = t.clientY - startY;
-    if (deltaY < -60 && deltaX < 20 && deltaX > -20) {
-      currentPage.slideLock = false;
-      return true;
-    } else {
-      return false;
-    }
-  }
-}
-/**
- * 下滑
- * @param {object} e 事件对象
- * @returns {boolean} 布尔值
- */
-export function isDownSlide(e) {
-  const { startX, startY } = getData('gesture');
-  if (currentPage.slideLock) {
-    const t = e.touches[0];
-    const deltaX = t.clientX - startX;
-    const deltaY = t.clientY - startY;
-    if (deltaY > 60 && deltaX < 20 && deltaX > -20) {
-      currentPage.slideLock = false;
-      return true;
-    } else {
-      return false;
-    }
-  }
-}
-/**
- * 左滑
- * @param {object} e 事件对象
- * @returns {boolean} 布尔值
- */
-export function isLeftSlide(e) {
-  const { startX, startY } = getData('gesture');
-  if (currentPage.slideLock) {
-    const t = e.touches[0];
-    const deltaX = t.clientX - startX;
-    const deltaY = t.clientY - startY;
-    if (deltaX < -60 && deltaY < 20 && deltaY > -20) {
-      currentPage.slideLock = false;
-      return true;
-    } else {
-      return false;
-    }
-  }
-}
-/**
- * 右滑
- * @param {object} e 事件对象
- * @returns {boolean} 布尔值
- */
-export function isRightSlide(e) {
-  const { startX, startY } = getData('gesture');
-  if (currentPage.slideLock) {
-    const t = e.touches[0];
-    const deltaX = t.clientX - startX;
-    const deltaY = t.clientY - startY;
-
-    if (deltaX > 60 && deltaY < 20 && deltaY > -20) {
-      currentPage.slideLock = false;
-      return true;
-    } else {
-      return false;
-    }
-  }
-}
-
-// function info(msg) {
-//   console.log('%cInfo: %c' + msg, 'color:#FF0080;font-weight:bold', 'color: #FF509B');
-// }
-
-function warn(msg) {
-  console.log(
-    '%cWarn: %c' + msg,
-    'color:#FF6600;font-weight:bold',
-    'color: #FF9933'
-  );
-}
-
-function tips(msg) {
-  console.log(
-    '%cTips: %c' + msg,
-    'color:#00B200;font-weight:bold',
-    'color: #00CC33'
-  );
-}
 
 function getData(key) {
   if (!key) return currentPage.data;
@@ -186,6 +48,84 @@ function getCalendarConfig() {
 
 function setCalendarConfig(key, value) {
   currentPage.config[key] = value;
+}
+
+/**
+ * 上滑
+ * @param {object} e 事件对象
+ * @returns {boolean} 布尔值
+ */
+export function isUpSlide(e) {
+  const { startX, startY } = getData('gesture');
+  if (this.slideLock) {
+    const t = e.touches[0];
+    const deltaX = t.clientX - startX;
+    const deltaY = t.clientY - startY;
+    if (deltaY < -60 && deltaX < 20 && deltaX > -20) {
+      this.slideLock = false;
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+/**
+ * 下滑
+ * @param {object} e 事件对象
+ * @returns {boolean} 布尔值
+ */
+export function isDownSlide(e) {
+  const { startX, startY } = getData('gesture');
+  if (this.slideLock) {
+    const t = e.touches[0];
+    const deltaX = t.clientX - startX;
+    const deltaY = t.clientY - startY;
+    if (deltaY > 60 && deltaX < 20 && deltaX > -20) {
+      this.slideLock = false;
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+/**
+ * 左滑
+ * @param {object} e 事件对象
+ * @returns {boolean} 布尔值
+ */
+export function isLeftSlide(e) {
+  const { startX, startY } = getData('gesture');
+  if (this.slideLock) {
+    const t = e.touches[0];
+    const deltaX = t.clientX - startX;
+    const deltaY = t.clientY - startY;
+    if (deltaX < -60 && deltaY < 20 && deltaY > -20) {
+      this.slideLock = false;
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+/**
+ * 右滑
+ * @param {object} e 事件对象
+ * @returns {boolean} 布尔值
+ */
+export function isRightSlide(e) {
+  const { startX, startY } = getData('gesture');
+  if (this.slideLock) {
+    const t = e.touches[0];
+    const deltaX = t.clientX - startX;
+    const deltaY = t.clientY - startY;
+
+    if (deltaX > 60 && deltaY < 20 && deltaY > -20) {
+      this.slideLock = false;
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
 
 const conf = {
@@ -1107,61 +1047,6 @@ export const switchView = view => {
 export const disableDay = (days = []) => {
   conf.disableDays(days);
 };
-
-/**
- * 指定可选日期及可选日期数组去重
- * @param {array} enableDays 特定可选日期数组
- * @param {array} enableArea 可选日期区域数组
- */
-function delRepeatedEnableDay(enableDays = [], enableArea = []) {
-  let _startTimestamp;
-  let _endTimestamp;
-  if (enableArea.length === 2) {
-    const { startTimestamp, endTimestamp } = convertEnableAreaToTimestamp(
-      enableArea
-    );
-    _startTimestamp = startTimestamp;
-    _endTimestamp = endTimestamp;
-  }
-  const enableDaysTimestamp = converEnableDaysToTimestamp(enableDays);
-  const tmp = enableDaysTimestamp.filter(
-    item => item < _startTimestamp || item > _endTimestamp
-  );
-  return tmp;
-}
-/**
- *  指定日期区域转时间戳
- * @param {array} timearea 时间区域
- */
-function convertEnableAreaToTimestamp(timearea) {
-  if (!timearea || !timearea.length) return;
-  const start = timearea[0].split('-');
-  const end = timearea[1].split('-');
-  const startTimestamp = newDate(start[0], start[1], start[2]).getTime();
-  const endTimestamp = newDate(end[0], end[1], end[2]).getTime();
-  return {
-    start,
-    end,
-    startTimestamp,
-    endTimestamp
-  };
-}
-
-/**
- *  指定特定日期数组转时间戳
- * @param {array} enableDays 指定时间数组
- */
-function converEnableDaysToTimestamp(enableDays = []) {
-  const enableDaysTimestamp = [];
-  enableDays.forEach(item => {
-    if (typeof item !== 'string') return warn('enableDays()入参日期格式错误');
-    const tmp = item.split('-');
-    if (tmp.length !== 3) return warn('enableDays()入参日期格式错误');
-    const timestamp = newDate(tmp[0], tmp[1], tmp[2]).getTime();
-    enableDaysTimestamp.push(timestamp);
-  });
-  return enableDaysTimestamp;
-}
 
 /**
  * 指定可选日期范围

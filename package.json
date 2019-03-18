@@ -4,7 +4,10 @@
   "description": "one small calendar demo",
   "main": "app.js",
   "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
     "babel-eslint": "^8.2.1",
+    "babel-jest": "^24.5.0",
     "eslint": "^4.17.0",
     "eslint-config-prettier": "^3.1.0",
     "eslint-config-standard": "^11.0.0-beta.0",
@@ -16,6 +19,7 @@
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-debug": "^3.2.0",
     "husky": "^1.1.2",
+    "jest": "^24.5.0",
     "lint-staged": "^7.3.0",
     "prettier": "^1.14.3",
     "stylelint": "^8.4.0",
@@ -27,8 +31,12 @@
   "scripts": {
     "build": "rm -rf dist && gulp",
     "dev": "gulp watch",
+    "test": "jest",
     "lint": "eslint src && stylelint \"src/**/*.wxss\"",
     "fix": "eslint src --fix && stylelint \"src/**/*.wxss\" --fix"
+  },
+  "jest": {
+    "setupFiles": ["./test/wx.js"]
   },
   "husky": {
     "hooks": {

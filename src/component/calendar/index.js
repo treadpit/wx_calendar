@@ -1,7 +1,6 @@
 import {
   isLeftSlide,
   isRightSlide,
-  getCurrentPage,
   whenChangeMonth,
   renderCalendar,
   whenMulitSelect,
@@ -9,6 +8,8 @@ import {
   calculateNextWeekDays,
   calculatePrevWeekDays
 } from './main.js';
+
+import { getCurrentPage } from './utils';
 
 let currentPage = {};
 
