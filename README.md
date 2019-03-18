@@ -17,7 +17,7 @@
 
 ### 引入组件
 
-在页面 `json` 文件中配置组件
+将 `src/component` 文件夹拷贝至自己的组件目录，页面 `json` 文件中配置组件
 
 ```json
 {
@@ -48,4 +48,8 @@ Page(conf);
 
 ### 效果图
 
-![日历效果图](https://raw.githubusercontent.com/treadpit/wx_calendar/develop/screenshot/screenshot_calendar.gif)
+![日历效果图](https://raw.githubusercontent.com/treadpit/wx_calendar/develop/screenshot/calendar.png)
+
+![日历效果图](https://raw.githubusercontent.com/treadpit/wx_calendar/develop/screenshot/calendar_multi.png)
+
+![日历效果图](https://raw.githubusercontent.com/treadpit/wx_calendar/develop/screenshot/datepicker.png)
