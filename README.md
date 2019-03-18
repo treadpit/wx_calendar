@@ -48,4 +48,4 @@ Page(conf);
 
 ### 效果图
 
-![日历效果图](https://raw.githubusercontent.com/treadpit/wx_calendar/reconstruction/screenshot/calendar.png)
+<div align=center><img src="https://raw.githubusercontent.com/treadpit/wx_calendar/reconstruction/screenshot/calendar-example.png" width="80%" height="auto" alt="日历效果图"/></div>
