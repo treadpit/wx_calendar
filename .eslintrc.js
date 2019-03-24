@@ -8,8 +8,11 @@ module.exports = {
     es6: true,
     node: true
   },
-  extends: ['standard', 'prettier', 'prettier/standard'],
-  plugins: ['prettier', 'standard'],
+  extends: [
+    'standard',
+    'plugin:prettier/recommended',
+    'plugin:jest/recommended'
+  ],
   rules: {
     'prefer-promise-reject-errors': 0,
     'prettier/prettier': 1
@@ -20,7 +23,6 @@ module.exports = {
     getApp: true,
     getCurrentPages: true,
     wx: true,
-    Component: true,
-    test
+    Component: true
   }
 };

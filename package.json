@@ -12,6 +12,7 @@
     "eslint-config-prettier": "^3.1.0",
     "eslint-config-standard": "^11.0.0-beta.0",
     "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jest": "^22.4.1",
     "eslint-plugin-node": "^6.0.0",
     "eslint-plugin-prettier": "^3.0.0",
     "eslint-plugin-promise": "^3.6.0",
@@ -36,7 +37,9 @@
     "fix": "eslint src --fix && stylelint \"src/**/*.wxss\" --fix"
   },
   "jest": {
-    "setupFiles": ["./test/wx.js"]
+    "setupFiles": [
+      "./test/wx.js"
+    ]
   },
   "husky": {
     "hooks": {

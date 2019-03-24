@@ -470,6 +470,7 @@ const conf = {
       }
     });
     const currentDay = days[idx];
+    if (!currentDay) return;
     if (currentDay.showTodoLabel) currentDay.showTodoLabel = false;
     currentDay.choosed = true;
     currentSelected = currentDay;
@@ -700,13 +701,14 @@ const conf = {
       } else {
         item.choosed = false;
       }
-      const idx = todoLabelsCol.includes(
+      const idx = todoLabelsCol.indexOf(
         `${item.year}-${item.month}-${item.day}`
       );
       if (idx !== -1) {
         item.showTodoLabel = !item.choosed;
-        if (item.showTodoLabel && todoLabels[idx].todoText)
-          item.todoText = todoLabels[idx].todoText;
+        const todoLabel = todoLabels[idx];
+        if (item.showTodoLabel && todoLabel && todoLabel.todoText)
+          item.todoText = todoLabel.todoText;
       }
     });
     return daysCopy;
