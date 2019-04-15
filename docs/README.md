@@ -253,8 +253,37 @@ switchView();
 switchView('month');
 ```
 
-### 日期选择器(未维护)
+### 日历模板(Template)
 
+提供 `template` [模板引入](https://mp.weixin.qq.com/debug/wxadoc/dev/framework/view/wxml/template.html)
+
+<p class="tip">除引入方式不一致外，日历配置及其他方法调用参考日历组件文档</p>
+
+#### 1. 引入`wxml`及`wxss`
+```xml
+// example.wxml
+<import src="../../template/calendar/index.wxml"/>
+<view class="calendar-wrap">
+   <template is="calendar" data="{{...calendar}}" />
+</view>
+```
+```css
+/* example.wxss */
+@import '../../template/calendar/index.wxss';
+```
+
+#### 2. 日历模板初始化
+```js
+import initCalendar from '../../template/calendar/index';
+const conf = {
+  onShow: function() {
+    initCalendar(); // 使用默认配置初始化日历
+  }
+};
+Page(conf);
+```
+
+### 日期选择器(Template)
 <p class="tip">此 `template` 带有 `input` 输入框，不影响模板的使用，可配置隐藏</p>
 
 #### 1. 引入`wxml`及`wxss`
@@ -263,7 +292,7 @@ switchView('month');
 <import src="../../template/datepicker/index.wxml"/>
 
 <view class="datepicker-box">
-    <template is="datepicker" data="{{...datepicker}}" />
+  <template is="datepicker" data="{{...datepicker}}" />
 </view>
 ```
 ```css
@@ -284,37 +313,25 @@ Page(conf);
 
 #### 3. 日期选择器配置
 
+> 此处config配置参考日历组件
+> 
+> 不同之处在于增加两个函数 showDatepicker/closeDatepicker, 控制开/关选择器面板
+> 
+> 其中showDatepicker()参数为：'2019-2-12' 形式，不传则默认为当天
+
 ```js
-import initDatepicker from '../../template/datepicker/index';
+import initDatepicker, {
+  showDatepicker,
+  closeDatepicker,
+  getSelectedDay
+} from '../../template/datepicker/index';
 
 const conf = {
-  disablePastDay: true, // 是否禁选过去日期
-  showInput: false, // 默认为 true
-  placeholder: '请选择日期', // input 输入框
-  type: 'normal', // [normal 普通单选模式(默认), timearea 时间区域选择模式(待开发), multiSelect 多选模式(待完善)]
-
-  /**
-   * 选择日期后执行的事件
-   * @param { object } currentSelect 当前点击的日期
-   */
-  afterTapDay: (currentSelect) => {},
-
-  /**
-   * 日期点击事件（此事件会完全接管点击事件）
-   * @param { object } currentSelect 当前点击的日期
-   * @param {object} event 日期点击事件对象
-   */
-  onTapDay(currentSelect, event) {},
-}
+  afterTapDay: currentSelect => {
+    console.log('当前点击的日期', currentSelect);
+    console.log('getSelectedDay方法', getSelectedDay());
+  },
+};
 
 initDatepicker(conf);
-```
-
-#### 4. 跳转至今天
-
-```js
-import { getSelectedDay, jumpToToday } from '../../template/datepicker/index';
-
-jumpToToday();
-
 ```
