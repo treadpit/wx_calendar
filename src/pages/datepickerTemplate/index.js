@@ -51,7 +51,7 @@ const conf = {
    */
   callDatepicker(e) {
     const { value } = e.detail;
-    if (!value) showDatepicker();
+    showDatepicker(value);
   },
 
   /**
