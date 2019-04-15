@@ -1,54 +1,53 @@
-let info;
+import {
+  warn,
+  tips,
+  newDate,
+  getCurrentPage,
+  uniqueArrayByDate,
+  delRepeatedEnableDay,
+  converEnableDaysToTimestamp,
+  convertEnableAreaToTimestamp
+} from './utils';
+
 let currentPage = {};
 
-function getSystemInfo() {
-  if (info) return info;
-  info = wx.getSystemInfoSync();
-  return info;
-}
-
-function isIos() {
-  const sys = getSystemInfo();
-  return /iphone|ios/i.test(sys.platform);
-}
-
-/**
- * 获取当前页面实例
- */
-export function getCurrentPage() {
-  const pages = getCurrentPages();
-  const last = pages.length - 1;
-  return pages[last];
-}
-
-/**
- * new Date 区分平台
- * @param {number} year
- * @param {number} month
- * @param {number} day
- */
-function newDate(year, month, day) {
-  let cur = `${year}-${month}-${day}`;
-  if (isIos()) {
-    cur = `${year}/${month}/${day}`;
+function getData(key) {
+  if (!key) return currentPage.data;
+  if (key.includes('.')) {
+    let keys = key.split('.');
+    let len = keys.length;
+    let tmp = null;
+    for (let i = 0; i < len; i++) {
+      const v = keys[i];
+      if (i === 0) {
+        if (currentPage.data[v] !== undefined) {
+          tmp = currentPage.data[v];
+        }
+      } else {
+        if (tmp[v] !== undefined) {
+          tmp = tmp[v];
+        }
+      }
+    }
+    return tmp;
+  } else {
+    return currentPage.data[key];
   }
-  return new Date(cur);
 }
 
-/**
- *  todo 数组去重
- * @param {array} array todo 数组
- */
-function uniqueArrayByDate(array = []) {
-  let uniqueObject = {};
-  let uniqueArray = [];
-  array.forEach(item => {
-    uniqueObject[`${item.year}-${item.month}-${item.day}`] = item;
-  });
-  for (let i in uniqueObject) {
-    uniqueArray.push(uniqueObject[i]);
+function setData(data, callback = () => {}) {
+  if (!data) return;
+  if (typeof data === 'object') {
+    currentPage.setData(data, callback);
   }
-  return uniqueArray;
+}
+
+function getCalendarConfig() {
+  return currentPage.config;
+}
+
+function setCalendarConfig(key, value) {
+  currentPage.config[key] = value;
 }
 
 /**
@@ -57,7 +56,7 @@ function uniqueArrayByDate(array = []) {
  * @returns {boolean} 布尔值
  */
 export function isUpSlide(e) {
-  const { startX, startY } = this.data.gesture;
+  const { startX, startY } = getData('gesture');
   if (this.slideLock) {
     const t = e.touches[0];
     const deltaX = t.clientX - startX;
@@ -76,7 +75,7 @@ export function isUpSlide(e) {
  * @returns {boolean} 布尔值
  */
 export function isDownSlide(e) {
-  const { startX, startY } = this.data.gesture;
+  const { startX, startY } = getData('gesture');
   if (this.slideLock) {
     const t = e.touches[0];
     const deltaX = t.clientX - startX;
@@ -95,7 +94,7 @@ export function isDownSlide(e) {
  * @returns {boolean} 布尔值
  */
 export function isLeftSlide(e) {
-  const { startX, startY } = this.data.gesture;
+  const { startX, startY } = getData('gesture');
   if (this.slideLock) {
     const t = e.touches[0];
     const deltaX = t.clientX - startX;
@@ -114,7 +113,7 @@ export function isLeftSlide(e) {
  * @returns {boolean} 布尔值
  */
 export function isRightSlide(e) {
-  const { startX, startY } = this.data.gesture;
+  const { startX, startY } = getData('gesture');
   if (this.slideLock) {
     const t = e.touches[0];
     const deltaX = t.clientX - startX;
@@ -127,26 +126,6 @@ export function isRightSlide(e) {
       return false;
     }
   }
-}
-
-// function info(msg) {
-//   console.log('%cInfo: %c' + msg, 'color:#FF0080;font-weight:bold', 'color: #FF509B');
-// }
-
-function warn(msg) {
-  console.log(
-    '%cWarn: %c' + msg,
-    'color:#FF6600;font-weight:bold',
-    'color: #FF9933'
-  );
-}
-
-function tips(msg) {
-  console.log(
-    '%cTips: %c' + msg,
-    'color:#00B200;font-weight:bold',
-    'color: #00CC33'
-  );
 }
 
 const conf = {
@@ -182,21 +161,21 @@ const conf = {
    * @param {number} curDate
    */
   renderCalendar(curYear, curMonth, curDate) {
-    conf.calculateEmptyGrids.call(this, curYear, curMonth);
-    conf.calculateDays.call(this, curYear, curMonth, curDate);
-    const { todoLabels } = this.data.calendar || {};
-    const { afterCalendarRender } = this.config;
+    conf.calculateEmptyGrids(curYear, curMonth);
+    conf.calculateDays(curYear, curMonth, curDate);
+    const { todoLabels } = getData('calendar') || {};
+    const { afterCalendarRender } = getCalendarConfig();
     if (todoLabels && todoLabels instanceof Array) {
-      conf.setTodoLabels.call(this);
+      conf.setTodoLabels();
     }
 
     if (
       afterCalendarRender &&
       typeof afterCalendarRender === 'function' &&
-      !this.firstRender
+      !currentPage.firstRender
     ) {
-      afterCalendarRender(this);
-      this.firstRender = true;
+      afterCalendarRender(currentPage);
+      currentPage.firstRender = true;
     }
   },
   /**
@@ -205,8 +184,8 @@ const conf = {
    * @param {number} month 月份
    */
   calculateEmptyGrids(year, month) {
-    conf.calculatePrevMonthGrids.call(this, year, month);
-    conf.calculateNextMonthGrids.call(this, year, month);
+    conf.calculatePrevMonthGrids(year, month);
+    conf.calculateNextMonthGrids(year, month);
   },
   /**
    * 计算上月应占的格子
@@ -222,11 +201,11 @@ const conf = {
       for (let i = prevMonthDays; i > len; i--) {
         empytGrids.push(i);
       }
-      this.setData({
+      setData({
         'calendar.empytGrids': empytGrids.reverse()
       });
     } else {
-      this.setData({
+      setData({
         'calendar.empytGrids': null
       });
     }
@@ -245,14 +224,42 @@ const conf = {
       for (let i = 1; i <= len; i++) {
         lastEmptyGrids.push(i);
       }
-      this.setData({
+      setData({
         'calendar.lastEmptyGrids': lastEmptyGrids
       });
     } else {
-      this.setData({
+      setData({
         'calendar.lastEmptyGrids': null
       });
     }
+  },
+  /**
+   * 日历初始化将默认值写入 selectDay
+   * @param {number} year
+   * @param {number} month
+   * @param {number} curDate
+   */
+  initSelectedDayWhenRender(year, month, curDate) {
+    let selectedDay = [];
+    const config = getCalendarConfig();
+    if (config.noDefault) {
+      selectedDay = [];
+      config.noDefault = false;
+    } else {
+      const data = getData('calendar') || {};
+      selectedDay = curDate
+        ? [
+            {
+              year,
+              month,
+              day: curDate,
+              choosed: true,
+              week: conf.getDayOfWeek(year, month, curDate)
+            }
+          ]
+        : data.selectedDay;
+    }
+    return selectedDay;
   },
   /**
    * 设置日历面板数据
@@ -267,28 +274,11 @@ const conf = {
       enableArea = [],
       enableDays = [],
       enableAreaTimestamp = []
-    } = this.data.calendar;
+    } = getData('calendar');
     const thisMonthDays = conf.getThisMonthDays(year, month);
     let expectEnableDaysTimestamp = converEnableDaysToTimestamp(enableDays);
     if (enableArea.length) {
       expectEnableDaysTimestamp = delRepeatedEnableDay(enableDays, enableArea);
-    }
-    let selectedDay = [];
-    if (this.config.noDefault) {
-      selectedDay = [];
-      this.config.noDefault = false;
-    } else {
-      selectedDay = curDate
-        ? [
-            {
-              year,
-              month,
-              day: curDate,
-              choosed: true,
-              week: conf.getDayOfWeek(year, month, curDate)
-            }
-          ]
-        : this.data.calendar.selectedDay;
     }
     for (let i = 1; i <= thisMonthDays; i++) {
       days.push({
@@ -299,6 +289,7 @@ const conf = {
         week: conf.getDayOfWeek(year, month, i)
       });
     }
+    const selectedDay = conf.initSelectedDayWhenRender(year, month, curDate);
     const selectedDayCol = selectedDay.map(
       d => `${d.year}-${d.month}-${d.day}`
     );
@@ -307,8 +298,8 @@ const conf = {
     );
     days.forEach(item => {
       const cur = `${item.year}-${item.month}-${item.day}`;
-      if (selectedDayCol.indexOf(cur) !== -1) item.choosed = true;
-      if (disableDaysCol.indexOf(cur) !== -1) item.disable = true;
+      if (selectedDayCol.includes(cur)) item.choosed = true;
+      if (disableDaysCol.includes(cur)) item.disable = true;
       const timestamp = newDate(item.year, item.month, item.day).getTime();
       let setDisable = false;
       if (enableAreaTimestamp.length) {
@@ -330,7 +321,7 @@ const conf = {
         item.choosed = false;
       }
       if (
-        this.config.disablePastDay &&
+        getCalendarConfig().disablePastDay &&
         timestamp - todayTimestamp < 0 &&
         !item.disable
       ) {
@@ -341,14 +332,14 @@ const conf = {
     if (curDate) {
       tmp['calendar.selectedDay'] = selectedDay;
     }
-    this.setData(tmp);
+    setData(tmp);
   },
   /**
    * 当改变月份时触发
    * @param {object} param
    */
   whenChangeMonth({ curYear, curMonth, newYear, newMonth }) {
-    const { whenChangeMonth } = this.config || {};
+    const { whenChangeMonth } = getCalendarConfig() || {};
     if (typeof whenChangeMonth === 'function') {
       whenChangeMonth(
         {
@@ -368,7 +359,7 @@ const conf = {
    * @param {array} selectedDays  多选状态下选中的日期
    */
   afterTapDay(currentSelected, selectedDays) {
-    const config = this.config;
+    const config = getCalendarConfig();
     const { multi, afterTapDay } = config;
     if (afterTapDay && typeof afterTapDay === 'function') {
       if (!multi) {
@@ -414,13 +405,13 @@ const conf = {
       selectedDays.push(currentSelected);
     }
     if (onTapDay && typeof onTapDay === 'function') {
-      return this.config.onTapDay(currentSelected, e);
+      return getCalendarConfig().onTapDay(currentSelected, e);
     }
-    this.setData({
+    setData({
       'calendar.days': days,
       'calendar.selectedDay': selectedDays
     });
-    conf.afterTapDay.call(this, currentSelected, selectedDays);
+    conf.afterTapDay(currentSelected, selectedDays);
   },
   /**
    * 单选
@@ -432,11 +423,11 @@ const conf = {
     const { days, idx, onTapDay, e } = opts;
     const { month: sMonth, year: sYear } = selectedDays[0] || {};
     const { month: dMonth, year: dYear } = days[0] || {};
-    const { calendar = {} } = this.data;
-    if (sMonth === dMonth && sYear === dYear && !this.weekMode) {
+    const { calendar = {} } = getData();
+    if (sMonth === dMonth && sYear === dYear && !currentPage.weekMode) {
       days[selectedDays[0].day - 1].choosed = false;
     }
-    if (this.weekMode) {
+    if (currentPage.weekMode) {
       days.forEach((item, idx) => {
         if (item.day === selectedDays[0].day) days[idx].choosed = false;
       });
@@ -449,7 +440,7 @@ const conf = {
     }
     shouldMarkerTodoDay.forEach(item => {
       // hasTodo 是否有待办事项
-      if (this.weekMode) {
+      if (currentPage.weekMode) {
         days.forEach((_item, idx) => {
           if (+_item.day === +item.day) {
             const day = days[idx];
@@ -479,24 +470,25 @@ const conf = {
       }
     });
     const currentDay = days[idx];
+    if (!currentDay) return;
     if (currentDay.showTodoLabel) currentDay.showTodoLabel = false;
     currentDay.choosed = true;
     currentSelected = currentDay;
     if (onTapDay && typeof onTapDay === 'function') {
-      return this.config.onTapDay(currentSelected, e);
+      return getCalendarConfig().onTapDay(currentSelected, e);
     }
-    this.setData({
+    setData({
       'calendar.days': days,
       'calendar.selectedDay': [currentSelected]
     });
-    conf.afterTapDay.call(this, currentSelected);
+    conf.afterTapDay(currentSelected);
   },
   /**
    * 设置代办事项标志
    * @param {object} options 代办事项配置
    */
   setTodoLabels(options = {}) {
-    const { calendar } = this.data;
+    const calendar = getData('calendar');
     if (!calendar || !calendar.days) {
       return warn('请等待日历初始化完成后再调用该方法');
     }
@@ -517,7 +509,7 @@ const conf = {
     );
     shouldMarkerTodoDay.concat(currentMonthTodoLabels).forEach(item => {
       let target = {};
-      if (this.weekMode) {
+      if (currentPage.weekMode) {
         target = days.find(d => +d.day === +item.day);
       } else {
         target = days[item.day - 1];
@@ -538,14 +530,14 @@ const conf = {
     } else {
       o['calendar.todoLabelCircle'] = circle;
     }
-    this.setData(o);
+    setData(o);
   },
   /**
    * 筛选待办事项
    * @param {array} todos 需要删除待办标记的日期
    */
   filterTodos(todos) {
-    const { todoLabels } = this.data.calendar;
+    const { todoLabels } = getData('calendar');
     const deleteTodo = todos.map(
       item => `${item.year}-${item.month}-${item.day}`
     );
@@ -560,8 +552,8 @@ const conf = {
    */
   deleteTodoLabels(todos) {
     if (!(todos instanceof Array) || !todos.length) return;
-    const todoLabels = conf.filterTodos.call(this, todos);
-    const { days, curYear, curMonth } = this.data.calendar;
+    const todoLabels = conf.filterTodos(todos);
+    const { days, curYear, curMonth } = getData('calendar');
     const currentMonthTodoLabels = todoLabels.filter(
       item => curYear === +item.year && curMonth === +item.month
     );
@@ -571,7 +563,7 @@ const conf = {
     currentMonthTodoLabels.forEach(item => {
       days[item.day - 1].showTodoLabel = !days[item.day - 1].choosed;
     });
-    this.setData({
+    setData({
       'calendar.days': days,
       'calendar.todoLabels': todoLabels
     });
@@ -580,12 +572,12 @@ const conf = {
    * 清空所有日期的待办标识
    */
   clearTodoLabels() {
-    const { days = [] } = this.data.calendar;
+    const { days = [] } = getData('calendar');
     const _days = [].concat(days);
     _days.forEach(item => {
       item.showTodoLabel = false;
     });
-    this.setData({
+    setData({
       'calendar.days': _days,
       'calendar.todoLabels': []
     });
@@ -599,7 +591,7 @@ const conf = {
     const curMonth = date.getMonth() + 1;
     const curDate = date.getDate();
     const timestamp = newDate(curYear, curMonth, curDate).getTime();
-    this.setData({
+    setData({
       'calendar.curYear': curYear,
       'calendar.curMonth': curMonth,
       'calendar.selectedDay': [
@@ -612,13 +604,13 @@ const conf = {
       ],
       'calendar.todayTimestamp': timestamp
     });
-    conf.renderCalendar.call(this, curYear, curMonth, curDate);
+    conf.renderCalendar(curYear, curMonth, curDate);
   },
   /**
    * 更新当前年月
    */
   updateCurrYearAndMonth(type) {
-    let { days, curYear, curMonth } = this.data.calendar;
+    let { days, curYear, curMonth } = getData('calendar');
     const { month: firstMonth } = days[0];
     const { month: lastMonth } = days[days.length - 1];
     const lastDayOfThisMonth = conf.getThisMonthDays(curYear, curMonth);
@@ -654,7 +646,7 @@ const conf = {
    * 计算周视图下当前这一周和当月的最后一天
    */
   calculateLastDay() {
-    const { days, curYear, curMonth } = this.data.calendar;
+    const { days, curYear, curMonth } = getData('calendar');
     const lastDayInThisWeek = days[days.length - 1].day;
     const lastDayInThisMonth = conf.getThisMonthDays(curYear, curMonth);
     return { lastDayInThisWeek, lastDayInThisMonth };
@@ -663,7 +655,7 @@ const conf = {
    * 计算周视图下当前这一周第一天
    */
   calculateFirstDay() {
-    const { days } = this.data.calendar;
+    const { days } = getData('calendar');
     const firstDayInThisWeek = days[0].day;
     return { firstDayInThisWeek };
   },
@@ -675,7 +667,7 @@ const conf = {
   firstWeekInMonth(year, month) {
     const firstDay = conf.getDayOfWeek(year, month, 1);
     const firstWeekDays = [1, 1 + (6 - firstDay)];
-    const { days } = this.data.calendar;
+    const { days } = getData('calendar');
     const daysCut = days.slice(firstWeekDays[0] - 1, firstWeekDays[1]);
     return daysCut;
   },
@@ -688,7 +680,7 @@ const conf = {
     const lastDay = conf.getThisMonthDays(year, month);
     const lastDayWeek = conf.getDayOfWeek(year, month, lastDay);
     const lastWeekDays = [lastDay - lastDayWeek, lastDay];
-    const { days } = this.data.calendar;
+    const { days } = getData('calendar');
     const daysCut = days.slice(lastWeekDays[0] - 1, lastWeekDays[1]);
     return daysCut;
   },
@@ -698,15 +690,13 @@ const conf = {
    */
   initSelectedDay(days) {
     const daysCopy = days.slice();
-    const { selectedDay = [], todoLabels = [] } = this.data.calendar;
+    const { selectedDay = [], todoLabels = [] } = getData('calendar');
     const selectedDayStr = selectedDay.map(
       item => `${item.year}+${item.month}+${item.day}`
     );
     const todoLabelsCol = todoLabels.map(d => `${d.year}-${d.month}-${d.day}`);
     daysCopy.forEach(item => {
-      if (
-        selectedDayStr.indexOf(`${item.year}+${item.month}+${item.day}`) !== -1
-      ) {
+      if (selectedDayStr.includes(`${item.year}+${item.month}+${item.day}`)) {
         item.choosed = true;
       } else {
         item.choosed = false;
@@ -716,8 +706,9 @@ const conf = {
       );
       if (idx !== -1) {
         item.showTodoLabel = !item.choosed;
-        if (item.showTodoLabel && todoLabels[idx].todoText)
-          item.todoText = todoLabels[idx].todoText;
+        const todoLabel = todoLabels[idx];
+        if (item.showTodoLabel && todoLabel && todoLabel.todoText)
+          item.todoText = todoLabel.todoText;
       }
     });
     return daysCopy;
@@ -731,7 +722,7 @@ const conf = {
       todayTimestamp,
       enableAreaTimestamp = [],
       enableDaysTimestamp = []
-    } = this.data.calendar;
+    } = getData('calendar');
     days.forEach(item => {
       const timestamp = newDate(item.year, item.month, item.day).getTime();
 
@@ -755,7 +746,7 @@ const conf = {
         item.choosed = false;
       }
       if (
-        this.config.disablePastDay &&
+        getCalendarConfig().disablePastDay &&
         timestamp - todayTimestamp < 0 &&
         !item.disable
       ) {
@@ -770,10 +761,10 @@ const conf = {
     let { lastDayInThisWeek, lastDayInThisMonth } = conf.calculateLastDay.call(
       this
     );
-    let { curYear, curMonth } = this.data.calendar;
+    let { curYear, curMonth } = getData('calendar');
     let days = [];
     if (lastDayInThisMonth - lastDayInThisWeek >= 7) {
-      const { Uyear, Umonth } = conf.updateCurrYearAndMonth.call(this, 'next');
+      const { Uyear, Umonth } = conf.updateCurrYearAndMonth('next');
       curYear = Uyear;
       curMonth = Umonth;
       for (let i = lastDayInThisWeek + 1; i <= lastDayInThisWeek + 7; i++) {
@@ -791,7 +782,7 @@ const conf = {
           day: i
         });
       }
-      const { Uyear, Umonth } = conf.updateCurrYearAndMonth.call(this, 'next');
+      const { Uyear, Umonth } = conf.updateCurrYearAndMonth('next');
       curYear = Uyear;
       curMonth = Umonth;
       for (let i = 1; i <= 7 - (lastDayInThisMonth - lastDayInThisWeek); i++) {
@@ -802,9 +793,9 @@ const conf = {
         });
       }
     }
-    days = conf.initSelectedDay.call(this, days);
-    conf.setEnableAreaOnWeekMode.call(this, days);
-    this.setData({
+    days = conf.initSelectedDay(days);
+    conf.setEnableAreaOnWeekMode(days);
+    setData({
       'calendar.curYear': curYear,
       'calendar.curMonth': curMonth,
       'calendar.days': days
@@ -815,11 +806,11 @@ const conf = {
    */
   calculatePrevWeekDays() {
     let { firstDayInThisWeek } = conf.calculateFirstDay.call(this);
-    let { curYear, curMonth } = this.data.calendar;
+    let { curYear, curMonth } = getData('calendar');
     let days = [];
 
     if (firstDayInThisWeek - 7 > 0) {
-      const { Uyear, Umonth } = conf.updateCurrYearAndMonth.call(this, 'prev');
+      const { Uyear, Umonth } = conf.updateCurrYearAndMonth('prev');
       curYear = Uyear;
       curMonth = Umonth;
       for (let i = firstDayInThisWeek - 7; i < firstDayInThisWeek; i++) {
@@ -838,7 +829,7 @@ const conf = {
           day: i
         });
       }
-      const { Uyear, Umonth } = conf.updateCurrYearAndMonth.call(this, 'prev');
+      const { Uyear, Umonth } = conf.updateCurrYearAndMonth('prev');
       curYear = Uyear;
       curMonth = Umonth;
       const prevMonthDays = conf.getThisMonthDays(curYear, curMonth);
@@ -855,9 +846,9 @@ const conf = {
       }
       days = days.concat(temp);
     }
-    days = conf.initSelectedDay.call(this, days);
-    conf.setEnableAreaOnWeekMode.call(this, days);
-    this.setData({
+    days = conf.initSelectedDay(days);
+    conf.setEnableAreaOnWeekMode(days);
+    setData({
       'calendar.curYear': curYear,
       'calendar.curMonth': curMonth,
       'calendar.days': days
@@ -868,12 +859,12 @@ const conf = {
    * @param {object} currentDay 当前选择日期
    */
   selectedDayWeekAllDays(currentDay) {
-    let { days, curYear, curMonth } = this.data.calendar;
+    let { days, curYear, curMonth } = getData('calendar');
     let { year, month, day } = currentDay;
-    let lastWeekDays = conf.lastWeekInMonth.call(this, year, month);
+    let lastWeekDays = conf.lastWeekInMonth(year, month);
     let empytGrids = [];
     let lastEmptyGrids = [];
-    const firstWeekDays = conf.firstWeekInMonth.call(this, year, month);
+    const firstWeekDays = conf.firstWeekInMonth(year, month);
     // 判断选中日期的月份是否与当前月份一致
     if (curYear !== year || curMonth !== month) day = 1;
     if (curYear !== year) year = curYear;
@@ -882,7 +873,7 @@ const conf = {
       // 当前选择的日期为该月第一周
       let temp = [];
       const lastDayInThisMonth = conf.getThisMonthDays(year, month - 1);
-      const { Uyear, Umonth } = conf.updateCurrYearAndMonth.call(this, 'prev');
+      const { Uyear, Umonth } = conf.updateCurrYearAndMonth('prev');
       curYear = Uyear;
       curMonth = Umonth;
       for (
@@ -921,8 +912,8 @@ const conf = {
       const range = [day - week, day + (6 - week)];
       days = days.slice(range[0] - 1, range[1]);
     }
-    days = conf.initSelectedDay.call(this, days);
-    this.setData({
+    days = conf.initSelectedDay(days);
+    setData({
       'calendar.days': days,
       'calendar.empytGrids': empytGrids,
       'calendar.lastEmptyGrids': lastEmptyGrids
@@ -933,19 +924,19 @@ const conf = {
    * @param {string} view  视图 [week, month]
    */
   switchWeek(view) {
-    if (this.config.multi) return warn('多选模式不能切换周月视图');
-    const { selectedDay = [], curYear, curMonth } = this.data.calendar;
+    if (getCalendarConfig().multi) return warn('多选模式不能切换周月视图');
+    const { selectedDay = [], curYear, curMonth } = getData('calendar');
     if (!selectedDay.length) return;
     const currentDay = selectedDay[0];
     if (view === 'week') {
-      if (this.weekMode) return;
-      this.weekMode = true;
-      conf.selectedDayWeekAllDays.call(this, currentDay);
+      if (currentPage.weekMode) return;
+      currentPage.weekMode = true;
+      conf.selectedDayWeekAllDays(currentDay);
     } else {
-      this.weekMode = false;
+      currentPage.weekMode = false;
       let { year, month, day } = currentDay;
       if (curYear !== year || curMonth !== month) day = 1;
-      conf.renderCalendar.call(this, curYear, curMonth, day);
+      conf.renderCalendar(curYear, curMonth, day);
     }
   },
   /**
@@ -953,7 +944,7 @@ const conf = {
    * @param {array} days  禁用
    */
   disableDays(data) {
-    const { disableDays = [], days } = this.data.calendar;
+    const { disableDays = [], days } = getData('calendar');
     if (Object.prototype.toString.call(data) !== '[object Array]') {
       return warn('disableDays 参数为数组');
     }
@@ -963,9 +954,9 @@ const conf = {
     );
     days.forEach(item => {
       const cur = `${item.year}-${item.month}-${item.day}`;
-      if (disableDaysCol.indexOf(cur) !== -1) item.disable = true;
+      if (disableDaysCol.includes(cur)) item.disable = true;
     });
-    this.setData({
+    setData({
       'calendar.days': days,
       'calendar.disableDays': _disableDays
     });
@@ -983,20 +974,15 @@ export const calculateNextWeekDays = conf.calculateNextWeekDays;
  * 获取已选择的日期
  */
 export const getSelectedDay = () => {
-  return currentPage && currentPage.data.calendar.selectedDay;
+  return getData('calendar.selectedDay');
 };
 /**
  * 跳转至指定日期
  */
 export const jump = (year, month, day) => {
-  const self = currentPage;
-  const { selectedDay } = self.data.calendar;
-  if (
-    selectedDay &&
-    +selectedDay[0].year === +year &&
-    +selectedDay[0].month === +month &&
-    +selectedDay[0].day === +day
-  ) {
+  const { selectedDay } = getData('calendar');
+  const { year: y, month: m, day: d } = selectedDay && selectedDay[0];
+  if (+y === +year && +m === +month && +d === +day) {
     return;
   }
   if (year && month) {
@@ -1007,15 +993,15 @@ export const jump = (year, month, day) => {
       'calendar.curYear': year,
       'calendar.curMonth': month
     };
-    self.setData(tmp, () => {
+    setData(tmp, () => {
       if (typeof +day === 'number') {
-        return conf.renderCalendar.call(self, year, month, day);
+        return conf.renderCalendar(year, month, day);
       }
-      conf.renderCalendar.call(self, year, month);
+      conf.renderCalendar(year, month);
     });
     return;
   }
-  conf.jumpToToday.call(self);
+  conf.jumpToToday();
 };
 /**
  * 设置代办事项日期标记
@@ -1025,33 +1011,33 @@ export const jump = (year, month, day) => {
  * @param {object[]} todos.days 需要标记的所有日期，如：[{year: 2015, month: 5, day: 12}]，其中年月日字段必填
  */
 export const setTodoLabels = todos => {
-  conf.setTodoLabels.call(currentPage, todos);
+  conf.setTodoLabels(todos);
 };
 /**
  * 删除指定日期待办标记
  * @param {array} todos 需要删除的待办日期数组
  */
 export const deleteTodoLabels = todos => {
-  conf.deleteTodoLabels.call(currentPage, todos);
+  conf.deleteTodoLabels(todos);
 };
 /**
  * 清空所有待办标记
  */
 export const clearTodoLabels = () => {
-  conf.clearTodoLabels.call(currentPage);
+  conf.clearTodoLabels();
 };
 /**
  * 获取所有 TODO 日期
  */
 export const getTodoLabels = () => {
-  return currentPage && currentPage.data.calendar.todoLabels;
+  return getData('calendar.todoLabels');
 };
 /**
  * 切换周月视图
  * @param {string} view 视图模式[week, month]
  */
 export const switchView = view => {
-  conf.switchWeek.call(currentPage, view);
+  conf.switchWeek(view);
 };
 /**
  * 禁用指定日期
@@ -1061,71 +1047,15 @@ export const switchView = view => {
  * @param {number} [days.day]
  */
 export const disableDay = (days = []) => {
-  conf.disableDays.call(currentPage, days);
+  conf.disableDays(days);
 };
-
-/**
- * 指定可选日期及可选日期数组去重
- * @param {array} enableDays 特定可选日期数组
- * @param {array} enableArea 可选日期区域数组
- */
-function delRepeatedEnableDay(enableDays = [], enableArea = []) {
-  let _startTimestamp;
-  let _endTimestamp;
-  if (enableArea.length === 2) {
-    const { startTimestamp, endTimestamp } = convertEnableAreaToTimestamp(
-      enableArea
-    );
-    _startTimestamp = startTimestamp;
-    _endTimestamp = endTimestamp;
-  }
-  const enableDaysTimestamp = converEnableDaysToTimestamp(enableDays);
-  const tmp = enableDaysTimestamp.filter(
-    item => item < _startTimestamp || item > _endTimestamp
-  );
-  return tmp;
-}
-/**
- *  指定日期区域转时间戳
- * @param {array} timearea 时间区域
- */
-function convertEnableAreaToTimestamp(timearea) {
-  if (!timearea || !timearea.length) return;
-  const start = timearea[0].split('-');
-  const end = timearea[1].split('-');
-  const startTimestamp = newDate(start[0], start[1], start[2]).getTime();
-  const endTimestamp = newDate(end[0], end[1], end[2]).getTime();
-  return {
-    start,
-    end,
-    startTimestamp,
-    endTimestamp
-  };
-}
-
-/**
- *  指定特定日期数组转时间戳
- * @param {array} enableDays 指定时间数组
- */
-function converEnableDaysToTimestamp(enableDays = []) {
-  const enableDaysTimestamp = [];
-  enableDays.forEach(item => {
-    if (typeof item !== 'string') return warn('enableDays()入参日期格式错误');
-    const tmp = item.split('-');
-    if (tmp.length !== 3) return warn('enableDays()入参日期格式错误');
-    const timestamp = newDate(tmp[0], tmp[1], tmp[2]).getTime();
-    enableDaysTimestamp.push(timestamp);
-  });
-  return enableDaysTimestamp;
-}
 
 /**
  * 指定可选日期范围
  * @param {array} area 日期访问数组
  */
 export const enableArea = (area = []) => {
-  const self = currentPage;
-  const { enableDays = [] } = self.data.calendar;
+  const { enableDays = [] } = getData('calendar');
   let expectEnableDaysTimestamp = [];
   if (enableDays.length) {
     expectEnableDaysTimestamp = delRepeatedEnableDay(enableDays, area);
@@ -1154,7 +1084,7 @@ export const enableArea = (area = []) => {
     if (startTimestamp > endTimestamp) {
       warn('enableArea()参数最小日期大于了最大日期');
     } else {
-      let { days = [], selectedDay = [] } = self.data.calendar;
+      let { days = [], selectedDay = [] } = getData('calendar');
       const daysCopy = days.slice();
       daysCopy.forEach(item => {
         const timestamp = newDate(item.year, item.month, item.day).getTime();
@@ -1175,7 +1105,7 @@ export const enableArea = (area = []) => {
           item.disable = false;
         }
       });
-      self.setData({
+      setData({
         'calendar.days': daysCopy,
         'calendar.selectedDay': selectedDay,
         'calendar.enableArea': area,
@@ -1191,15 +1121,14 @@ export const enableArea = (area = []) => {
  * @param {array} days 指定日期数组
  */
 export function enableDays(days = []) {
-  const self = currentPage;
-  const { enableArea = [], enableAreaTimestamp = [] } = self.data.calendar;
+  const { enableArea = [], enableAreaTimestamp = [] } = getData('calendar');
   let expectEnableDaysTimestamp = [];
   if (enableArea.length) {
     expectEnableDaysTimestamp = delRepeatedEnableDay(days, enableArea);
   } else {
     expectEnableDaysTimestamp = converEnableDaysToTimestamp(days);
   }
-  let { days: allDays = [], selectedDay = [] } = self.data.calendar;
+  let { days: allDays = [], selectedDay = [] } = getData('calendar');
   const daysCopy = allDays.slice();
   daysCopy.forEach(item => {
     const timestamp = newDate(item.year, item.month, item.day).getTime();
@@ -1229,7 +1158,7 @@ export function enableDays(days = []) {
       item.disable = false;
     }
   });
-  self.setData({
+  setData({
     'calendar.days': daysCopy,
     'calendar.selectedDay': selectedDay,
     'calendar.enableDays': days,
@@ -1238,11 +1167,11 @@ export function enableDays(days = []) {
 }
 
 export function setSelectedDays(selected) {
-  const self = currentPage;
-  if (!self.config.multi) {
+  const config = getCalendarConfig();
+  if (!config.multi) {
     return warn('单选模式下不能设置多日期选中，请配置 multi');
   }
-  const { selectedDay, days } = self.data.calendar;
+  const { selectedDay, days } = getData('calendar');
   let newSelectedDay = [];
   if (!selected) {
     days.map(item => {
@@ -1272,8 +1201,8 @@ export function setSelectedDays(selected) {
       }
     });
   }
-  self.config.multi = true;
-  self.setData({
+  setCalendarConfig('multi', true);
+  setData({
     'calendar.days': days,
     'calendar.selectedDay': newSelectedDay
   });
@@ -1305,7 +1234,7 @@ export default (config = {}) => {
   const weeksCh = ['日', '一', '二', '三', '四', '五', '六'];
   currentPage = getCurrentPage();
   currentPage.config = config;
-  currentPage.setData({
+  setData({
     'calendar.weeksCh': weeksCh
   });
   if (config.defaultDay && typeof config.defaultDay === 'string') {
@@ -1315,7 +1244,7 @@ export default (config = {}) => {
     }
     jump(+day[0], +day[1], +day[2]);
   } else {
-    conf.jumpToToday.call(currentPage);
+    conf.jumpToToday();
   }
   mountEventsOnPage(currentPage);
 };

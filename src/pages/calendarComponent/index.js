@@ -1,6 +1,7 @@
 import initCalendar, {
   setTodoLabels,
-  setSelectedDays
+  setSelectedDays,
+  getSelectedDay
 } from '../../component/calendar/main.js';
 
 const conf = {
@@ -34,6 +35,10 @@ const conf = {
         }, 2000);
       }
     });
+  },
+  jump() {
+    // jump(2019, 5, 3);
+    console.log(getSelectedDay());
   }
 };
 

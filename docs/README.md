@@ -2,8 +2,7 @@
 
 源码见[https://github.com/treadpit/wx_calendar ](https://github.com/treadpit/wx_calendar)
 
-<p class="tip">日历面板支持手势左右滑动</p>
-<p class="tip">建议使用组件方式引入，模板引入方式未维护</p>
+<p class="tip">支持手势左右滑动</p>
 
 ### 日历组件(Component)
 
@@ -285,6 +284,7 @@ Page(conf);
 ```
 
 ### 日期选择器(Template)
+<p class="tip">此 `template` 带有 `input` 输入框，不影响模板的使用，可配置隐藏</p>
 
 #### 1. 引入`wxml`及`wxss`
 ```xml

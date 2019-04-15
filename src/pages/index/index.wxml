@@ -2,7 +2,7 @@
     <text>日历控件目前有 Component 和 template 两种方式引入,
       <text class="comments">(模板介绍参考微信小程序官方文档)</text>
     引入方法见 README</text>
-	  <navigator class="navigator" url="/pages/calendarTemplate/index">日历控件 Template 示例</navigator>
-	  <navigator class="navigator" url="/pages/calendarComponent/index">日历控件 Component 示例</navigator>
+	  <navigator class="navigator" url="/pages/calendarComponent/index">日历组件 Component 示例</navigator>
+	  <navigator class="navigator" url="/pages/calendarTemplate/index">日历模板 Template 示例</navigator>
 	  <navigator class="navigator" url="/pages/datepickerTemplate/index">日期选择器 Template 示例</navigator>
 </view>
