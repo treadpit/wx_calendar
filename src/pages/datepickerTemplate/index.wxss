@@ -6,4 +6,18 @@
 
 button {
   margin-top: 100rpx;
+  margin-bottom: 40rpx;
+}
+
+.datepicker-input {
+  width: 300rpx;
+  height: 50rpx;
+  border: 1rpx solid #dadada;
+  border-radius: 10rpx;
+  padding: 10rpx;
+  font-size: 28rpx;
+}
+/* stylelint-disable-next-line */
+.datepicker-input::-webkit-input-placeholder {
+  color: #dadada;
 }

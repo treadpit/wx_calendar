@@ -1,3 +1,4 @@
+/* pages/calendar/calendar.wxss */
 .box {
   display: flex;
 }
@@ -67,23 +68,17 @@
   right: 0;
 }
 
-.datepicker-input {
-  width: 300rpx;
-  height: 50rpx;
-  border: 1rpx solid #dadada;
-  border-radius: 10rpx;
-  padding: 10rpx;
-  font-size: 28rpx;
-}
-/* stylelint-disable-next-line */
-.datepicker-input::-webkit-input-placeholder {
-  color: #dadada;
-}
-
 .datepicker-wrap {
   background-color: #fff;
-  box-shadow: 0 0 10rpx 0 #dadada;
+  box-shadow: 0 4rpx 20rpx 0 #ececec;
   position: relative;
+  padding: 0 10rpx 20rpx;
+  box-sizing: border-box;
+}
+
+.calendar {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .top-handle {
@@ -125,11 +120,8 @@
   text-align: center;
 }
 
-.days {
-  height: 500rpx;
-}
-
-.grid {
+.grid,
+.week {
   width: 14.285714285714286%;
 }
 
@@ -148,12 +140,33 @@
   color: #fff;
 }
 
+.todo-dot {
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background-color: #cc5226;
+}
+
+.todo-text {
+  font-size: 22rpx;
+  color: #c2c2c2;
+}
+
+.dot-day-height {
+  height: 72rpx;
+}
+
 .disable-day-color {
-  color: #ddd;
+  color: #cacaca;
 }
 
 .disable-day-bg {
-  background-color: #fbfdff;
+  background-color: #f6f6f7;
+}
+
+.day-circle {
+  border: 1rpx solid #88d2ac;
+  box-sizing: border-box;
 }
 
 .border-radius {
@@ -165,6 +178,25 @@
 
 .day-choosed-bg {
   background-color: #ff629a;
+  transition: all 0.3s;
+  animation-name: choosed;
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+}
+
+@keyframes choosed {
+  from {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.9);
+  }
+
+  to {
+    transform: scale(1);
+  }
 }
 
 .purple-bg {
@@ -245,4 +277,18 @@
 .right-border-radius {
   border-top-right-radius: 20rpx;
   border-bottom-right-radius: 20rpx;
+}
+
+.perspective {
+  perspective: 750rpx;
+}
+
+.leftRoate {
+  transition: all 1s;
+  transform: rotateY(-5deg);
+}
+
+.rightRoate {
+  transition: all 1s;
+  transform: rotateY(5deg);
 }
