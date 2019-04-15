@@ -1,6 +1,13 @@
 <import src="../../template/datepicker/index.wxml"/>
 
 <view class="datepicker-box">
-	<!-- <button type="primary" bindtap="showDatepicker"> 点击唤起日期选择器 </button> -->
+	<!-- <button type="primary" bindtap="callDatepicker" style="margin-bottom: 50rpx;"> 点击唤起日期选择器 </button> -->
+	<input
+	class="datepicker-input"
+	placeholder="请选择"
+	value="{{selectedValue || ''}}"
+	type="text"
+	bindinput="onInputDate"
+	bindfocus="callDatepicker"/>
 	<template is="datepicker" data="{{...datepicker}}" />
 </view>
