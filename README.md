@@ -50,7 +50,7 @@ const conf = {
 Page(conf);
 ```
 
-更多自定义配置及功能 [请查阅日历文档](http://calendar.isfeer.com)
+更多自定义配置及功能 [请查阅日历文档](https://treadpit.github.io/wx_calendar)
 
 ### 效果图
 
