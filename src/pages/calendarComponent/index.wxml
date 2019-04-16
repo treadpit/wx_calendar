@@ -1,1 +1,3 @@
-<calendar calendar="{{calendar}}" gesture="{{gesture}}"></calendar>
+<view style="width: 90%;margin: 0 auto;">
+  <calendar calendar="{{calendar}}" gesture="{{gesture}}"></calendar>
+</view>

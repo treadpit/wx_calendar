@@ -1,4 +1,6 @@
-.box {
+@import './iconfont//iconfont.wxss';
+
+.b {
   display: flex;
 }
 
@@ -6,20 +8,21 @@
   flex-direction: row;
 }
 
-.box-rl {
-  flex-direction: row-reverse;
-}
-
-.box-tb {
+.tb {
   flex-direction: column;
 }
 
-.box-pack-center {
+.pc {
   justify-content: center;
 }
 
-.box-align-center {
+.ac {
   align-items: center;
+}
+
+.cc {
+  align-items: center;
+  justify-content: center;
 }
 
 .box-wrap {
@@ -68,29 +71,14 @@
   height: 80rpx;
 }
 
-.prev {
-  text-align: right;
-  height: 80rpx;
-}
-
-.next {
-  height: 80rpx;
-}
-
-.prev-handle {
-  width: 80rpx;
-  height: 100%;
-}
-
+.prev-handle,
 .next-handle {
-  width: 80rpx;
-  height: 100%;
+  padding: 20rpx;
 }
 
 .date-area {
-  width: 375rpx;
   height: 80rpx;
-  text-align: center;
+  padding: 0 60rpx;
 }
 
 .weeks {
@@ -101,13 +89,11 @@
 
 .week {
   text-align: center;
-  line-height: 104rpx;
 }
 
 .grid,
 .week {
-  width: 104rpx;
-  height: 104rpx;
+  width: 14.286014285714286%;
 }
 
 .day {
@@ -125,6 +111,7 @@
   color: #fff;
 }
 
+/* todo相关样式 */
 .todo-dot {
   width: 10rpx;
   height: 10rpx;
@@ -153,6 +140,7 @@
   top: 0;
 }
 
+/* 不可选日期 */
 .disable-day-color {
   color: #cacaca;
 }
@@ -161,6 +149,7 @@
   background-color: #f6f6f7;
 }
 
+/* 日期圆圈标记 */
 .day-circle {
   border: 1rpx solid #88d2ac;
   box-sizing: border-box;
@@ -173,6 +162,7 @@
   top: 0;
 }
 
+/* 日期选中 */
 .day-choosed-bg {
   background-color: #ff629a;
   transition: all 0.3s;

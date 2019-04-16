@@ -54,4 +54,4 @@ Page(conf);
 
 ### 效果图
 
-<div align=center><img src="https://raw.githubusercontent.com/treadpit/wx_calendar/reconstruction/screenshot/calendar-example.png" width="80%" height="auto" alt="日历效果图"/></div>
+<div align=center><img src="https://raw.githubusercontent.com/treadpit/wx_calendar/reconstruction/screenshot/calendar-example.png" width="100%" height="auto" alt="日历效果图"/></div>

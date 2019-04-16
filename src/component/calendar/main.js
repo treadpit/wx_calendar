@@ -338,7 +338,7 @@ const conf = {
    * 当改变月份时触发
    * @param {object} param
    */
-  whenChangeMonth({ curYear, curMonth, newYear, newMonth }) {
+  whenChangeDate({ curYear, curMonth, newYear, newMonth }) {
     const { whenChangeMonth } = getCalendarConfig() || {};
     if (typeof whenChangeMonth === 'function') {
       whenChangeMonth(
@@ -376,10 +376,12 @@ const conf = {
   whenMulitSelect(opts = {}) {
     let { currentSelected, selectedDays = [] } = opts;
     const { days, idx, onTapDay, e } = opts;
-    days[idx].choosed = !days[idx].choosed;
-    if (!days[idx].choosed) {
-      days[idx].cancel = true; // 该次点击是否为取消日期操作
-      currentSelected = days[idx];
+    const day = days[idx];
+    if (!day) return;
+    day.choosed = !day.choosed;
+    if (!day.choosed) {
+      day.cancel = true; // 该次点击是否为取消日期操作
+      currentSelected = day;
       selectedDays = selectedDays.filter(
         item =>
           `${item.year}-${item.month}-${item.day}` !==
@@ -399,7 +401,7 @@ const conf = {
         });
       }
     } else {
-      currentSelected = days[idx];
+      currentSelected = day;
       currentSelected.cancel = false;
       currentSelected.showTodoLabel = false;
       selectedDays.push(currentSelected);
@@ -420,16 +422,19 @@ const conf = {
   whenSingleSelect(opts = {}) {
     let { currentSelected, selectedDays = [] } = opts;
     let shouldMarkerTodoDay = [];
-    const { days, idx, onTapDay, e } = opts;
-    const { month: sMonth, year: sYear } = selectedDays[0] || {};
+    const { days = [], idx, onTapDay, e } = opts;
+    const selectedDay = selectedDays[0] || {};
+    const date = selectedDay.day;
+    const { month: sMonth, year: sYear } = selectedDay;
     const { month: dMonth, year: dYear } = days[0] || {};
     const { calendar = {} } = getData();
     if (sMonth === dMonth && sYear === dYear && !currentPage.weekMode) {
-      days[selectedDays[0].day - 1].choosed = false;
+      const day = date && days[date - 1];
+      if (day) day.choosed = false;
     }
     if (currentPage.weekMode) {
       days.forEach((item, idx) => {
-        if (item.day === selectedDays[0].day) days[idx].choosed = false;
+        if (item.day === date) days[idx].choosed = false;
       });
     }
     if (calendar.todoLabels) {
@@ -457,6 +462,7 @@ const conf = {
         });
       } else {
         const day = days[item.day - 1];
+        if (!day) return;
         day.hasTodo = true;
         day.todoText = item.todoText;
         if (
@@ -515,8 +521,9 @@ const conf = {
         target = days[item.day - 1];
       }
       if (target) target.showTodoLabel = !target.choosed;
-      if (target.showTodoLabel && item.todoText)
+      if (target.showTodoLabel && item.todoText) {
         target.todoText = item.todoText;
+      }
     });
     const o = {
       'calendar.days': days,
@@ -963,7 +970,7 @@ const conf = {
   }
 };
 
-export const whenChangeMonth = conf.whenChangeMonth;
+export const whenChangeDate = conf.whenChangeDate;
 export const renderCalendar = conf.renderCalendar;
 export const whenSingleSelect = conf.whenSingleSelect;
 export const whenMulitSelect = conf.whenMulitSelect;
@@ -980,8 +987,8 @@ export const getSelectedDay = () => {
  * 跳转至指定日期
  */
 export const jump = (year, month, day) => {
-  const { selectedDay } = getData('calendar');
-  const { year: y, month: m, day: d } = selectedDay && selectedDay[0];
+  const { selectedDay = [] } = getData('calendar');
+  const { year: y, month: m, day: d } = selectedDay[0] || {};
   if (+y === +year && +m === +month && +d === +day) {
     return;
   }
@@ -1244,7 +1251,7 @@ export default (config = {}) => {
     }
     jump(+day[0], +day[1], +day[2]);
   } else {
-    conf.jumpToToday();
+    jump();
   }
   mountEventsOnPage(currentPage);
 };

@@ -1,47 +1,49 @@
-<view class="flex box box-tb box-align-center" wx:if="{{calendar}}">
-  <view class="calendar pink-color box box-tb">
-    <view class="top-handle fs28 box box-lr box-align-center box-pack-center">
-      <view class="prev box box-rl" bindtap="choosePrevMonth" data-handle="prev">
-        <view class="prev-handle box box-lr box-align-center box-pack-center">《</view>
+<view class="flex b tb ac" wx:if="{{calendar}}">
+  <view class="calendar pink-color b tb">
+    <view class="top-handle fs28 b lr ac pc">
+      <view class="prev fs36">
+        <text class="prev-handle iconfont icon-doubleleft" bindtap="chooseDate" data-type="prev_year"></text>
+        <text class="prev-handle iconfont icon-left" bindtap="chooseDate" data-type="prev_month"></text>
       </view>
-      <view class="date-area box box-lr box-align-center box-pack-center">{{calendar.curYear || "--"}} 年 {{calendar.curMonth || "--"}} 月</view>
-      <view class="next box box-lr" bindtap="chooseNextMonth" data-handle="next">
-        <view class="next-handle box box-lr box-align-center box-pack-center">》</view>
+      <view class="date-area b lr cc" bindtap="doubleClickToToday">{{calendar.curYear || "--"}} 年 {{calendar.curMonth || "--"}} 月</view>
+      <view class="next fs36">
+        <text class="next-handle iconfont icon-right" bindtap="chooseDate" data-type="next_month"></text>
+        <text class="next-handle iconfont icon-doubleright" bindtap="chooseDate" data-type="next_year"></text>
       </view>
     </view>
-    <view class="weeks box box-lr box-align-center">
+    <view class="weeks b lr ac">
       <view class="week fs28" wx:for="{{calendar.weeksCh}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
     </view>
     <view class="perspective">
-      <view class="days box box-lr box-wrap {{calendar.leftSwipe ? 'leftRoate' : ''}}  {{calendar.rightSwipe ? 'rightRoate' : ''}}"
+      <view class="days b lr box-wrap {{calendar.leftSwipe ? 'leftRoate' : ''}}  {{calendar.rightSwipe ? 'rightRoate' : ''}}"
         bindtouchstart="calendarTouchstart"
         bindtouchmove="calendarTouchmove"
         bindtouchend="calendarTouchend">
-        <view wx:if="{{calendar.empytGrids}}" class="grid disable-day-color box box-align-center box-pack-center"
+        <view wx:if="{{calendar.empytGrids}}" class="grid disable-day-color b ac pc"
           wx:for="{{calendar.empytGrids}}"
           wx:key="{{index}}"
           data-idx="{{index}}">
-            <view class="day box box-align-center box-pack-center">{{item}}</view>
+            <view class="day b ac pc">{{item}}</view>
         </view>
-        <view class="grid normal-day-color box box-align-center box-pack-center"
+        <view class="grid normal-day-color b ac pc"
           wx:for="{{calendar.days}}"
           wx:key="{{index}}"
           data-disable="{{item.disable}}"
           data-idx="{{index}}"
           bindtap="tapDayItem">
-            <view wx:if="{{!calendar.todoLabelCircle}}" class="dot-day-height box box-tb box-align-center box-pack-center">
-              <view class="day border-radius {{(item.week === 0 || item.week === 6) ? 'pink-color' : ''}} {{item.choosed ? 'day-choosed-color day-choosed-bg' : ''}} {{ item.disable ? 'disable-day-color disable-day-bg' : '' }} box box-align-center box-pack-center">{{item.day}}</view>
+            <view wx:if="{{!calendar.todoLabelCircle}}" class="dot-day-height b tb ac pc">
+              <view class="day border-radius {{(item.week === 0 || item.week === 6) ? 'pink-color' : ''}} {{item.choosed ? 'day-choosed-color day-choosed-bg' : ''}} {{ item.disable ? 'disable-day-color disable-day-bg' : '' }} b ac pc">{{item.day}}</view>
               <view wx:if="{{item.showTodoLabel}}" class="{{item.todoText ? 'todo-text' : 'todo-dot'}} {{calendar.todoLabelPos === 'bottom' ? 'todo-text-bottom' : 'todo-text-top'}}" style="background-color: {{calendar.todoLabelColor}};">{{item.todoText}}</view>
             </view>
-            <view wx:else class="dot-day-height box box-tb box-align-center box-pack-center">
-              <view class="day border-radius {{(item.week === 0 || item.week === 6) ? 'pink-color' : ''}} {{item.showTodoLabel ? 'day-circle' : '' }} {{item.choosed ? 'day-choosed-color day-choosed-bg' : ''}} {{ item.disable ? 'disable-day-color disable-day-bg' : '' }} box box-align-center box-pack-center">{{item.day}}</view>
+            <view wx:else class="dot-day-height b tb ac pc">
+              <view class="day border-radius {{(item.week === 0 || item.week === 6) ? 'pink-color' : ''}} {{item.showTodoLabel ? 'day-circle' : '' }} {{item.choosed ? 'day-choosed-color day-choosed-bg' : ''}} {{ item.disable ? 'disable-day-color disable-day-bg' : '' }} b ac pc">{{item.day}}</view>
             </view>
         </view>
-        <view class="grid disable-day-color box box-align-center box-pack-center"
+        <view class="grid disable-day-color b ac pc"
           wx:for="{{calendar.lastEmptyGrids}}"
           wx:key="{{index}}"
           data-idx="{{index}}">
-            <view class="day box box-align-center box-pack-center">{{item}}</view>
+            <view class="day b ac pc">{{item}}</view>
         </view>
       </view>
     </view>

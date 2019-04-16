@@ -1,7 +1,8 @@
 import {
+  jump,
   isLeftSlide,
   isRightSlide,
-  whenChangeMonth,
+  whenChangeDate,
   renderCalendar,
   whenMulitSelect,
   whenSingleSelect,
@@ -30,52 +31,63 @@ Component({
   attached: function() {
     currentPage = getCurrentPage();
   },
+  data: {
+    handleMap: {
+      prev_year: 'chooseYear',
+      prev_month: 'chooseMonth',
+      next_month: 'chooseMonth',
+      next_year: 'chooseYear'
+    }
+  },
   methods: {
-    /**
-     * 选择上一月
-     */
-    choosePrevMonth() {
-      const { curYear, curMonth } = this.data.calendar;
-      let newYear = curYear;
-      let newMonth = curMonth - 1;
-      if (newMonth < 1) {
-        newYear = curYear - 1;
-        newMonth = 12;
-      }
-      whenChangeMonth.call(currentPage, {
-        curYear,
-        curMonth,
-        newYear,
-        newMonth
-      });
-      currentPage.setData({
-        'calendar.curYear': newYear,
-        'calendar.curMonth': newMonth
-      });
-      renderCalendar.call(currentPage, newYear, newMonth);
+    chooseDate(e) {
+      const { type } = e.currentTarget.dataset;
+      if (!type) return;
+      const methodName = this.data.handleMap[type];
+      this[methodName](type);
     },
-    /**
-     * 选择下一月
-     */
-    chooseNextMonth() {
+    chooseYear(type) {
       const { curYear, curMonth } = this.data.calendar;
       let newYear = curYear;
-      let newMonth = curMonth + 1;
-      if (newMonth > 12) {
+      let newMonth = curMonth;
+      if (type === 'prev_year') {
+        newYear = curYear - 1;
+      } else if (type === 'next_year') {
         newYear = curYear + 1;
-        newMonth = 1;
       }
-      whenChangeMonth.call(currentPage, {
-        curYear,
-        curMonth,
-        newYear,
-        newMonth
+      this.calculate(curYear, curMonth, newYear, newMonth);
+    },
+    chooseMonth(type) {
+      const { curYear, curMonth } = this.data.calendar;
+      let newYear = curYear;
+      let newMonth = curMonth;
+      if (type === 'prev_month') {
+        newMonth = curMonth - 1;
+        if (newMonth < 1) {
+          newYear = curYear - 1;
+          newMonth = 12;
+        }
+      } else if (type === 'next_month') {
+        newMonth = curMonth + 1;
+        if (newMonth > 12) {
+          newYear = curYear + 1;
+          newMonth = 1;
+        }
+      }
+      this.calculate(curYear, curMonth, newYear, newMonth);
+    },
+    calculate(cy, cm, ny, nm) {
+      whenChangeDate.call(currentPage, {
+        cy,
+        cm,
+        ny,
+        nm
       });
       currentPage.setData({
-        'calendar.curYear': newYear,
-        'calendar.curMonth': newMonth
+        'calendar.curYear': ny,
+        'calendar.curMonth': nm
       });
-      renderCalendar.call(currentPage, newYear, newMonth);
+      renderCalendar.call(currentPage, ny, nm);
     },
     /**
      * 日期点击事件
@@ -104,6 +116,24 @@ Component({
         whenSingleSelect.call(currentPage, opts);
       }
     },
+    doubleClickToToday() {
+      if (currentPage.config.multi) return;
+      if (this.count === undefined) {
+        this.count = 1;
+      } else {
+        this.count += 1;
+      }
+      if (this.lastClick) {
+        const difference = new Date().getTime() - this.lastClick;
+        if (difference < 500 && this.count >= 2) {
+          jump();
+        }
+        this.count = undefined;
+        this.lastClick = undefined;
+      } else {
+        this.lastClick = new Date().getTime();
+      }
+    },
     /**
      * 日历滑动开始
      * @param {object} e
@@ -130,7 +160,7 @@ Component({
         });
         if (currentPage.weekMode)
           return calculateNextWeekDays.call(currentPage);
-        this.chooseNextMonth();
+        this.chooseMonth('next_month');
       }
       if (isRightSlide.call(self, e)) {
         self.setData({
@@ -138,7 +168,7 @@ Component({
         });
         if (currentPage.weekMode)
           return calculatePrevWeekDays.call(currentPage);
-        this.choosePrevMonth();
+        this.chooseMonth('prev_month');
       }
     },
     calendarTouchend(e) {
