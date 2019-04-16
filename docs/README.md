@@ -2,13 +2,14 @@
 
 源码见[https://github.com/treadpit/wx_calendar ](https://github.com/treadpit/wx_calendar)
 
-<p class="tip">支持手势左右滑动</p>
+> 建议使用组件方式引入，模板引入方式未维护
 
 ### 日历组件(Component)
 
+> 单选模式下双击日历头部中间部分可跳转至当天日期
+
 支持 `Component` 引入 [自定义组件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/)
 
- 
 #### 1. 引入组件
 
 在页面 `json` 文件中配置组件
@@ -317,7 +318,7 @@ Page(conf);
 > 
 > 不同之处在于增加两个函数 showDatepicker/closeDatepicker, 控制开/关选择器面板
 > 
-> 其中showDatepicker()参数为：'2019-2-12' 形式，不传则默认为当天
+> 打开面板跳转至指定日期，使用showDatepicker()，参数形如：'2019-2-12'，不传则默认为当天
 
 ```js
 import initDatepicker, {

@@ -338,7 +338,7 @@ const conf = {
    * 当改变月份时触发
    * @param {object} param
    */
-  whenChangeMonth({ curYear, curMonth, newYear, newMonth }) {
+  whenChangeDate({ curYear, curMonth, newYear, newMonth }) {
     const { whenChangeMonth } = getCalendarConfig() || {};
     if (typeof whenChangeMonth === 'function') {
       whenChangeMonth(
@@ -970,7 +970,7 @@ const conf = {
   }
 };
 
-export const whenChangeMonth = conf.whenChangeMonth;
+export const whenChangeDate = conf.whenChangeDate;
 export const renderCalendar = conf.renderCalendar;
 export const whenSingleSelect = conf.whenSingleSelect;
 export const whenMulitSelect = conf.whenMulitSelect;
@@ -987,8 +987,8 @@ export const getSelectedDay = () => {
  * 跳转至指定日期
  */
 export const jump = (year, month, day) => {
-  const { selectedDay } = getData('calendar');
-  const { year: y, month: m, day: d } = selectedDay && selectedDay[0];
+  const { selectedDay = [] } = getData('calendar');
+  const { year: y, month: m, day: d } = selectedDay[0] || {};
   if (+y === +year && +m === +month && +d === +day) {
     return;
   }
@@ -1251,7 +1251,7 @@ export default (config = {}) => {
     }
     jump(+day[0], +day[1], +day[2]);
   } else {
-    conf.jumpToToday();
+    jump();
   }
   mountEventsOnPage(currentPage);
 };
