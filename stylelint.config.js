@@ -13,6 +13,7 @@ module.exports = {
     'selector-no-vendor-prefix': true,
     'value-no-vendor-prefix': true,
     'selector-type-no-unknown': [true, { ignoreTypes: ['page', 'navigator'] }],
-    'unit-no-unknown': [true, { ignoreUnits: ['rpx'] }]
+    'unit-no-unknown': [true, { ignoreUnits: ['rpx'] }],
+    'font-family-no-missing-generic-family-keyword': null
   }
 };

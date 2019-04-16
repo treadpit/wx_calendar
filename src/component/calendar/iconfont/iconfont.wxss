@@ -12,19 +12,19 @@
   -webkit-font-smoothing: antialiased;
 }
 
-.icon-right:before {
+.icon-right::before {
   content: "\e7eb";
 }
 
-.icon-left:before {
+.icon-left::before {
   content: "\e7ec";
 }
 
-.icon-doubleleft:before {
+.icon-doubleleft::before {
   content: "\e7ed";
 }
 
-.icon-doubleright:before {
+.icon-doubleright::before {
   content: "\e7ee";
 }
 

@@ -89,13 +89,11 @@
 
 .week {
   text-align: center;
-  /* line-height: 104rpx; */
 }
 
 .grid,
 .week {
   width: 14.286014285714286%;
-  /* height: 104rpx; */
 }
 
 .day {
@@ -163,6 +161,7 @@
   left: 0;
   top: 0;
 }
+
 /* 日期选中 */
 .day-choosed-bg {
   background-color: #ff629a;
