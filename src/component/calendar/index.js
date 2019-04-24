@@ -1,3 +1,4 @@
+import { getCurrentPage, warn } from './utils';
 import {
   jump,
   isLeftSlide,
@@ -10,9 +11,7 @@ import {
   calculatePrevWeekDays
 } from './main.js';
 
-import { getCurrentPage } from './utils';
-
-let currentPage = {};
+let page = {};
 
 Component({
   options: {
@@ -25,11 +24,11 @@ Component({
   },
   lifetimes: {
     attached: function() {
-      currentPage = getCurrentPage();
+      page = getCurrentPage();
     }
   },
   attached: function() {
-    currentPage = getCurrentPage();
+    page = getCurrentPage();
   },
   data: {
     handleMap: {
@@ -48,6 +47,7 @@ Component({
     },
     chooseYear(type) {
       const { curYear, curMonth } = this.data.calendar;
+      if (!curYear || !curMonth) return warn('异常：未获取到当前年月');
       let newYear = curYear;
       let newMonth = curMonth;
       if (type === 'prev_year') {
@@ -59,6 +59,7 @@ Component({
     },
     chooseMonth(type) {
       const { curYear, curMonth } = this.data.calendar;
+      if (!curYear || !curMonth) return warn('异常：未获取到当前年月');
       let newYear = curYear;
       let newMonth = curMonth;
       if (type === 'prev_month') {
@@ -76,18 +77,18 @@ Component({
       }
       this.calculate(curYear, curMonth, newYear, newMonth);
     },
-    calculate(cy, cm, ny, nm) {
-      whenChangeDate.call(currentPage, {
-        cy,
-        cm,
-        ny,
-        nm
+    calculate(curYear, curMonth, newYear, newMonth) {
+      whenChangeDate({
+        curYear,
+        curMonth,
+        newYear,
+        newMonth
       });
-      currentPage.setData({
-        'calendar.curYear': ny,
-        'calendar.curMonth': nm
+      page.setData({
+        'calendar.curYear': newYear,
+        'calendar.curMonth': newMonth
       });
-      renderCalendar.call(currentPage, ny, nm);
+      renderCalendar(newYear, newMonth);
     },
     /**
      * 日期点击事件
@@ -99,7 +100,7 @@ Component({
       let currentSelected = {}; // 当前选中日期
       let { days, selectedDay: selectedDays, todoLabels } =
         this.data.calendar || []; // 所有选中日期
-      const config = currentPage.config;
+      const config = page.config;
       const { multi, onTapDay } = config;
       const opts = {
         e,
@@ -111,13 +112,13 @@ Component({
         days: days.slice()
       };
       if (multi) {
-        whenMulitSelect.call(currentPage, opts);
+        whenMulitSelect(opts);
       } else {
-        whenSingleSelect.call(currentPage, opts);
+        whenSingleSelect(opts);
       }
     },
     doubleClickToToday() {
-      if (currentPage.config.multi) return;
+      if (page.config.multi) return;
       if (this.count === undefined) {
         this.count = 1;
       } else {
@@ -142,8 +143,8 @@ Component({
       const t = e.touches[0];
       const startX = t.clientX;
       const startY = t.clientY;
-      currentPage.slideLock = true; // 滑动事件加锁
-      currentPage.setData({
+      page.slideLock = true; // 滑动事件加锁
+      page.setData({
         'gesture.startX': startX,
         'gesture.startY': startY
       });
@@ -153,26 +154,24 @@ Component({
      * @param {object} e
      */
     calendarTouchmove(e) {
-      const self = currentPage;
+      const self = page;
       if (isLeftSlide.call(self, e)) {
         self.setData({
           'calendar.leftSwipe': 1
         });
-        if (currentPage.weekMode)
-          return calculateNextWeekDays.call(currentPage);
+        if (page.weekMode) return calculateNextWeekDays.call(page);
         this.chooseMonth('next_month');
       }
       if (isRightSlide.call(self, e)) {
         self.setData({
           'calendar.rightSwipe': 1
         });
-        if (currentPage.weekMode)
-          return calculatePrevWeekDays.call(currentPage);
+        if (page.weekMode) return calculatePrevWeekDays.call(page);
         this.chooseMonth('prev_month');
       }
     },
     calendarTouchend(e) {
-      currentPage.setData({
+      page.setData({
         'calendar.leftSwipe': 0,
         'calendar.rightSwipe': 0
       });
