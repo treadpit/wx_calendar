@@ -7,8 +7,11 @@ import initCalendar, {
 const conf = {
   onShow: function() {
     initCalendar({
-      controlYear: 1,
       multi: true,
+      whenChangeMonth(current, next) {
+        console.log(current);
+        console.log(next);
+      },
       afterCalendarRender(ctx) {
         const data = [
           {
