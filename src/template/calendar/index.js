@@ -28,9 +28,9 @@ function getCurrentPage() {
  * @param {number} day
  */
 function newDate(year, month, day) {
-  let cur = `${year}-${month}-${day}`;
+  let cur = `${+year}-${+month}-${+day}`;
   if (isIos()) {
-    cur = `${year}/${month}/${day}`;
+    cur = `${+year}/${+month}/${+day}`;
   }
   return new Date(cur);
 }
