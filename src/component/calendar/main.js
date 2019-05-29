@@ -50,6 +50,24 @@ function setCalendarConfig(key, value) {
   currentPage.config[key] = value;
 }
 
+function getTodayDate() {
+  const _date = new Date();
+  const year = _date.getFullYear();
+  const month = _date.getMonth() + 1;
+  const date = _date.getDate();
+  return {
+    year,
+    month,
+    date
+  };
+}
+
+function getTodayTimestamp() {
+  const { year, month, date } = getTodayDate();
+  const timestamp = newDate(year, month, date).getTime();
+  return timestamp;
+}
+
 /**
  * 上滑
  * @param {object} e 事件对象
@@ -301,6 +319,11 @@ const conf = {
       if (selectedDayCol.includes(cur)) item.choosed = true;
       if (disableDaysCol.includes(cur)) item.disable = true;
       const timestamp = newDate(item.year, item.month, item.day).getTime();
+      const { disablePastDay } = getCalendarConfig();
+      if (disablePastDay && timestamp - todayTimestamp < 0 && !item.disable) {
+        item.disable = true;
+        item.choosed = false;
+      }
       let setDisable = false;
       if (enableAreaTimestamp.length) {
         if (
@@ -319,13 +342,6 @@ const conf = {
       if (setDisable) {
         item.disable = true;
         item.choosed = false;
-      }
-      if (
-        getCalendarConfig().disablePastDay &&
-        timestamp - todayTimestamp < 0 &&
-        !item.disable
-      ) {
-        item.disable = true;
       }
     });
     const tmp = { 'calendar.days': days };
@@ -425,13 +441,17 @@ const conf = {
     const { days = [], idx, onTapDay, e } = opts;
     const selectedDay = selectedDays[0] || {};
     const date = selectedDay.day;
-    const { month: sMonth, year: sYear } = selectedDay;
+    const preSelectedDate = date && days[date - 1];
     const { month: dMonth, year: dYear } = days[0] || {};
     const { calendar = {} } = getData();
-    if (sMonth === dMonth && sYear === dYear && !currentPage.weekMode) {
-      const day = date && days[date - 1];
-      if (day) day.choosed = false;
+    const currentDay = days[idx];
+    const config = getCalendarConfig();
+    currentSelected = currentDay;
+    if (onTapDay && typeof onTapDay === 'function') {
+      return config.onTapDay(currentSelected, e);
     }
+    conf.afterTapDay(currentSelected);
+    if (!config.inverse && preSelectedDate.day === currentDay.day) return;
     if (currentPage.weekMode) {
       days.forEach((item, idx) => {
         if (item.day === date) days[idx].choosed = false;
@@ -443,8 +463,29 @@ const conf = {
         item => +item.year === dYear && +item.month === dMonth
       );
     }
-    shouldMarkerTodoDay.forEach(item => {
-      // hasTodo 是否有待办事项
+    conf.showTodoLabels(shouldMarkerTodoDay, days, selectedDays);
+    if (!currentDay) return;
+    if (preSelectedDate.day !== currentDay.day) {
+      preSelectedDate.choosed = false;
+      currentDay.choosed = true;
+      currentDay.showTodoLabel = false;
+    } else if (config.inverse) {
+      currentDay.choosed = !currentDay.choosed;
+      if (currentDay.choosed) currentDay.showTodoLabel = false;
+    }
+    setData({
+      'calendar.days': days,
+      'calendar.selectedDay': [currentSelected]
+    });
+  },
+  /**
+   * 周、月视图下单选标记代办事项
+   * @param {array} todoDays
+   * @param {array} days
+   * @param {array} selectedDays
+   */
+  showTodoLabels(todoDays, days, selectedDays) {
+    todoDays.forEach(item => {
       if (currentPage.weekMode) {
         days.forEach((_item, idx) => {
           if (+_item.day === +item.day) {
@@ -470,24 +511,10 @@ const conf = {
           selectedDays.length &&
           +selectedDays[0].day === +item.day
         ) {
-          // showTodoLabel 是否显示待办标记
           days[selectedDays[0].day - 1].showTodoLabel = true;
         }
       }
     });
-    const currentDay = days[idx];
-    if (!currentDay) return;
-    if (currentDay.showTodoLabel) currentDay.showTodoLabel = false;
-    currentDay.choosed = true;
-    currentSelected = currentDay;
-    if (onTapDay && typeof onTapDay === 'function') {
-      return getCalendarConfig().onTapDay(currentSelected, e);
-    }
-    setData({
-      'calendar.days': days,
-      'calendar.selectedDay': [currentSelected]
-    });
-    conf.afterTapDay(currentSelected);
   },
   /**
    * 设置代办事项标志
@@ -593,11 +620,8 @@ const conf = {
    * 跳转至今天
    */
   jumpToToday() {
-    const date = new Date();
-    const curYear = date.getFullYear();
-    const curMonth = date.getMonth() + 1;
-    const curDate = date.getDate();
-    const timestamp = newDate(curYear, curMonth, curDate).getTime();
+    const { year: curYear, month: curMonth, date: curDate } = getTodayDate();
+    const timestamp = getTodayTimestamp();
     setData({
       'calendar.curYear': curYear,
       'calendar.curMonth': curMonth,
@@ -996,9 +1020,11 @@ export const jump = (year, month, day) => {
     if (typeof +year !== 'number' || typeof +month !== 'number') {
       return warn('jump 函数年月日参数必须为数字');
     }
+    const timestamp = getTodayTimestamp();
     let tmp = {
       'calendar.curYear': year,
-      'calendar.curMonth': month
+      'calendar.curMonth': month,
+      'calendar.todayTimestamp': timestamp
     };
     setData(tmp, () => {
       if (typeof +day === 'number') {
@@ -1006,9 +1032,9 @@ export const jump = (year, month, day) => {
       }
       conf.renderCalendar(year, month);
     });
-    return;
+  } else {
+    conf.jumpToToday();
   }
-  conf.jumpToToday();
 };
 /**
  * 设置代办事项日期标记
