@@ -46,9 +46,10 @@ Page(conf);
 ```js
 import initCalendar from '../../component/calendar/main.js';
 
-const conf = { 
+const conf = {
   multi: true, // 是否开启多选,
   disablePastDay: true, // 是否禁选过去的日期
+  inverse: true, // 单选模式下是否支持取消选中
   /**
    * 初始化日历时指定默认选中日期，如：'2018-3-6' 或 '2018-03-06'
    * 注意：若想初始化时不默认选中当天，则将该值配置为除 undefined 以外的其他非值即可，如：空字符串, 0 ,false等。
@@ -315,9 +316,9 @@ Page(conf);
 #### 3. 日期选择器配置
 
 > 此处config配置参考日历组件
-> 
+>
 > 不同之处在于增加两个函数 showDatepicker/closeDatepicker, 控制开/关选择器面板
-> 
+>
 > 打开面板跳转至指定日期，使用showDatepicker()，参数形如：'2019-2-12'，不传则默认为当天
 
 ```js
