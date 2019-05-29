@@ -12,7 +12,7 @@
 
 #### 1. 引入组件
 
-在页面 `json` 文件中配置组件
+b将 `src/component` 文件夹拷贝至自己的组件目录，页面 `json` 文件中配置组件
 
 ```json
 {
@@ -22,66 +22,79 @@
 }
 ```
 
-在页面 `wxml` 中引入组件
+在页面 `wxml` 中引入组件，提供了几个自定义事件，数据返回均在 `event` 参数对象中（数据获取可参考小程序官方文档中自定义组件的自定义事件）
 ```xml
-<calendar calendar="{{calendar}}" gesture="{{gesture}}"></calendar>
+<calendar
+  calendarConfig="{{calendarConfig}}"
+  bind:afterTapDay="afterTapDay"
+  bind:whenChangeMonth="whenChangeMonth"
+  bind:onTapDay="onTapDay"
+  bind:afterCalendarRender="afterCalendarRender"
+></calendar>
 ```
+其中自定义事件功能对应如下，返回参数的具体格式可运行 `calendarComponent` 页面查看
+
+```js
+Page({
+  /**
+   * 选择日期后执行的事件
+   * currentSelect 当前点击的日期
+   * allSelectedDays 选择的所有日期（当mulit为true时，allSelectedDays有值）
+   */
+  afterTapDay(e) {
+    console.log('afterTapDay', e.detail); // => { currentSelect: {}, allSelectedDays: [] }
+  },
+  /**
+   * 当改变月份时触发
+   * current 当前年月
+   * next 切换后的年月
+   */
+  whenChangeMonth(e) {
+    console.log('whenChangeMonth', e.detail); // => { current: { month: 3, ... }, next: { month: 4, ... }}
+  },
+  /**
+   * 日期点击事件（此事件会完全接管点击事件）
+   * currentSelect 当前点击的日期
+   */
+  onTapDay(e) {
+    console.log('onTapDay', e.detail); // => { year: 2019, month: 12, day: 3, ...}
+  },
+  /**
+   * 日历初次渲染完成后触发事件，如设置事件标记
+   */
+  afterCalendarRender(e) {
+    console.log('afterCalendarRender', e);
+  }
+})
+```
+
 
 #### 2. 日历组件初始化
 
-```js
-import initCalendar from '../../component/calendar/main.js';
-const conf = {
-  onShow: function() {
-    initCalendar(); // 使用默认配置初始化日历
-  }
-};
-Page(conf);
-```
+在 `JSON` 中配置 及 `WXML` 文件中引入后，日历组件自动初始化，若想自定义配置，请参考以下自定义配置
 
 #### 3. 自定义配置
 
-`initCalendar()` 可传入自定义配置
+在页面 `data` 中自定义配置，`@/component/calendar/main.js` 文件中提供了一些 `API` 供调用，`API` 列表参考文末文档
 
 ```js
-import initCalendar from '../../component/calendar/main.js';
-
 const conf = {
-  multi: true, // 是否开启多选,
-  disablePastDay: true, // 是否禁选过去的日期
-  inverse: true, // 单选模式下是否支持取消选中
-  /**
-   * 初始化日历时指定默认选中日期，如：'2018-3-6' 或 '2018-03-06'
-   * 注意：若想初始化时不默认选中当天，则将该值配置为除 undefined 以外的其他非值即可，如：空字符串, 0 ,false等。
-  */
-  defaultDay: '2018-3-6', // 初始化后是否默认选中指定日期
-  noDefault: true, // 初始化后是否自动选中当天日期，优先级高于defaultDay配置，两者请勿一起配置
-  /**
-   * 选择日期后执行的事件
-   * @param { object } currentSelect 当前点击的日期
-   * @param { array } allSelectedDays 选择的所有日期（当mulit为true时，才有allSelectedDays参数）
-   */
-  afterTapDay: (currentSelect, allSelectedDays) => {},
-  /**
-   * 当改变月份时触发
-   * @param { object } current 当前年月
-   * @param { object } next 切换后的年月
-   */
-  whenChangeMonth: (current, next) => {},
-  /**
-   * 日期点击事件（此事件会完全接管点击事件）
-   * @param { object } currentSelect 当前点击的日期
-   * @param { object } event 日期点击事件对象
-   */
-  onTapDay(currentSelect, event) {},
-  /**
-   * 日历初次渲染完成后触发事件，如设置事件标记
-   * @param { object } ctx 当前页面实例
-   */
-  afterCalendarRender(ctx) {},
-}
-
-initCalendar(conf);
+  data: {
+    // 此处为日历自定义配置字段
+    calendarConfig: {
+      multi: true, // 是否开启多选,
+      inverse: true, // 单选模式下是否支持取消选中
+      disablePastDay: true, // 是否禁选过去的日期
+      /**
+       * 初始化日历时指定默认选中日期，如：'2018-3-6' 或 '2018-03-06'
+       * 注意：若想初始化时不默认选中当天，则将该值配置为除 undefined 以外的其他非值即可，如：空字符串, 0 ,false等。
+      */
+      defaultDay: '2018-3-6', // 初始化后是否默认选中指定日期
+      noDefault: true, // 初始化后是否自动选中当天日期，优先级高于defaultDay配置，两者请勿一起配置
+    }
+  }
+};
+Page(conf);
 ```
 
 #### 日历事件使用说明
@@ -91,27 +104,19 @@ initCalendar(conf);
  - (1) 手动引入方法
 
 ```js
-import initCalendar, { jump } from '../../component/calendar/main.js';
+import { jump } from '../../component/calendar/main.js';
 
 Page({
-  onLoad() {
-    initCalendar();
-  }
   onShow() {
     jump(2018, 6, 6);
   }
 })
 ```
 
-- (2) 调用当前页面实例上的方法
+- (2) 调用当前页面实例上的方法（暴露的方法均已绑定至小程序页面实例的 `calendar` 对象上）
 
 ```js
-import initCalendar from '../../component/calendar/main.js';
-
 Page({
-  onLoad() {
-    initCalendar();
-  }
   onShow() {
     this.calendar.jump(2018, 6, 6);
   }
