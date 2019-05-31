@@ -441,7 +441,7 @@ const conf = {
     const { days = [], idx, onTapDay, e } = opts;
     const selectedDay = selectedDays[0] || {};
     const date = selectedDay.day;
-    const preSelectedDate = date && days[date - 1];
+    const preSelectedDate = (date && days[date - 1]) || {};
     const { month: dMonth, year: dYear } = days[0] || {};
     const { calendar = {} } = getData();
     const currentDay = days[idx];
