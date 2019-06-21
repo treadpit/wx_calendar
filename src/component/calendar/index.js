@@ -46,30 +46,30 @@ Component({
     chooseYear(type) {
       const { curYear, curMonth } = this.data.calendar;
       if (!curYear || !curMonth) return warn('异常：未获取到当前年月');
-      let newYear = curYear;
-      let newMonth = curMonth;
+      let newYear = +curYear;
+      let newMonth = +curMonth;
       if (type === 'prev_year') {
-        newYear = curYear - 1;
+        newYear = +curYear - 1;
       } else if (type === 'next_year') {
-        newYear = curYear + 1;
+        newYear = +curYear + 1;
       }
       this.calculate(curYear, curMonth, newYear, newMonth);
     },
     chooseMonth(type) {
       const { curYear, curMonth } = this.data.calendar;
       if (!curYear || !curMonth) return warn('异常：未获取到当前年月');
-      let newYear = curYear;
-      let newMonth = curMonth;
+      let newYear = +curYear;
+      let newMonth = +curMonth;
       if (type === 'prev_month') {
-        newMonth = curMonth - 1;
+        newMonth = +curMonth - 1;
         if (newMonth < 1) {
-          newYear = curYear - 1;
+          newYear = +curYear - 1;
           newMonth = 12;
         }
       } else if (type === 'next_month') {
-        newMonth = curMonth + 1;
+        newMonth = +curMonth + 1;
         if (newMonth > 12) {
-          newYear = curYear + 1;
+          newYear = +curYear + 1;
           newMonth = 1;
         }
       }
