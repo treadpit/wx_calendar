@@ -51,9 +51,9 @@ Component({
       let newYear = curYear;
       let newMonth = curMonth;
       if (type === 'prev_year') {
-        newYear = curYear - 1;
+        newYear =  Number(curYear) - 1;
       } else if (type === 'next_year') {
-        newYear = curYear + 1;
+        newYear = Number(curYear) + 1;
       }
       this.calculate(curYear, curMonth, newYear, newMonth);
     },
@@ -63,15 +63,15 @@ Component({
       let newYear = curYear;
       let newMonth = curMonth;
       if (type === 'prev_month') {
-        newMonth = curMonth - 1;
+        newMonth = Number(curMonth) - 1;
         if (newMonth < 1) {
-          newYear = curYear - 1;
+          newYear = Number(curYear) - 1;
           newMonth = 12;
         }
       } else if (type === 'next_month') {
-        newMonth = curMonth + 1;
+        newMonth =  Number(curMonth) + 1;
         if (newMonth > 12) {
-          newYear = curYear + 1;
+          newYear = Number(curYear) + 1;
           newMonth = 1;
         }
       }
