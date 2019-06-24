@@ -9,10 +9,10 @@ import {
   convertEnableAreaToTimestamp
 } from './utils';
 
-let currentPage = {};
+let Component = {};
 
 function getData(key) {
-  if (!key) return currentPage.data;
+  if (!key) return Component.data;
   if (key.includes('.')) {
     let keys = key.split('.');
     let len = keys.length;
@@ -20,8 +20,8 @@ function getData(key) {
     for (let i = 0; i < len; i++) {
       const v = keys[i];
       if (i === 0) {
-        if (currentPage.data[v] !== undefined) {
-          tmp = currentPage.data[v];
+        if (Component.data[v] !== undefined) {
+          tmp = Component.data[v];
         }
       } else {
         if (tmp[v] !== undefined) {
@@ -31,23 +31,23 @@ function getData(key) {
     }
     return tmp;
   } else {
-    return currentPage.data[key];
+    return Component.data[key];
   }
 }
 
 function setData(data, callback = () => {}) {
   if (!data) return;
   if (typeof data === 'object') {
-    currentPage.setData(data, callback);
+    Component.setData(data, callback);
   }
 }
 
 function getCalendarConfig() {
-  return currentPage.config;
+  return Component.config;
 }
 
 function setCalendarConfig(key, value) {
-  currentPage.config[key] = value;
+  Component.config[key] = value;
 }
 
 function getTodayDate() {
@@ -182,18 +182,13 @@ const conf = {
     conf.calculateEmptyGrids(curYear, curMonth);
     conf.calculateDays(curYear, curMonth, curDate);
     const { todoLabels } = getData('calendar') || {};
-    const { afterCalendarRender } = getCalendarConfig();
     if (todoLabels && todoLabels instanceof Array) {
       conf.setTodoLabels();
     }
 
-    if (
-      afterCalendarRender &&
-      typeof afterCalendarRender === 'function' &&
-      !currentPage.firstRender
-    ) {
-      afterCalendarRender(currentPage);
-      currentPage.firstRender = true;
+    if (!Component.firstRender) {
+      Component.triggerEvent('afterCalendarRender', Component);
+      Component.firstRender = true;
     }
   },
   /**
@@ -355,19 +350,16 @@ const conf = {
    * @param {object} param
    */
   whenChangeDate({ curYear, curMonth, newYear, newMonth }) {
-    const { whenChangeMonth } = getCalendarConfig() || {};
-    if (typeof whenChangeMonth === 'function') {
-      whenChangeMonth(
-        {
-          year: curYear,
-          month: curMonth
-        },
-        {
-          year: newYear,
-          month: newMonth
-        }
-      );
-    }
+    Component.triggerEvent('whenChangeMonth', {
+      current: {
+        year: curYear,
+        month: curMonth
+      },
+      next: {
+        year: newYear,
+        month: newMonth
+      }
+    });
   },
   /**
    * 点击日期后触发事件
@@ -376,13 +368,14 @@ const conf = {
    */
   afterTapDay(currentSelected, selectedDays) {
     const config = getCalendarConfig();
-    const { multi, afterTapDay } = config;
-    if (afterTapDay && typeof afterTapDay === 'function') {
-      if (!multi) {
-        config.afterTapDay(currentSelected);
-      } else {
-        config.afterTapDay(currentSelected, selectedDays);
-      }
+    const { multi } = config;
+    if (!multi) {
+      Component.triggerEvent('afterTapDay', currentSelected);
+    } else {
+      Component.triggerEvent('afterTapDay', {
+        currentSelected,
+        selectedDays
+      });
     }
   },
   /**
@@ -391,7 +384,7 @@ const conf = {
    */
   whenMulitSelect(opts = {}) {
     let { currentSelected, selectedDays = [] } = opts;
-    const { days, idx, onTapDay, e } = opts;
+    const { days, idx } = opts;
     const day = days[idx];
     if (!day) return;
     day.choosed = !day.choosed;
@@ -422,8 +415,9 @@ const conf = {
       currentSelected.showTodoLabel = false;
       selectedDays.push(currentSelected);
     }
-    if (onTapDay && typeof onTapDay === 'function') {
-      return getCalendarConfig().onTapDay(currentSelected, e);
+    const config = getCalendarConfig();
+    if (config.takeoverTap) {
+      return Component.triggerEvent('onTapDay', currentSelected);
     }
     setData({
       'calendar.days': days,
@@ -452,7 +446,7 @@ const conf = {
     }
     conf.afterTapDay(currentSelected);
     if (!config.inverse && preSelectedDate.day === currentDay.day) return;
-    if (currentPage.weekMode) {
+    if (Component.weekMode) {
       days.forEach((item, idx) => {
         if (item.day === date) days[idx].choosed = false;
       });
@@ -486,7 +480,7 @@ const conf = {
    */
   showTodoLabels(todoDays, days, selectedDays) {
     todoDays.forEach(item => {
-      if (currentPage.weekMode) {
+      if (Component.weekMode) {
         days.forEach((_item, idx) => {
           if (+_item.day === +item.day) {
             const day = days[idx];
@@ -542,7 +536,7 @@ const conf = {
     );
     shouldMarkerTodoDay.concat(currentMonthTodoLabels).forEach(item => {
       let target = {};
-      if (currentPage.weekMode) {
+      if (Component.weekMode) {
         target = days.find(d => +d.day === +item.day);
       } else {
         target = days[item.day - 1];
@@ -960,11 +954,11 @@ const conf = {
     if (!selectedDay.length) return;
     const currentDay = selectedDay[0];
     if (view === 'week') {
-      if (currentPage.weekMode) return;
-      currentPage.weekMode = true;
+      if (Component.weekMode) return;
+      Component.weekMode = true;
       conf.selectedDayWeekAllDays(currentDay);
     } else {
-      currentPage.weekMode = false;
+      Component.weekMode = false;
       let { year, month, day } = currentDay;
       if (curYear !== year || curMonth !== month) day = 1;
       conf.renderCalendar(curYear, curMonth, day);
@@ -1260,13 +1254,13 @@ function mountEventsOnPage(page) {
   };
 }
 
-export default (config = {}) => {
+export default (component, config = {}) => {
   tips(
     '使用中若遇问题请反馈至 https://github.com/treadpit/wx_calendar/issues ✍️'
   );
   const weeksCh = ['日', '一', '二', '三', '四', '五', '六'];
-  currentPage = getCurrentPage();
-  currentPage.config = config;
+  Component = component;
+  Component.config = config;
   setData({
     'calendar.weeksCh': weeksCh
   });
@@ -1279,5 +1273,5 @@ export default (config = {}) => {
   } else {
     jump();
   }
-  mountEventsOnPage(currentPage);
+  mountEventsOnPage(getCurrentPage());
 };

@@ -23,7 +23,8 @@
 
 ### 引入组件
 
-将 `src/component` 文件夹拷贝至自己的组件目录，页面 `json` 文件中配置组件
+
+在页面 `json` 文件中配置组件
 
 ```json
 {
@@ -34,17 +35,30 @@
 ```
 
 在页面 `wxml` 中引入组件
+
 ```xml
-<calendar calendar="{{calendar}}" gesture="{{gesture}}"></calendar>
+<calendar
+  calendarConfig="{{calendarConfig}}"
+  bind:afterTapDay="afterTapDay"
+  bind:whenChangeMonth="whenChangeMonth"
+  bind:onTapDay="onTapDay"
+  bind:afterCalendarRender="afterCalendarRender"
+></calendar>
 ```
 
-### 初始化
+### 自定义配置初始化日历
 
 ```js
-import initCalendar from '../../component/calendar/main.js';
+import { enableArea } from '../../component/calendar/main.js';
 const conf = {
-  onShow: function() {
-    initCalendar(); //  自定义配置 initCalendar({ multi: true, ... })
+  data: {
+    calendarConfig: {
+      multi: true,
+      defaultDay: '2019-5-19'
+    }
+  },
+  doSomeThing() {
+    enableArea(['2018-10-7', '2018-10-28']);
   }
 };
 Page(conf);

@@ -1,5 +1,5 @@
-import { getCurrentPage, warn } from './utils';
-import {
+import { warn } from './utils';
+import initCalendar, {
   jump,
   isLeftSlide,
   isRightSlide,
@@ -11,24 +11,22 @@ import {
   calculatePrevWeekDays
 } from './main.js';
 
-let page = {};
-
 Component({
   options: {
     multipleSlots: true // 在组件定义时的选项中启用多slot支持
   },
   properties: {
-    calendar: {
+    calendarConfig: {
       type: Object
     }
   },
   lifetimes: {
     attached: function() {
-      page = getCurrentPage();
+      initCalendar(this, this.data.calendarConfig);
     }
   },
   attached: function() {
-    page = getCurrentPage();
+    initCalendar(this, this.data.calendarConfig);
   },
   data: {
     handleMap: {
@@ -48,30 +46,30 @@ Component({
     chooseYear(type) {
       const { curYear, curMonth } = this.data.calendar;
       if (!curYear || !curMonth) return warn('异常：未获取到当前年月');
-      let newYear = curYear;
-      let newMonth = curMonth;
+      let newYear = +curYear;
+      let newMonth = +curMonth;
       if (type === 'prev_year') {
-        newYear =  Number(curYear) - 1;
+        newYear = +curYear - 1;
       } else if (type === 'next_year') {
-        newYear = Number(curYear) + 1;
+        newYear = +curYear + 1;
       }
       this.calculate(curYear, curMonth, newYear, newMonth);
     },
     chooseMonth(type) {
       const { curYear, curMonth } = this.data.calendar;
       if (!curYear || !curMonth) return warn('异常：未获取到当前年月');
-      let newYear = curYear;
-      let newMonth = curMonth;
+      let newYear = +curYear;
+      let newMonth = +curMonth;
       if (type === 'prev_month') {
-        newMonth = Number(curMonth) - 1;
+        newMonth = +curMonth - 1;
         if (newMonth < 1) {
-          newYear = Number(curYear) - 1;
+          newYear = +curYear - 1;
           newMonth = 12;
         }
       } else if (type === 'next_month') {
-        newMonth =  Number(curMonth) + 1;
+        newMonth = +curMonth + 1;
         if (newMonth > 12) {
-          newYear = Number(curYear) + 1;
+          newYear = +curYear + 1;
           newMonth = 1;
         }
       }
@@ -84,7 +82,7 @@ Component({
         newYear,
         newMonth
       });
-      page.setData({
+      this.setData({
         'calendar.curYear': newYear,
         'calendar.curMonth': newMonth
       });
@@ -100,7 +98,7 @@ Component({
       let currentSelected = {}; // 当前选中日期
       let { days, selectedDay: selectedDays, todoLabels } =
         this.data.calendar || []; // 所有选中日期
-      const config = page.config;
+      const config = this.config;
       const { multi, onTapDay } = config;
       const opts = {
         e,
@@ -118,7 +116,7 @@ Component({
       }
     },
     doubleClickToToday() {
-      if (page.config.multi) return;
+      if (this.config.multi) return;
       if (this.count === undefined) {
         this.count = 1;
       } else {
@@ -143,8 +141,8 @@ Component({
       const t = e.touches[0];
       const startX = t.clientX;
       const startY = t.clientY;
-      page.slideLock = true; // 滑动事件加锁
-      page.setData({
+      this.slideLock = true; // 滑动事件加锁
+      this.setData({
         'gesture.startX': startX,
         'gesture.startY': startY
       });
@@ -154,24 +152,23 @@ Component({
      * @param {object} e
      */
     calendarTouchmove(e) {
-      const self = page;
-      if (isLeftSlide.call(self, e)) {
-        self.setData({
+      if (isLeftSlide.call(this, e)) {
+        this.setData({
           'calendar.leftSwipe': 1
         });
-        if (page.weekMode) return calculateNextWeekDays.call(page);
+        if (this.weekMode) return calculateNextWeekDays.call(this);
         this.chooseMonth('next_month');
       }
-      if (isRightSlide.call(self, e)) {
-        self.setData({
+      if (isRightSlide.call(this, e)) {
+        this.setData({
           'calendar.rightSwipe': 1
         });
-        if (page.weekMode) return calculatePrevWeekDays.call(page);
+        if (this.weekMode) return calculatePrevWeekDays.call(this);
         this.chooseMonth('prev_month');
       }
     },
     calendarTouchend(e) {
-      page.setData({
+      this.setData({
         'calendar.leftSwipe': 0,
         'calendar.rightSwipe': 0
       });

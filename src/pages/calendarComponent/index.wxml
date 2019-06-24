@@ -1,3 +1,9 @@
 <view style="width: 90%;margin: 0 auto;">
-  <calendar calendar="{{calendar}}" gesture="{{gesture}}"></calendar>
+  <calendar
+    calendarConfig="{{calendarConfig}}"
+    bind:afterTapDay="afterTapDay"
+    bind:whenChangeMonth="whenChangeMonth"
+    bind:onTapDay="onTapDay"
+    bind:afterCalendarRender="afterCalendarRender"
+  ></calendar>
 </view>
