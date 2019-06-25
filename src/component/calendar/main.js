@@ -2,6 +2,9 @@ import {
   warn,
   tips,
   newDate,
+  getDayOfWeek,
+  getThisMonthDays,
+  getFirstDayOfWeek,
   getCurrentPage,
   uniqueArrayByDate,
   delRepeatedEnableDay,
@@ -148,31 +151,6 @@ export function isRightSlide(e) {
 
 const conf = {
   /**
-   * 计算指定月份共多少天
-   * @param {number} year 年份
-   * @param {number} month  月份
-   */
-  getThisMonthDays(year, month) {
-    return new Date(year, month, 0).getDate();
-  },
-  /**
-   * 计算指定月份第一天星期几
-   * @param {number} year 年份
-   * @param {number} month  月份
-   */
-  getFirstDayOfWeek(year, month) {
-    return new Date(Date.UTC(year, month - 1, 1)).getDay();
-  },
-  /**
-   * 计算指定日期星期几
-   * @param {number} year 年份
-   * @param {number} month  月份
-   * @param {number} date 日期
-   */
-  getDayOfWeek(year, month, date) {
-    return new Date(Date.UTC(year, month - 1, date)).getDay();
-  },
-  /**
    * 渲染日历
    * @param {number} curYear
    * @param {number} curMonth
@@ -182,7 +160,11 @@ const conf = {
     conf.calculateEmptyGrids(curYear, curMonth);
     conf.calculateDays(curYear, curMonth, curDate);
     const { todoLabels } = getData('calendar') || {};
-    if (todoLabels && todoLabels instanceof Array) {
+    if (
+      todoLabels &&
+      todoLabels instanceof Array &&
+      todoLabels.find(item => +item.month === +curMonth)
+    ) {
       conf.setTodoLabels();
     }
 
@@ -207,12 +189,18 @@ const conf = {
    */
   calculatePrevMonthGrids(year, month) {
     let empytGrids = [];
-    const prevMonthDays = conf.getThisMonthDays(year, month - 1);
-    const firstDayOfWeek = conf.getFirstDayOfWeek(year, month);
+    const prevMonthDays = getThisMonthDays(year, month - 1);
+    const firstDayOfWeek = getFirstDayOfWeek(year, month);
     if (firstDayOfWeek > 0) {
       const len = prevMonthDays - firstDayOfWeek;
+      const config = getCalendarConfig() || {};
+      const { onlyShowCurrentMonth } = config;
       for (let i = prevMonthDays; i > len; i--) {
-        empytGrids.push(i);
+        if (onlyShowCurrentMonth) {
+          empytGrids.push('');
+        } else {
+          empytGrids.push(i);
+        }
       }
       setData({
         'calendar.empytGrids': empytGrids.reverse()
@@ -230,12 +218,18 @@ const conf = {
    */
   calculateNextMonthGrids(year, month) {
     let lastEmptyGrids = [];
-    const thisMonthDays = conf.getThisMonthDays(year, month);
-    const lastDayWeek = conf.getDayOfWeek(year, month, thisMonthDays);
+    const thisMonthDays = getThisMonthDays(year, month);
+    const lastDayWeek = getDayOfWeek(year, month, thisMonthDays);
     if (+lastDayWeek !== 6) {
       const len = 7 - (lastDayWeek + 1);
+      const config = getCalendarConfig() || {};
+      const { onlyShowCurrentMonth } = config;
       for (let i = 1; i <= len; i++) {
-        lastEmptyGrids.push(i);
+        if (onlyShowCurrentMonth) {
+          lastEmptyGrids.push('');
+        } else {
+          lastEmptyGrids.push(i);
+        }
       }
       setData({
         'calendar.lastEmptyGrids': lastEmptyGrids
@@ -267,7 +261,7 @@ const conf = {
               month,
               day: curDate,
               choosed: true,
-              week: conf.getDayOfWeek(year, month, curDate)
+              week: getDayOfWeek(year, month, curDate)
             }
           ]
         : data.selectedDay;
@@ -288,7 +282,7 @@ const conf = {
       enableDays = [],
       enableAreaTimestamp = []
     } = getData('calendar');
-    const thisMonthDays = conf.getThisMonthDays(year, month);
+    const thisMonthDays = getThisMonthDays(year, month);
     let expectEnableDaysTimestamp = converEnableDaysToTimestamp(enableDays);
     if (enableArea.length) {
       expectEnableDaysTimestamp = delRepeatedEnableDay(enableDays, enableArea);
@@ -299,7 +293,7 @@ const conf = {
         month,
         day: i,
         choosed: false,
-        week: conf.getDayOfWeek(year, month, i)
+        week: getDayOfWeek(year, month, i)
       });
     }
     const selectedDay = conf.initSelectedDayWhenRender(year, month, curDate);
@@ -459,18 +453,20 @@ const conf = {
     }
     conf.showTodoLabels(shouldMarkerTodoDay, days, selectedDays);
     if (!currentDay) return;
+    const tmp = {
+      'calendar.days': days
+    };
     if (preSelectedDate.day !== currentDay.day) {
       preSelectedDate.choosed = false;
       currentDay.choosed = true;
       currentDay.showTodoLabel = false;
+      tmp['calendar.selectedDay'] = [currentSelected];
     } else if (config.inverse) {
       currentDay.choosed = !currentDay.choosed;
       if (currentDay.choosed) currentDay.showTodoLabel = false;
+      tmp['calendar.selectedDay'] = [];
     }
-    setData({
-      'calendar.days': days,
-      'calendar.selectedDay': [currentSelected]
-    });
+    setData(tmp);
   },
   /**
    * 周、月视图下单选标记代办事项
@@ -514,19 +510,16 @@ const conf = {
    * 设置代办事项标志
    * @param {object} options 代办事项配置
    */
-  setTodoLabels(options = {}) {
+  setTodoLabels(options) {
+    if (options) this.todoConfig = options;
     const calendar = getData('calendar');
     if (!calendar || !calendar.days) {
       return warn('请等待日历初始化完成后再调用该方法');
     }
     const days = calendar.days.slice();
     const { curYear, curMonth } = calendar;
-    const {
-      days: todoDays = [],
-      pos = 'bottom',
-      dotColor = '',
-      circle
-    } = options;
+    const { days: todoDays = [], pos = 'bottom', dotColor = '', circle } =
+      options || this.todoConfig;
     const { todoLabels = [], todoLabelPos, todoLabelColor } = calendar;
     const shouldMarkerTodoDay = todoDays.filter(
       item => +item.year === curYear && +item.month === curMonth
@@ -638,7 +631,7 @@ const conf = {
     let { days, curYear, curMonth } = getData('calendar');
     const { month: firstMonth } = days[0];
     const { month: lastMonth } = days[days.length - 1];
-    const lastDayOfThisMonth = conf.getThisMonthDays(curYear, curMonth);
+    const lastDayOfThisMonth = getThisMonthDays(curYear, curMonth);
     const lastDayOfThisWeek = days[days.length - 1];
     const firstDayOfThisWeek = days[0];
     if (
@@ -673,7 +666,7 @@ const conf = {
   calculateLastDay() {
     const { days, curYear, curMonth } = getData('calendar');
     const lastDayInThisWeek = days[days.length - 1].day;
-    const lastDayInThisMonth = conf.getThisMonthDays(curYear, curMonth);
+    const lastDayInThisMonth = getThisMonthDays(curYear, curMonth);
     return { lastDayInThisWeek, lastDayInThisMonth };
   },
   /**
@@ -690,7 +683,7 @@ const conf = {
    * @param {number} month
    */
   firstWeekInMonth(year, month) {
-    const firstDay = conf.getDayOfWeek(year, month, 1);
+    const firstDay = getDayOfWeek(year, month, 1);
     const firstWeekDays = [1, 1 + (6 - firstDay)];
     const { days } = getData('calendar');
     const daysCut = days.slice(firstWeekDays[0] - 1, firstWeekDays[1]);
@@ -702,8 +695,8 @@ const conf = {
    * @param {number} month
    */
   lastWeekInMonth(year, month) {
-    const lastDay = conf.getThisMonthDays(year, month);
-    const lastDayWeek = conf.getDayOfWeek(year, month, lastDay);
+    const lastDay = getThisMonthDays(year, month);
+    const lastDayWeek = getDayOfWeek(year, month, lastDay);
     const lastWeekDays = [lastDay - lastDayWeek, lastDay];
     const { days } = getData('calendar');
     const daysCut = days.slice(lastWeekDays[0] - 1, lastWeekDays[1]);
@@ -857,7 +850,7 @@ const conf = {
       const { Uyear, Umonth } = conf.updateCurrYearAndMonth('prev');
       curYear = Uyear;
       curMonth = Umonth;
-      const prevMonthDays = conf.getThisMonthDays(curYear, curMonth);
+      const prevMonthDays = getThisMonthDays(curYear, curMonth);
       for (
         let i = prevMonthDays - Math.abs(firstDayInThisWeek - 7);
         i <= prevMonthDays;
@@ -897,7 +890,7 @@ const conf = {
     if (firstWeekDays.find(item => item.day === day)) {
       // 当前选择的日期为该月第一周
       let temp = [];
-      const lastDayInThisMonth = conf.getThisMonthDays(year, month - 1);
+      const lastDayInThisMonth = getThisMonthDays(year, month - 1);
       const { Uyear, Umonth } = conf.updateCurrYearAndMonth('prev');
       curYear = Uyear;
       curMonth = Umonth;
@@ -933,7 +926,7 @@ const conf = {
       }
       days = lastWeekDays.concat(temp);
     } else {
-      const week = conf.getDayOfWeek(year, month, day);
+      const week = getDayOfWeek(year, month, day);
       const range = [day - week, day + (6 - week)];
       days = days.slice(range[0] - 1, range[1]);
     }
@@ -1094,8 +1087,8 @@ export const enableArea = (area = []) => {
       startTimestamp,
       endTimestamp
     } = convertEnableAreaToTimestamp(area);
-    const startMonthDays = conf.getThisMonthDays(start[0], start[1]);
-    const endMonthDays = conf.getThisMonthDays(end[0], end[1]);
+    const startMonthDays = getThisMonthDays(start[0], start[1]);
+    const endMonthDays = getThisMonthDays(end[0], end[1]);
     if (start[2] > startMonthDays || start[2] < 1) {
       return warn('enableArea() 开始日期错误，指定日期不在当前月份天数范围内');
     }

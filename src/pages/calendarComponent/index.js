@@ -5,12 +5,14 @@ const conf = {
     calendarConfig: {
       // multi: true,
       // inverse: 1, // 单选模式下是否可以取消选择
-      defaultDay: '2019-5-19'
+      // defaultDay: '2019-5-19'
+      onlyShowCurrentMonth: 1
       // disablePastDay: 1
     }
   },
   onShow: function() {
     // initCalendar();
+    this.setTodo();
   },
   setTodo() {
     const data = [
@@ -30,6 +32,7 @@ const conf = {
     setTimeout(() => {
       setTodoLabels({
         // circle: true,
+        pos: 'top',
         days: data
       });
     }, 1000);
