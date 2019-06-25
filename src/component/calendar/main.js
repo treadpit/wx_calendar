@@ -2,6 +2,7 @@ import {
   warn,
   tips,
   newDate,
+  initialTasks,
   getCurrentPage,
   uniqueArrayByDate,
   delRepeatedEnableDay,
@@ -189,6 +190,10 @@ const conf = {
     if (!Component.firstRender) {
       Component.triggerEvent('afterCalendarRender', Component);
       Component.firstRender = true;
+      initialTasks.flag = 'finished';
+      if (initialTasks.tasks.length) {
+        initialTasks.tasks.shift()();
+      }
     }
   },
   /**
@@ -383,6 +388,7 @@ const conf = {
    * @param {object} opts
    */
   whenMulitSelect(opts = {}) {
+    Component = this;
     let { currentSelected, selectedDays = [] } = opts;
     const { days, idx } = opts;
     const day = days[idx];
@@ -430,6 +436,7 @@ const conf = {
    * @param {object} opts
    */
   whenSingleSelect(opts = {}) {
+    Component = this;
     let { currentSelected, selectedDays = [] } = opts;
     let shouldMarkerTodoDay = [];
     const { days = [], idx, onTapDay, e } = opts;
@@ -1254,7 +1261,8 @@ function mountEventsOnPage(page) {
   };
 }
 
-export default (component, config = {}) => {
+function init(component, config) {
+  initialTasks.flag = 'process';
   tips(
     '使用中若遇问题请反馈至 https://github.com/treadpit/wx_calendar/issues ✍️'
   );
@@ -1273,5 +1281,14 @@ export default (component, config = {}) => {
   } else {
     jump();
   }
+}
+
+export default (component, config = {}) => {
+  if (initialTasks.flag === 'process') {
+    return initialTasks.tasks.push(function() {
+      init(component, config);
+    });
+  }
+  init(component, config);
   mountEventsOnPage(getCurrentPage());
 };

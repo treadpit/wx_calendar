@@ -127,3 +127,8 @@ export function converEnableDaysToTimestamp(enableDays = []) {
   });
   return enableDaysTimestamp;
 }
+
+export const initialTasks = {
+  flag: 'finished', // process 处理中，finished 处理完成
+  tasks: []
+};
