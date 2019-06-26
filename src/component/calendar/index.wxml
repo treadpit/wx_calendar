@@ -5,7 +5,7 @@
         <text class="prev-handle iconfont icon-doubleleft" bindtap="chooseDate" data-type="prev_year"></text>
         <text class="prev-handle iconfont icon-left" bindtap="chooseDate" data-type="prev_month"></text>
       </view>
-      <view class="date-area b lr cc" bindtap="doubleClickToToday">{{calendar.curYear || "--"}} 年 {{calendar.curMonth || "--"}} 月</view>
+      <view class="flex date-area b lr cc" bindtap="doubleClickToToday">{{calendar.curYear || "--"}} 年 {{calendar.curMonth || "--"}} 月</view>
       <view class="next fs36">
         <text class="next-handle iconfont icon-right" bindtap="chooseDate" data-type="next_month"></text>
         <text class="next-handle iconfont icon-doubleright" bindtap="chooseDate" data-type="next_year"></text>

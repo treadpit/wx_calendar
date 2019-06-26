@@ -76,7 +76,7 @@ Component({
       this.calculate(curYear, curMonth, newYear, newMonth);
     },
     calculate(curYear, curMonth, newYear, newMonth) {
-      whenChangeDate({
+      whenChangeDate.call(this, {
         curYear,
         curMonth,
         newYear,
@@ -86,7 +86,7 @@ Component({
         'calendar.curYear': newYear,
         'calendar.curMonth': newMonth
       });
-      renderCalendar(newYear, newMonth);
+      renderCalendar.call(this, newYear, newMonth);
     },
     /**
      * 日期点击事件
@@ -110,9 +110,9 @@ Component({
         days: days.slice()
       };
       if (multi) {
-        whenMulitSelect(opts);
+        whenMulitSelect.call(this, opts);
       } else {
-        whenSingleSelect(opts);
+        whenSingleSelect.call(this, opts);
       }
     },
     doubleClickToToday() {
@@ -125,7 +125,7 @@ Component({
       if (this.lastClick) {
         const difference = new Date().getTime() - this.lastClick;
         if (difference < 500 && this.count >= 2) {
-          jump();
+          jump.call(this);
         }
         this.count = undefined;
         this.lastClick = undefined;

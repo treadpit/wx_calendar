@@ -43,6 +43,19 @@ export function getCurrentPage() {
   return pages[last];
 }
 
+export function getComponent(componentId) {
+  let page = getCurrentPage() || {};
+  if (page.selectComponent && typeof page.selectComponent === 'function') {
+    if (componentId) {
+      return page.selectComponent(componentId);
+    } else {
+      warn('请传入组件ID');
+    }
+  } else {
+    warn('该基础库暂不支持多个小程序日历组件');
+  }
+}
+
 /**
  * new Date 区分平台
  * @param {number} year
@@ -155,3 +168,9 @@ export function converEnableDaysToTimestamp(enableDays = []) {
   });
   return enableDaysTimestamp;
 }
+
+// 同一页面多个日历组件按先后顺序渲染
+export const initialTasks = {
+  flag: 'finished', // process 处理中，finished 处理完成
+  tasks: []
+};

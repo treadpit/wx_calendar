@@ -4,7 +4,7 @@
   display: flex;
 }
 
-.box-lr {
+.lr {
   flex-direction: row;
 }
 
@@ -78,7 +78,6 @@
 
 .date-area {
   height: 80rpx;
-  padding: 0 60rpx;
 }
 
 .weeks {

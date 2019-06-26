@@ -2,10 +2,12 @@ import {
   warn,
   tips,
   newDate,
+  initialTasks,
   getDayOfWeek,
   getThisMonthDays,
   getFirstDayOfWeek,
   getCurrentPage,
+  getComponent,
   uniqueArrayByDate,
   delRepeatedEnableDay,
   converEnableDaysToTimestamp,
@@ -14,7 +16,21 @@ import {
 
 let Component = {};
 
-function getData(key) {
+/**
+ * 全局赋值正在操作的组件实例，方便读/写各自的 data
+ * @param {string} componentId 要操作的组件ID
+ * @param {object} self 当前调用上下文
+ */
+function bindCurrentComponent(componentId, self) {
+  if (componentId) {
+    Component = getComponent(componentId);
+  } else if (self && self.config) {
+    Component = self;
+  }
+}
+
+function getData(key, componentId) {
+  bindCurrentComponent(componentId, this);
   if (!key) return Component.data;
   if (key.includes('.')) {
     let keys = key.split('.');
@@ -77,7 +93,7 @@ function getTodayTimestamp() {
  * @returns {boolean} 布尔值
  */
 export function isUpSlide(e) {
-  const { startX, startY } = getData('gesture');
+  const { startX, startY } = getData.call(this, 'gesture') || {};
   if (this.slideLock) {
     const t = e.touches[0];
     const deltaX = t.clientX - startX;
@@ -96,7 +112,7 @@ export function isUpSlide(e) {
  * @returns {boolean} 布尔值
  */
 export function isDownSlide(e) {
-  const { startX, startY } = getData('gesture');
+  const { startX, startY } = getData.call(this, 'gesture') || {};
   if (this.slideLock) {
     const t = e.touches[0];
     const deltaX = t.clientX - startX;
@@ -115,7 +131,7 @@ export function isDownSlide(e) {
  * @returns {boolean} 布尔值
  */
 export function isLeftSlide(e) {
-  const { startX, startY } = getData('gesture');
+  const { startX, startY } = getData.call(this, 'gesture') || {};
   if (this.slideLock) {
     const t = e.touches[0];
     const deltaX = t.clientX - startX;
@@ -134,7 +150,7 @@ export function isLeftSlide(e) {
  * @returns {boolean} 布尔值
  */
 export function isRightSlide(e) {
-  const { startX, startY } = getData('gesture');
+  const { startX, startY } = getData.call(this, 'gesture') || {};
   if (this.slideLock) {
     const t = e.touches[0];
     const deltaX = t.clientX - startX;
@@ -157,6 +173,7 @@ const conf = {
    * @param {number} curDate
    */
   renderCalendar(curYear, curMonth, curDate) {
+    if (this && this.config) Component = this;
     conf.calculateEmptyGrids(curYear, curMonth);
     conf.calculateDays(curYear, curMonth, curDate);
     const { todoLabels } = getData('calendar') || {};
@@ -171,6 +188,10 @@ const conf = {
     if (!Component.firstRender) {
       Component.triggerEvent('afterCalendarRender', Component);
       Component.firstRender = true;
+      initialTasks.flag = 'finished';
+      if (initialTasks.tasks.length) {
+        initialTasks.tasks.shift()();
+      }
     }
   },
   /**
@@ -377,6 +398,7 @@ const conf = {
    * @param {object} opts
    */
   whenMulitSelect(opts = {}) {
+    if (this && this.config) Component = this;
     let { currentSelected, selectedDays = [] } = opts;
     const { days, idx } = opts;
     const day = days[idx];
@@ -424,6 +446,7 @@ const conf = {
    * @param {object} opts
    */
   whenSingleSelect(opts = {}) {
+    if (this && this.config) Component = this;
     let { currentSelected, selectedDays = [] } = opts;
     let shouldMarkerTodoDay = [];
     const { days = [], idx, onTapDay, e } = opts;
@@ -966,14 +989,21 @@ const conf = {
     if (Object.prototype.toString.call(data) !== '[object Array]') {
       return warn('disableDays 参数为数组');
     }
-    const _disableDays = data.concat(disableDays);
-    const disableDaysCol = _disableDays.map(
-      d => `${d.year}-${d.month}-${d.day}`
-    );
-    days.forEach(item => {
-      const cur = `${item.year}-${item.month}-${item.day}`;
-      if (disableDaysCol.includes(cur)) item.disable = true;
-    });
+    let _disableDays = [];
+    if (data.length) {
+      _disableDays = uniqueArrayByDate(data.concat(disableDays));
+      const disableDaysCol = _disableDays.map(
+        d => `${d.year}-${d.month}-${d.day}`
+      );
+      days.forEach(item => {
+        const cur = `${item.year}-${item.month}-${item.day}`;
+        if (disableDaysCol.includes(cur)) item.disable = true;
+      });
+    } else {
+      days.forEach(item => {
+        item.disable = false;
+      });
+    }
     setData({
       'calendar.days': days,
       'calendar.disableDays': _disableDays
@@ -991,13 +1021,15 @@ export const calculateNextWeekDays = conf.calculateNextWeekDays;
 /**
  * 获取已选择的日期
  */
-export const getSelectedDay = () => {
+export function getSelectedDay(componentId) {
+  bindCurrentComponent(componentId, this);
   return getData('calendar.selectedDay');
-};
+}
 /**
  * 跳转至指定日期
  */
-export const jump = (year, month, day) => {
+export function jump(year, month, day, componentId) {
+  bindCurrentComponent(componentId, this);
   const { selectedDay = [] } = getData('calendar');
   const { year: y, month: m, day: d } = selectedDay[0] || {};
   if (+y === +year && +m === +month && +d === +day) {
@@ -1022,7 +1054,7 @@ export const jump = (year, month, day) => {
   } else {
     conf.jumpToToday();
   }
-};
+}
 /**
  * 设置代办事项日期标记
  * @param {object} todos  待办事项配置
@@ -1030,35 +1062,40 @@ export const jump = (year, month, day) => {
  * @param {string} [todos.dotColor] 标记点颜色，backgroundColor 支持的值都行
  * @param {object[]} todos.days 需要标记的所有日期，如：[{year: 2015, month: 5, day: 12}]，其中年月日字段必填
  */
-export const setTodoLabels = todos => {
+export function setTodoLabels(todos, componentId) {
+  bindCurrentComponent(componentId, this);
   conf.setTodoLabels(todos);
-};
+}
 /**
  * 删除指定日期待办标记
  * @param {array} todos 需要删除的待办日期数组
  */
-export const deleteTodoLabels = todos => {
+export function deleteTodoLabels(todos, componentId) {
+  bindCurrentComponent(componentId, this);
   conf.deleteTodoLabels(todos);
-};
+}
 /**
  * 清空所有待办标记
  */
-export const clearTodoLabels = () => {
+export function clearTodoLabels(componentId) {
+  bindCurrentComponent(componentId, this);
   conf.clearTodoLabels();
-};
+}
 /**
  * 获取所有 TODO 日期
  */
-export const getTodoLabels = () => {
+export function getTodoLabels(componentId) {
+  bindCurrentComponent(componentId, this);
   return getData('calendar.todoLabels');
-};
+}
 /**
  * 切换周月视图
  * @param {string} view 视图模式[week, month]
  */
-export const switchView = view => {
+export function switchView(view, componentId) {
+  bindCurrentComponent(componentId, this);
   conf.switchWeek(view);
-};
+}
 /**
  * 禁用指定日期
  * @param {array} days 日期
@@ -1066,15 +1103,17 @@ export const switchView = view => {
  * @param {number} [days.month]
  * @param {number} [days.day]
  */
-export const disableDay = (days = []) => {
+export function disableDay(days = [], componentId) {
+  bindCurrentComponent(componentId, this);
   conf.disableDays(days);
-};
+}
 
 /**
  * 指定可选日期范围
  * @param {array} area 日期访问数组
  */
-export const enableArea = (area = []) => {
+export function enableArea(area = [], componentId) {
+  bindCurrentComponent(componentId, this);
   const { enableDays = [] } = getData('calendar');
   let expectEnableDaysTimestamp = [];
   if (enableDays.length) {
@@ -1135,12 +1174,13 @@ export const enableArea = (area = []) => {
   } else {
     warn('enableArea()参数需为时间范围数组，形如：["2018-8-4" , "2018-8-24"]');
   }
-};
+}
 /**
  * 指定特定日期可选
  * @param {array} days 指定日期数组
  */
-export function enableDays(days = []) {
+export function enableDays(days = [], componentId) {
+  bindCurrentComponent(componentId, this);
   const { enableArea = [], enableAreaTimestamp = [] } = getData('calendar');
   let expectEnableDaysTimestamp = [];
   if (enableArea.length) {
@@ -1186,7 +1226,8 @@ export function enableDays(days = []) {
   });
 }
 
-export function setSelectedDays(selected) {
+export function setSelectedDays(selected, componentId) {
+  bindCurrentComponent(componentId, this);
   const config = getCalendarConfig();
   if (!config.multi) {
     return warn('单选模式下不能设置多日期选中，请配置 multi');
@@ -1247,7 +1288,8 @@ function mountEventsOnPage(page) {
   };
 }
 
-export default (component, config = {}) => {
+function init(component, config) {
+  initialTasks.flag = 'process';
   tips(
     '使用中若遇问题请反馈至 https://github.com/treadpit/wx_calendar/issues ✍️'
   );
@@ -1266,5 +1308,14 @@ export default (component, config = {}) => {
   } else {
     jump();
   }
+}
+
+export default (component, config = {}) => {
+  if (initialTasks.flag === 'process') {
+    return initialTasks.tasks.push(function() {
+      init(component, config);
+    });
+  }
+  init(component, config);
   mountEventsOnPage(getCurrentPage());
 };
