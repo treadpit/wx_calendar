@@ -58,6 +58,34 @@ export function newDate(year, month, day) {
 }
 
 /**
+ * 计算指定月份共多少天
+ * @param {number} year 年份
+ * @param {number} month  月份
+ */
+export function getThisMonthDays(year, month) {
+  return new Date(year, month, 0).getDate();
+}
+
+/**
+ * 计算指定月份第一天星期几
+ * @param {number} year 年份
+ * @param {number} month  月份
+ */
+export function getFirstDayOfWeek(year, month) {
+  return new Date(Date.UTC(year, month - 1, 1)).getDay();
+}
+
+/**
+ * 计算指定日期星期几
+ * @param {number} year 年份
+ * @param {number} month  月份
+ * @param {number} date 日期
+ */
+export function getDayOfWeek(year, month, date) {
+  return new Date(Date.UTC(year, month - 1, date)).getDay();
+}
+
+/**
  * 日期数组根据日期去重
  * @param {array} array 数组
  */

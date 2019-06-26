@@ -85,6 +85,7 @@ const conf = {
       multi: true, // 是否开启多选,
       inverse: true, // 单选模式下是否支持取消选中
       disablePastDay: true, // 是否禁选过去的日期
+      onlyShowCurrentMonth: true, // 日历面板是否只显示本月日期
       /**
        * 初始化日历时指定默认选中日期，如：'2018-3-6' 或 '2018-03-06'
        * 注意：若想初始化时不默认选中当天，则将该值配置为除 undefined 以外的其他非值即可，如：空字符串, 0 ,false等。
