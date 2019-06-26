@@ -7,12 +7,3 @@
     bind:afterCalendarRender="afterCalendarRender"
   ></calendar>
 </view>
-<view style="width: 90%;margin: 0 auto;">
-  <calendar
-    calendarConfig="{{calendarConfig2}}"
-    bind:afterTapDay="afterTapDay"
-    bind:whenChangeMonth="whenChangeMonth"
-    bind:onTapDay="onTapDay"
-    bind:afterCalendarRender="afterCalendarRender"
-  ></calendar>
-</view>

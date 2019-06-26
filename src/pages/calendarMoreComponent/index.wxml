@@ -1,0 +1,20 @@
+<view style="width: 90%;margin:0 auto;height:550rpx;border-bottom: 8rpx solid #f40;">
+  <calendar
+    id="start"
+    calendarConfig="{{calendarConfig}}"
+    bind:afterTapDay="afterTapDay1"
+    bind:whenChangeMonth="whenChangeMonth1"
+    bind:onTapDay="onTapDay1"
+    bind:afterCalendarRender="afterCalendarRender1"
+  ></calendar>
+</view>
+<view style="width: 90%;margin:0 auto;">
+  <calendar
+    id="end"
+    calendarConfig="{{calendarConfig2}}"
+    bind:afterTapDay="afterTapDay2"
+    bind:whenChangeMonth="whenChangeMonth2"
+    bind:onTapDay="onTapDay2"
+    bind:afterCalendarRender="afterCalendarRender2"
+  ></calendar>
+</view>
