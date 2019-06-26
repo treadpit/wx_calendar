@@ -966,7 +966,7 @@ const conf = {
     if (Object.prototype.toString.call(data) !== '[object Array]') {
       return warn('disableDays 参数为数组');
     }
-    const _disableDays = data.concat(disableDays);
+    const _disableDays = data;
     const disableDaysCol = _disableDays.map(
       d => `${d.year}-${d.month}-${d.day}`
     );
