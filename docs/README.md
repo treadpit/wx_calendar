@@ -261,6 +261,8 @@ getTodoLabels();
 
 #### 7. 禁选指定日期
 
+注意：若入参为空数组，则清空所有禁选日期
+
 ```js
 import { disableDay } from '../../component/calendar/main.js';
 
