@@ -962,7 +962,7 @@ const conf = {
    * @param {array} days  禁用
    */
   disableDays(data) {
-    const { disableDays = [], days } = getData('calendar');
+    const { days } = getData('calendar');
     if (Object.prototype.toString.call(data) !== '[object Array]') {
       return warn('disableDays 参数为数组');
     }
