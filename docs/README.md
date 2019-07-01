@@ -53,7 +53,7 @@ Page({
     console.log('whenChangeMonth', e.detail); // => { current: { month: 3, ... }, next: { month: 4, ... }}
   },
   /**
-   * 日期点击事件（此事件会完全接管点击事件）
+   * 日期点击事件（此事件会完全接管点击事件），需自定义配置 takeoverTap 值为真才能生效
    * currentSelect 当前点击的日期
    */
   onTapDay(e) {
@@ -83,7 +83,8 @@ const conf = {
     // 此处为日历自定义配置字段
     calendarConfig: {
       multi: true, // 是否开启多选,
-      inverse: true, // 单选模式下是否支持取消选中
+      inverse: true, // 单选模式下是否支持取消选中,
+      takeoverTap: true, // 是否完全接管日期点击事件（日期不会选中），配合 onTapDay() 使用
       disablePastDay: true, // 是否禁选过去的日期
       onlyShowCurrentMonth: true, // 日历面板是否只显示本月日期
       /**

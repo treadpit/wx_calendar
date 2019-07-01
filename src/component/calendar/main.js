@@ -449,7 +449,7 @@ const conf = {
     if (this && this.config) Component = this;
     let { currentSelected, selectedDays = [] } = opts;
     let shouldMarkerTodoDay = [];
-    const { days = [], idx, onTapDay, e } = opts;
+    const { days = [], idx } = opts;
     const selectedDay = selectedDays[0] || {};
     const date = selectedDay.day;
     const preSelectedDate = (date && days[date - 1]) || {};
@@ -458,8 +458,8 @@ const conf = {
     const currentDay = days[idx];
     const config = getCalendarConfig();
     currentSelected = currentDay;
-    if (onTapDay && typeof onTapDay === 'function') {
-      return config.onTapDay(currentSelected, e);
+    if (config.takeoverTap) {
+      return Component.triggerEvent('onTapDay', currentSelected);
     }
     conf.afterTapDay(currentSelected);
     if (!config.inverse && preSelectedDate.day === currentDay.day) return;
