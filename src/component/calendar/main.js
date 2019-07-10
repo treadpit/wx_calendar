@@ -192,6 +192,7 @@ const conf = {
       if (initialTasks.tasks.length) {
         initialTasks.tasks.shift()();
       }
+      mountEventsOnPage(getCurrentPage());
     }
   },
   /**
@@ -1317,5 +1318,4 @@ export default (component, config = {}) => {
     });
   }
   init(component, config);
-  mountEventsOnPage(getCurrentPage());
 };
