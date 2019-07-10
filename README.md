@@ -43,7 +43,6 @@
 ### 自定义配置初始化日历
 
 ```js
-import { enableArea } from '../../component/calendar/main.js';
 const conf = {
   data: {
     calendarConfig: {
@@ -52,7 +51,7 @@ const conf = {
     }
   },
   doSomeThing() {
-    enableArea(['2018-10-7', '2018-10-28']);
+    this.calendar.enableArea(['2018-10-7', '2018-10-28']);
   }
 };
 Page(conf);
