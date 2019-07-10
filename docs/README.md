@@ -108,8 +108,6 @@ Page(conf);
 具体示例可参考  [/pages/calendarMoreComponent/index页面](https://github.com/treadpit/wx_calendar/tree/master/src/pages/calendarMoreComponent)
 
 ```js
-import { getTodoLabels } from '../../component/calendar/main.js';
-
 Page({
   data: {
     calendarConfig: {
@@ -122,8 +120,8 @@ Page({
     }
   },
   doSomething() {
-    const todoLabels = getTodoLabels('#calendar1');
-    setTodoLabels({
+    const todoLabels = this.calendar.getTodoLabels('#calendar1');
+    this.calendar.setTodoLabels({
       circle: true,
       days: [{
         year: 2018,
@@ -159,7 +157,19 @@ Page({
 
 在初始化日历后，调用日历暴露的方法可采用 ***两种*** 方式，以 `jump` 函数为例
 
- - (1) 手动引入方法
+> 注意页面 **多日历组件** 时方法调用需要的参数 [componentId]，参考 **多日历组件一节** 文档说明，以下示例均以单日历组件为例
+
+- (1) 调用当前页面实例上的方法（暴露的方法均已绑定至小程序页面实例的 `calendar` 对象上）
+
+```js
+Page({
+  onShow() {
+    this.calendar.jump(2018, 6, 6);
+  }
+})
+```
+
+ - (2) 手动引入方法
 
 ```js
 import { jump } from '../../component/calendar/main.js';
@@ -171,34 +181,20 @@ import { jump } from '../../component/calendar/main.js';
 })
 ```
 
-- (2) 调用当前页面实例上的方法（暴露的方法均已绑定至小程序页面实例的 `calendar` 对象上）
-
-```js
-Page({
-  onShow() {
-    this.calendar.jump(2018, 6, 6);
-  }
-})
-```
-
 #### 4. 跳转至指定日期
 
 ```js
-import { jump } from '../../component/calendar/main.js';
 
 // 不传入参数则默认跳转至今天
-jump();
+this.calendar.jump();
 // 入参必须为数字
-jump(2018, 6); // 跳转至2018-6
-jump(2018, 6, 6); // 跳转至2018-6-6
+this.calendar.jump(2018, 6, 6); // 跳转至2018-6-6
 ```
 
 #### 5. 获取当前选择的日期
 
 ```js
-import { getSelectedDay } from '../../component/calendar/main.js';
-
-console.log(getSelectedDay());
+console.log(this.calendar.getSelectedDay());
 ```
 
 #### 6. 待办事项
@@ -206,11 +202,9 @@ console.log(getSelectedDay());
 ##### 6.1 设置待办标记
 
 ```js
-import { setTodoLabels } from '../../component/calendar/main.js';
-
 // 待办事项中若有 todoText 字段，则会在待办日期下面显示指定文字，如自定义节日等。
 
-setTodoLabels({
+this.calendar.setTodoLabels({
   // 待办点标记设置
   pos: 'bottom', // 待办点标记位置 ['top', 'bottom']
   dotColor: '#40', // 待办点标记颜色
@@ -232,9 +226,7 @@ setTodoLabels({
 ##### 6.2 删除代办标记
 
 ```js
-import { deleteTodoLabels } from '../../component/calendar/main.js';
-
-deleteTodoLabels([{
+this.calendar.deleteTodoLabels([{
   year: 2018,
   month: 5,
   day: 12,
@@ -248,16 +240,12 @@ deleteTodoLabels([{
 ##### 6.3 清空代办标记
 
 ```js
-import { clearTodoLabels } from '../../component/calendar/main.js';
-
-clearTodoLabels();
+this.calendar.clearTodoLabels();
 ```
 
 ##### 6.4 获取所有代办日期
 ```js
-import { getTodoLabels } from '../../component/calendar/main.js';
-
-getTodoLabels();
+this.calendar.getTodoLabels();
 ```
 
 #### 7. 禁选指定日期
@@ -265,9 +253,7 @@ getTodoLabels();
 注意：若入参为空数组，则清空所有禁选日期
 
 ```js
-import { disableDay } from '../../component/calendar/main.js';
-
-disableDay([{
+this.calendar.disableDay([{
   year: 2018,
   month: 7,
   day: 31,
@@ -277,11 +263,10 @@ disableDay([{
 #### 8. 指定可选日期
 
 ```js
-import { enableArea, enableDays } from '../../component/calendar/main.js';
 // 指定可选时间区域
-enableArea(['2018-11-12', '2018-11-30']);
+this.calendar.enableArea(['2018-11-12', '2018-11-30']);
 // 指定特定可选日期
-enableDays(['2018-11-12', '2018-12-3', '2019-1-3']);
+this.calendar.enableDays(['2018-11-12', '2018-12-3', '2019-1-3']);
 ```
 
 #### 9. 选中指定日期
@@ -289,7 +274,6 @@ enableDays(['2018-11-12', '2018-12-3', '2019-1-3']);
 <p class="tip">该方法仅在多选模式下可用，初始化日历时请配置 multi。参数为数组，不传参则默认全选当前月份所有日期</p>
 
 ```js
-import { setSelectedDays } from '../../component/calendar/main.js';
 const toSet = [
   {
     year: '2019',
@@ -302,7 +286,7 @@ const toSet = [
     day: 18
   }
 ]
-setSelectedDays(toSet);
+this.calendar.setSelectedDays(toSet);
 ```
 
 #### 10. 周月视图切换
@@ -310,14 +294,13 @@ setSelectedDays(toSet);
 `switchView('week')`，默认值为'month'；
 
 ```js
-import { switchView } from '../../component/calendar/main.js';
 // 切换为周视图
-switchView('week');
+this.calendar.switchView('week');
 
 // 切换为月视图
-switchView();
+this.calendar.switchView();
 // 或者
-switchView('month');
+this.calendar.switchView('month');
 ```
 
 ### 日历模板(Template)

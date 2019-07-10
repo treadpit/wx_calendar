@@ -37,13 +37,7 @@
 在页面 `wxml` 中引入组件
 
 ```xml
-<calendar
-  calendarConfig="{{calendarConfig}}"
-  bind:afterTapDay="afterTapDay"
-  bind:whenChangeMonth="whenChangeMonth"
-  bind:onTapDay="onTapDay"
-  bind:afterCalendarRender="afterCalendarRender"
-></calendar>
+<calendar calendarConfig="{{calendarConfig}}"></calendar>
 ```
 
 ### 自定义配置初始化日历

@@ -1,9 +1,3 @@
-import {
-  setTodoLabels,
-  // enableArea,
-  disableDay
-} from '../../component/calendar/main.js';
-
 const conf = {
   data: {
     calendarConfig: {
@@ -35,7 +29,7 @@ const conf = {
       }
     ];
 
-    setTodoLabels(
+    this.calendar.setTodoLabels(
       {
         // circle: true,
         // pos: 'top',
@@ -56,7 +50,7 @@ const conf = {
   afterCalendarRender1(e) {
     console.log('afterCalendarRender', e);
     this.setTodo();
-    disableDay(
+    this.calendar.disableDay(
       [
         {
           year: '2019',
@@ -75,7 +69,7 @@ const conf = {
   afterCalendarRender2(e) {
     console.log('afterCalendarRender', e);
     this.setTodo();
-    disableDay(
+    this.calendar.disableDay(
       [
         {
           year: '2019',
@@ -91,7 +85,7 @@ const conf = {
       '#end'
     );
     setTimeout(() => {
-      disableDay([], '#end');
+      this.calendar.disableDay([], '#end');
     }, 2000);
   }
 };

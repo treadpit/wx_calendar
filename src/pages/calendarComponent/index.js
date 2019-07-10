@@ -1,5 +1,3 @@
-import { setTodoLabels, enableArea } from '../../component/calendar/main.js';
-
 const conf = {
   data: {
     calendarConfig: {
@@ -36,13 +34,13 @@ const conf = {
     ];
     // 异步请求
     setTimeout(() => {
-      setTodoLabels({
+      this.calendar.setTodoLabels({
         // circle: true,
         pos: 'top',
         days: data
       });
     }, 1000);
-    enableArea(['2019-5-7', '2019-10-28']);
+    this.calendar.enableArea(['2019-5-7', '2019-10-28']);
   },
   afterTapDay(e) {
     console.log('afterTapDay', e.detail);
