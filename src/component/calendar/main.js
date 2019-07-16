@@ -212,10 +212,17 @@ const conf = {
   calculatePrevMonthGrids(year, month) {
     let empytGrids = [];
     const prevMonthDays = getThisMonthDays(year, month - 1);
-    const firstDayOfWeek = getFirstDayOfWeek(year, month);
+    let firstDayOfWeek = getFirstDayOfWeek(year, month);
+    const config = getCalendarConfig() || {};
+    if (config.firstDayOfWeek === 'Mon') {
+      if (firstDayOfWeek === 0) {
+        firstDayOfWeek = 6;
+      } else {
+        firstDayOfWeek -= 1;
+      }
+    }
     if (firstDayOfWeek > 0) {
       const len = prevMonthDays - firstDayOfWeek;
-      const config = getCalendarConfig() || {};
       const { onlyShowCurrentMonth } = config;
       for (let i = prevMonthDays; i > len; i--) {
         if (onlyShowCurrentMonth) {
@@ -241,10 +248,17 @@ const conf = {
   calculateNextMonthGrids(year, month) {
     let lastEmptyGrids = [];
     const thisMonthDays = getThisMonthDays(year, month);
-    const lastDayWeek = getDayOfWeek(year, month, thisMonthDays);
+    let lastDayWeek = getDayOfWeek(year, month, thisMonthDays);
+    const config = getCalendarConfig() || {};
+    if (config.firstDayOfWeek === 'Mon') {
+      if (lastDayWeek === 0) {
+        lastDayWeek = 6;
+      } else {
+        lastDayWeek -= 1;
+      }
+    }
     if (+lastDayWeek !== 6) {
-      const len = 7 - (lastDayWeek + 1);
-      const config = getCalendarConfig() || {};
+      let len = 7 - (lastDayWeek + 1);
       const { onlyShowCurrentMonth } = config;
       for (let i = 1; i <= len; i++) {
         if (onlyShowCurrentMonth) {
@@ -1294,7 +1308,10 @@ function init(component, config) {
   tips(
     '使用中若遇问题请反馈至 https://github.com/treadpit/wx_calendar/issues ✍️'
   );
-  const weeksCh = ['日', '一', '二', '三', '四', '五', '六'];
+  let weeksCh = ['日', '一', '二', '三', '四', '五', '六'];
+  if (config.firstDayOfWeek === 'Mon') {
+    weeksCh = ['一', '二', '三', '四', '五', '六', '日'];
+  }
   Component = component;
   Component.config = config;
   setData({
