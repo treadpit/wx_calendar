@@ -186,13 +186,13 @@ const conf = {
     }
 
     if (!Component.firstRender) {
+      mountEventsOnPage(getCurrentPage());
       Component.triggerEvent('afterCalendarRender', Component);
       Component.firstRender = true;
       initialTasks.flag = 'finished';
       if (initialTasks.tasks.length) {
         initialTasks.tasks.shift()();
       }
-      mountEventsOnPage(getCurrentPage());
     }
   },
   /**
@@ -334,13 +334,13 @@ const conf = {
     }
     const selectedDay = conf.initSelectedDayWhenRender(year, month, curDate);
     const selectedDayCol = selectedDay.map(
-      d => `${d.year}-${d.month}-${d.day}`
+      d => `${+d.year}-${+d.month}-${+d.day}`
     );
     const disableDaysCol = disableDays.map(
-      d => `${d.year}-${d.month}-${d.day}`
+      d => `${+d.year}-${+d.month}-${+d.day}`
     );
     days.forEach(item => {
-      const cur = `${item.year}-${item.month}-${item.day}`;
+      const cur = `${+item.year}-${+item.month}-${+item.day}`;
       if (selectedDayCol.includes(cur)) item.choosed = true;
       if (disableDaysCol.includes(cur)) item.disable = true;
       const timestamp = newDate(item.year, item.month, item.day).getTime();
@@ -748,17 +748,21 @@ const conf = {
     const daysCopy = days.slice();
     const { selectedDay = [], todoLabels = [] } = getData('calendar');
     const selectedDayStr = selectedDay.map(
-      item => `${item.year}+${item.month}+${item.day}`
+      item => `${+item.year}-${+item.month}-${+item.day}`
     );
-    const todoLabelsCol = todoLabels.map(d => `${d.year}-${d.month}-${d.day}`);
+    const todoLabelsCol = todoLabels.map(
+      d => `${+d.year}-${+d.month}-${+d.day}`
+    );
     daysCopy.forEach(item => {
-      if (selectedDayStr.includes(`${item.year}+${item.month}+${item.day}`)) {
+      if (
+        selectedDayStr.includes(`${+item.year}-${+item.month}-${+item.day}`)
+      ) {
         item.choosed = true;
       } else {
         item.choosed = false;
       }
       const idx = todoLabelsCol.indexOf(
-        `${item.year}-${item.month}-${item.day}`
+        `${+item.year}-${+item.month}-${+item.day}`
       );
       if (idx !== -1) {
         item.showTodoLabel = !item.choosed;
