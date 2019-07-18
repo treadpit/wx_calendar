@@ -334,7 +334,7 @@ const conf = {
     }
     const selectedDay = conf.initSelectedDayWhenRender(year, month, curDate);
     const selectedDayCol = selectedDay.map(
-      d => `${d.year}-${+d.month}-${+d.day}`
+      d => `${+d.year}-${+d.month}-${+d.day}`
     );
     const disableDaysCol = disableDays.map(
       d => `${+d.year}-${+d.month}-${+d.day}`
