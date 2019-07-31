@@ -1,12 +1,12 @@
 <view class="flex b tb ac" wx:if="{{calendar}}">
   <view class="calendar pink-color b tb">
-    <view class="top-handle fs28 b lr ac pc">
-      <view class="prev fs36">
+    <view wx:if="{{!calendarConfig.hideHeadOnWeekMode}}" class="top-handle fs28 b lr ac pc">
+      <view class="prev fs36" wx:if="{{calendarConfig.showHandlerOnWeekMode || !calendar.weekMode}}">
         <text class="prev-handle iconfont icon-doubleleft" bindtap="chooseDate" data-type="prev_year"></text>
         <text class="prev-handle iconfont icon-left" bindtap="chooseDate" data-type="prev_month"></text>
       </view>
       <view class="flex date-area b lr cc" bindtap="doubleClickToToday">{{calendar.curYear || "--"}} 年 {{calendar.curMonth || "--"}} 月</view>
-      <view class="next fs36">
+      <view class="next fs36" wx:if="{{calendarConfig.showHandlerOnWeekMode || !calendar.weekMode}}">
         <text class="next-handle iconfont icon-right" bindtap="chooseDate" data-type="next_month"></text>
         <text class="next-handle iconfont icon-doubleright" bindtap="chooseDate" data-type="next_year"></text>
       </view>

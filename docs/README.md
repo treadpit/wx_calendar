@@ -88,6 +88,8 @@ const conf = {
       disablePastDay: true, // 是否禁选过去的日期
       firstDayOfWeek: 'Mon', // 每周第一天为周一还是周日，默认按周日开始
       onlyShowCurrentMonth: true, // 日历面板是否只显示本月日期
+      hideHeadOnWeekMode: true, // 周视图模式是否隐藏日历头部
+      showHandlerOnWeekMode: true, // 周视图模式是否显示日历头部操作栏，hideHeadOnWeekMode 优先级高于此配置
       /**
        * 初始化日历时指定默认选中日期，如：'2018-3-6' 或 '2018-03-06'
        * 注意：若想初始化时不默认选中当天，则将该值配置为除 undefined 以外的其他非值即可，如：空字符串, 0 ,false等。
@@ -293,6 +295,8 @@ this.calendar.setSelectedDays(toSet);
 #### 10. 周月视图切换
 
 `switchView('week')`，默认值为'month'；
+
+> 因周视图模式特殊性，该模式下会隐藏年月切换操作栏
 
 ```js
 // 切换为周视图

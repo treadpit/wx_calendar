@@ -572,9 +572,11 @@ const conf = {
       } else {
         target = days[item.day - 1];
       }
-      if (target) target.showTodoLabel = !target.choosed;
-      if (target.showTodoLabel && item.todoText) {
-        target.todoText = item.todoText;
+      if (target) {
+        target.showTodoLabel = !target.choosed;
+        if (target.showTodoLabel && item.todoText) {
+          target.todoText = item.todoText;
+        }
       }
     });
     const o = {
@@ -831,7 +833,8 @@ const conf = {
         days.push({
           year: curYear,
           month: curMonth,
-          day: i
+          day: i,
+          week: getDayOfWeek(curYear, curMonth, i)
         });
       }
     } else {
@@ -839,7 +842,8 @@ const conf = {
         days.push({
           year: curYear,
           month: curMonth,
-          day: i
+          day: i,
+          week: getDayOfWeek(curYear, curMonth, i)
         });
       }
       const { Uyear, Umonth } = conf.updateCurrYearAndMonth('next');
@@ -849,7 +853,8 @@ const conf = {
         days.push({
           year: curYear,
           month: curMonth,
-          day: i
+          day: i,
+          week: getDayOfWeek(curYear, curMonth, i)
         });
       }
     }
@@ -877,7 +882,8 @@ const conf = {
         days.push({
           year: curYear,
           month: curMonth,
-          day: i
+          day: i,
+          week: getDayOfWeek(curYear, curMonth, i)
         });
       }
     } else {
@@ -886,7 +892,8 @@ const conf = {
         temp.push({
           year: curYear,
           month: curMonth,
-          day: i
+          day: i,
+          week: getDayOfWeek(curYear, curMonth, i)
         });
       }
       const { Uyear, Umonth } = conf.updateCurrYearAndMonth('prev');
@@ -901,7 +908,8 @@ const conf = {
         days.push({
           year: curYear,
           month: curMonth,
-          day: i
+          day: i,
+          week: getDayOfWeek(curYear, curMonth, i)
         });
       }
       days = days.concat(temp);
@@ -922,8 +930,6 @@ const conf = {
     let { days, curYear, curMonth } = getData('calendar');
     let { year, month, day } = currentDay;
     let lastWeekDays = conf.lastWeekInMonth(year, month);
-    let empytGrids = [];
-    let lastEmptyGrids = [];
     const firstWeekDays = conf.firstWeekInMonth(year, month);
     // 判断选中日期的月份是否与当前月份一致
     if (curYear !== year || curMonth !== month) day = 1;
@@ -944,7 +950,8 @@ const conf = {
         temp.push({
           year: curYear,
           month: curMonth,
-          day: i
+          day: i,
+          week: getDayOfWeek(curYear, curMonth, i)
         });
       }
       days = temp.concat(firstWeekDays);
@@ -962,7 +969,8 @@ const conf = {
           temp.push({
             year: curYear,
             month: curMonth,
-            day: i
+            day: i,
+            week: getDayOfWeek(curYear, curMonth, i)
           });
         }
       }
@@ -975,15 +983,16 @@ const conf = {
     days = conf.initSelectedDay(days);
     setData({
       'calendar.days': days,
-      'calendar.empytGrids': empytGrids,
-      'calendar.lastEmptyGrids': lastEmptyGrids
+      'calendar.empytGrids': [],
+      'calendar.lastEmptyGrids': []
     });
   },
   /**
    * 周、月视图切换
    * @param {string} view  视图 [week, month]
+   * @param {object} day  {year: 2017, month: 11, day: 1}
    */
-  switchWeek(view) {
+  switchWeek(view, day) {
     if (getCalendarConfig().multi) return warn('多选模式不能切换周月视图');
     const { selectedDay = [], curYear, curMonth } = getData('calendar');
     if (!selectedDay.length) return;
@@ -991,11 +1000,17 @@ const conf = {
     if (view === 'week') {
       if (Component.weekMode) return;
       Component.weekMode = true;
-      conf.selectedDayWeekAllDays(currentDay);
+      setData({
+        'calendar.weekMode': true
+      });
+      conf.selectedDayWeekAllDays(day || currentDay);
     } else {
       Component.weekMode = false;
       let { year, month, day } = currentDay;
       if (curYear !== year || curMonth !== month) day = 1;
+      setData({
+        'calendar.weekMode': false
+      });
       conf.renderCalendar(curYear, curMonth, day);
     }
   },
@@ -1109,11 +1124,21 @@ export function getTodoLabels(componentId) {
 }
 /**
  * 切换周月视图
- * @param {string} view 视图模式[week, month]
+ * args[0] view 视图模式[week, month]
+ * 剩余两参数为切换到某一天day(如: {year: 2019, month: 1, day: 3})或者 componentId
  */
-export function switchView(view, componentId) {
-  bindCurrentComponent(componentId, this);
-  conf.switchWeek(view);
+export function switchView(...args) {
+  const view = args[0];
+  if (!args[1]) return conf.switchWeek(view);
+  if (typeof args[1] === 'string') {
+    bindCurrentComponent(args[1], this);
+    conf.switchWeek(view, args[2]);
+  } else if (typeof args[1] === 'object') {
+    if (typeof args[2] === 'string') {
+      bindCurrentComponent(args[1], this);
+    }
+    conf.switchWeek(view, args[1]);
+  }
 }
 /**
  * 禁用指定日期
