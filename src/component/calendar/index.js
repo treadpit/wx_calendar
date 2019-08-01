@@ -46,6 +46,9 @@ Component({
     chooseYear(type) {
       const { curYear, curMonth } = this.data.calendar;
       if (!curYear || !curMonth) return warn('异常：未获取到当前年月');
+      if (this.weekMode) {
+        return console.warn('周视图下不支持点击切换年月');
+      }
       let newYear = +curYear;
       let newMonth = +curMonth;
       if (type === 'prev_year') {
@@ -58,6 +61,9 @@ Component({
     chooseMonth(type) {
       const { curYear, curMonth } = this.data.calendar;
       if (!curYear || !curMonth) return warn('异常：未获取到当前年月');
+      if (this.weekMode) {
+        return console.warn('周视图下不支持点击切换年月');
+      }
       let newYear = +curYear;
       let newMonth = +curMonth;
       if (type === 'prev_month') {
@@ -116,7 +122,7 @@ Component({
       }
     },
     doubleClickToToday() {
-      if (this.config.multi) return;
+      if (this.config.multi || this.weekMode) return;
       if (this.count === undefined) {
         this.count = 1;
       } else {
