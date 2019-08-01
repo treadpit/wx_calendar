@@ -184,7 +184,7 @@ import { jump } from '../../component/calendar/main.js';
 })
 ```
 
-#### 4. 跳转至指定日期
+#### 5. 跳转至指定日期
 
 ```js
 
@@ -194,15 +194,21 @@ this.calendar.jump();
 this.calendar.jump(2018, 6, 6); // 跳转至2018-6-6
 ```
 
-#### 5. 获取当前选择的日期
+#### 6. 获取当前选择的日期
 
 ```js
 console.log(this.calendar.getSelectedDay());
 ```
 
-#### 6. 待办事项
+#### 7. 取消所有选中日期
 
-##### 6.1 设置待办标记
+```js
+this.calendar.cancelAllSelectedDay();
+```
+
+#### 8. 待办事项
+
+##### 8.1 设置待办标记
 
 ```js
 // 待办事项中若有 todoText 字段，则会在待办日期下面显示指定文字，如自定义节日等。
@@ -226,7 +232,7 @@ this.calendar.setTodoLabels({
  });
 ```
 
-##### 6.2 删除代办标记
+##### 8.2 删除代办标记
 
 ```js
 this.calendar.deleteTodoLabels([{
@@ -240,18 +246,18 @@ this.calendar.deleteTodoLabels([{
 }]);
 ```
 
-##### 6.3 清空代办标记
+##### 8.3 清空代办标记
 
 ```js
 this.calendar.clearTodoLabels();
 ```
 
-##### 6.4 获取所有代办日期
+##### 8.4 获取所有代办日期
 ```js
 this.calendar.getTodoLabels();
 ```
 
-#### 7. 禁选指定日期
+#### 9. 禁选指定日期
 
 注意：若入参为空数组，则清空所有禁选日期
 
@@ -263,7 +269,7 @@ this.calendar.disableDay([{
 }]);
 ```
 
-#### 8. 指定可选日期
+#### 10. 指定可选日期
 
 ```js
 // 指定可选时间区域
@@ -272,7 +278,7 @@ this.calendar.enableArea(['2018-11-12', '2018-11-30']);
 this.calendar.enableDays(['2018-11-12', '2018-12-3', '2019-1-3']);
 ```
 
-#### 9. 选中指定日期
+#### 11. 选中指定日期
 
 <p class="tip">该方法仅在多选模式下可用，初始化日历时请配置 multi。参数为数组，不传参则默认全选当前月份所有日期</p>
 
@@ -292,7 +298,7 @@ const toSet = [
 this.calendar.setSelectedDays(toSet);
 ```
 
-#### 10. 周月视图切换
+#### 12. 周月视图切换
 
 `switchView('week')`，默认值为'month'；
 

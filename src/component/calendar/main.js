@@ -1059,6 +1059,23 @@ export function getSelectedDay(componentId) {
   bindCurrentComponent(componentId, this);
   return getData('calendar.selectedDay');
 }
+
+/**
+ * 取消所有选中日期
+ * @param {string} componentId
+ */
+export function cancelAllSelectedDay(componentId) {
+  bindCurrentComponent(componentId, this);
+  const days = [...getData('calendar.days')];
+  days.map(item => {
+    item.choosed = false;
+  });
+  setData({
+    'calendar.days': days,
+    'calendar.selectedDay': []
+  });
+}
+
 /**
  * 跳转至指定日期
  */
@@ -1325,6 +1342,7 @@ function mountEventsOnPage(page) {
     enableArea,
     enableDays,
     getSelectedDay,
+    cancelAllSelectedDay,
     setTodoLabels,
     deleteTodoLabels,
     clearTodoLabels,
