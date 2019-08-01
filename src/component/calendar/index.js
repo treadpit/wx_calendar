@@ -17,7 +17,8 @@ Component({
   },
   properties: {
     calendarConfig: {
-      type: Object
+      type: Object,
+      value: {}
     }
   },
   lifetimes: {
