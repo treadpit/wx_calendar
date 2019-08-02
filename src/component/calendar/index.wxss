@@ -117,12 +117,23 @@
   border-radius: 50%;
   background-color: #cc5226;
   position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .todo-text {
+  width: 150%;
   font-size: 22rpx;
   color: #c2c2c2;
   position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  overflow: hidden;
+  word-break: break-all;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-clamp: 1;
+  text-align: center;
 }
 
 .todo-dot-top {
