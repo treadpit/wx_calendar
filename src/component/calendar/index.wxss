@@ -132,7 +132,7 @@
   word-break: break-all;
   text-overflow: ellipsis;
   white-space: nowrap;
-  line-clamp: 1;
+  -webkit-line-clamp: 1;
   text-align: center;
 }
 
