@@ -5,5 +5,10 @@ indent_style = sapce
 indent_size = 2
 end_of_line = lf
 charset = utf-8
+insert_final_newline = true
 trim_trailing_whitespace = false
-insert_final_newline = false
+translate_tabs_to_spaces = true
+
+[*.wxss]
+trim_trailing_whitespace = false
+indent_size = 4
