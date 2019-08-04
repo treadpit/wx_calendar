@@ -1,11 +1,6 @@
 @import '../../template/calendar/index.wxss';
 
 .calendar-wrap {
-  padding: 0 10rpx;
-  height: 100vh;
-}
-
-.switchView {
-  width: 300rpx;
-  margin-top: 50rpx;
+    padding: 0 10rpx;
+    height: 100vh;
 }

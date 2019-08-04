@@ -36,7 +36,8 @@
     "dev": "npm run build && gulp watch",
     "test": "jest",
     "lint": "eslint src && stylelint \"src/**/*.wxss\"",
-    "fix": "eslint src --fix && stylelint \"src/**/*.wxss\" --fix"
+    "fix:js": "eslint src --fix",
+    "fix:wxss": "stylelint \"src/**/*.wxss\" --fix"
   },
   "jest": {
     "setupFiles": [
@@ -50,9 +51,14 @@
     }
   },
   "lint-staged": {
-    "*.{js,css}": [
-      "prettier --single-quote --write",
-      "git add"
+    "*.js": [
+      "npm run fix:js",
+      "prettier --write",
+      "git add ."
+    ],
+    "*.wxss": [
+      "npm run fix:wxss",
+      "git add ."
     ]
   },
   "repository": {
