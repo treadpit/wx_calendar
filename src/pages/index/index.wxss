@@ -1,33 +1,33 @@
 page {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 .wrap {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 100rpx;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 100rpx;
 }
 
 text {
-  width: 600rpx;
-  margin-bottom: 100rpx;
+    width: 600rpx;
+    margin-bottom: 100rpx;
 }
 
 .comments {
-  font-size: 28rpx;
-  color: #dadada;
+    font-size: 28rpx;
+    color: #dadada;
 }
 
 .navigator {
-  width: 500rpx;
-  height: 100rpx;
-  text-align: center;
-  line-height: 100rpx;
-  background-color: #f40;
-  color: #fff;
-  margin-bottom: 20rpx;
+    width: 500rpx;
+    height: 100rpx;
+    text-align: center;
+    line-height: 100rpx;
+    background-color: #f40;
+    color: #fff;
+    margin-bottom: 20rpx;
 }

@@ -1,206 +1,206 @@
 @import './iconfont//iconfont.wxss';
 
 .b {
-  display: flex;
+    display: flex;
 }
 
 .lr {
-  flex-direction: row;
+    flex-direction: row;
 }
 
 .tb {
-  flex-direction: column;
+    flex-direction: column;
 }
 
 .pc {
-  justify-content: center;
+    justify-content: center;
 }
 
 .ac {
-  align-items: center;
+    align-items: center;
 }
 
 .cc {
-  align-items: center;
-  justify-content: center;
+    align-items: center;
+    justify-content: center;
 }
 
 .box-wrap {
-  flex-wrap: wrap;
+    flex-wrap: wrap;
 }
 
 .flex {
-  flex-grow: 1;
+    flex-grow: 1;
 }
 
 .bg {
-  background-image: linear-gradient(to bottom, #faefe7, #ffcbd7);
-  overflow: hidden;
+    background-image: linear-gradient(to bottom, #faefe7, #ffcbd7);
+    overflow: hidden;
 }
 
 .pink-color {
-  color: #ff629a;
+    color: #ff629a;
 }
 
 .white-color {
-  color: #fff;
+    color: #fff;
 }
 
 .fs24 {
-  font-size: 24rpx;
+    font-size: 24rpx;
 }
 
 .fs28 {
-  font-size: 28rpx;
+    font-size: 28rpx;
 }
 
 .fs32 {
-  font-size: 32rpx;
+    font-size: 32rpx;
 }
 
 .fs36 {
-  font-size: 36rpx;
+    font-size: 36rpx;
 }
 
 .calendar {
-  width: 100%;
-  box-sizing: border-box;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .top-handle {
-  height: 80rpx;
+    height: 80rpx;
 }
 
 .prev-handle,
 .next-handle {
-  padding: 20rpx;
+    padding: 20rpx;
 }
 
 .date-area {
-  height: 80rpx;
+    height: 80rpx;
 }
 
 .weeks {
-  height: 50rpx;
-  line-height: 50rpx;
-  opacity: 0.5;
+    height: 50rpx;
+    line-height: 50rpx;
+    opacity: 0.5;
 }
 
 .week {
-  text-align: center;
+    text-align: center;
 }
 
 .grid,
 .week {
-  width: 14.286014285714286%;
+    width: 14.286014285714286%;
 }
 
 .day {
-  width: 60rpx;
-  height: 60rpx;
-  font-size: 26rpx;
-  font-weight: 200;
+    width: 60rpx;
+    height: 60rpx;
+    font-size: 26rpx;
+    font-weight: 200;
 }
 
 .normal-day-color {
-  color: #88d2ac;
+    color: #88d2ac;
 }
 
 .day-choosed-color {
-  color: #fff;
+    color: #fff;
 }
 
 /* todo相关样式 */
 .todo-dot {
-  width: 10rpx;
-  height: 10rpx;
-  border-radius: 50%;
-  background-color: #cc5226;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+    width: 10rpx;
+    height: 10rpx;
+    border-radius: 50%;
+    background-color: #cc5226;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .todo-text {
-  width: 150%;
-  font-size: 22rpx;
-  color: #c2c2c2;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  overflow: hidden;
-  word-break: break-all;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  -webkit-line-clamp: 1;
-  text-align: center;
+    width: 150%;
+    font-size: 22rpx;
+    color: #c2c2c2;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    overflow: hidden;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    -webkit-line-clamp: 1;
+    text-align: center;
 }
 
 .todo-dot-top {
-  top: 8rpx;
+    top: 8rpx;
 }
 
 .todo-dot.todo-dot-bottom {
-  bottom: 0;
+    bottom: 0;
 }
 
 .todo-text.todo-text-top {
-  top: -6rpx;
+    top: -6rpx;
 }
 
 .todo-text.todo-text-bottom {
-  bottom: -8rpx;
+    bottom: -8rpx;
 }
 
 .dot-day-height {
-  height: 72rpx;
-  position: relative;
-  left: 0;
-  top: 0;
+    height: 72rpx;
+    position: relative;
+    left: 0;
+    top: 0;
 }
 
 /* 不可选日期 */
 .disable-day-color {
-  color: #cacaca;
+    color: #cacaca;
 }
 
 .disable-day-bg {
-  background-color: #f6f6f7;
+    background-color: #f6f6f7;
 }
 
 /* 日期圆圈标记 */
 .day-circle {
-  border: 1rpx solid #88d2ac;
-  box-sizing: border-box;
+    border: 1rpx solid #88d2ac;
+    box-sizing: border-box;
 }
 
 .border-radius {
-  border-radius: 50%;
-  position: relative;
-  left: 0;
-  top: 0;
+    border-radius: 50%;
+    position: relative;
+    left: 0;
+    top: 0;
 }
 
 /* 日期选中 */
 .day-choosed-bg {
-  background-color: #ff629a;
-  transition: all 0.3s;
-  animation-name: choosed;
-  animation-duration: 0.5s;
-  animation-timing-function: linear;
-  animation-iteration-count: 1;
+    background-color: #ff629a;
+    transition: all 0.3s;
+    animation-name: choosed;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
 }
 
 @keyframes choosed {
-  from {
-    transform: scale(1);
-  }
+    from {
+        transform: scale(1);
+    }
 
-  50% {
-    transform: scale(0.9);
-  }
+    50% {
+        transform: scale(0.9);
+    }
 
-  to {
-    transform: scale(1);
-  }
+    to {
+        transform: scale(1);
+    }
 }

@@ -4,7 +4,7 @@ module.exports = {
   plugins: ['stylelint-no-z-index'],
   rules: {
     'at-rule-no-vendor-prefix': true,
-    indentation: 2,
+    indentation: 4,
     'media-feature-name-no-vendor-prefix': true,
     'no-missing-end-of-source-newline': null,
     'plugin/no-z-index': 2,

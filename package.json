@@ -6,6 +6,8 @@
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
+    "@commitlint/cli": "^8.1.0",
+    "@commitlint/config-conventional": "^8.1.0",
     "babel-eslint": "^8.2.1",
     "babel-jest": "^24.5.0",
     "eslint": "^4.17.0",
@@ -31,10 +33,11 @@
   },
   "scripts": {
     "build": "rm -rf dist && gulp",
-    "dev": "gulp watch",
+    "dev": "npm run build && gulp watch",
     "test": "jest",
     "lint": "eslint src && stylelint \"src/**/*.wxss\"",
-    "fix": "eslint src --fix && stylelint \"src/**/*.wxss\" --fix"
+    "fix:js": "eslint src --fix",
+    "fix:wxss": "stylelint \"src/**/*.wxss\" --fix"
   },
   "jest": {
     "setupFiles": [
@@ -43,13 +46,19 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "lint-staged": {
-    "*.{js,css}": [
-      "prettier --single-quote --write",
-      "git add"
+    "*.js": [
+      "npm run fix:js",
+      "prettier --write",
+      "git add ."
+    ],
+    "*.wxss": [
+      "npm run fix:wxss",
+      "git add ."
     ]
   },
   "repository": {

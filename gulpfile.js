@@ -2,13 +2,12 @@ const gulp = require('gulp');
 const debug = require('gulp-debug');
 const path = require('path');
 
-// 项目根目录配置
-const projRootDir = path.join(process.cwd(), 'src');
+const rootPath = path.join(__dirname, 'src');
 
 function fileCopy() {
   return gulp
     .src(['src/**/*'], {
-      base: projRootDir
+      base: rootPath
     })
     .pipe(
       debug({
