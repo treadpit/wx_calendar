@@ -369,11 +369,10 @@ const conf = {
         item.choosed = false;
       }
     });
-    const tmp = { 'calendar.days': days };
-    if (curDate) {
-      tmp['calendar.selectedDay'] = selectedDay;
-    }
-    setData(tmp);
+    setData({
+      'calendar.days': days,
+      'calendar.selectedDay': selectedDay || []
+    });
   },
   /**
    * 当改变月份时触发
@@ -1006,8 +1005,6 @@ const conf = {
       conf.selectedDayWeekAllDays(day || currentDay);
     } else {
       Component.weekMode = false;
-      let { year, month, day } = currentDay;
-      if (curYear !== year || curMonth !== month) day = 1;
       setData({
         'calendar.weekMode': false
       });
