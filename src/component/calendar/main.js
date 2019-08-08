@@ -559,10 +559,10 @@ const conf = {
       options || this.todoConfig;
     const { todoLabels = [], todoLabelPos, todoLabelColor } = calendar;
     const shouldMarkerTodoDay = todoDays.filter(
-      item => +item.year === curYear && +item.month === curMonth
+      item => +item.year === +curYear && +item.month === +curMonth
     );
     let currentMonthTodoLabels = todoLabels.filter(
-      item => +item.year === curYear && +item.month === curMonth
+      item => +item.year === +curYear && +item.month === +curMonth
     );
     shouldMarkerTodoDay.concat(currentMonthTodoLabels).forEach(item => {
       let target = {};
@@ -587,8 +587,9 @@ const conf = {
       if (dotColor && dotColor !== todoLabelColor) {
         o['calendar.todoLabelColor'] = dotColor;
       }
+      o['calendar.todoLabelCircle'] = false;
     } else {
-      o['calendar.todoLabelCircle'] = circle;
+      o['calendar.todoLabelCircle'] = true;
     }
     setData(o);
   },
