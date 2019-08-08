@@ -442,7 +442,12 @@ const conf = {
     } else {
       currentSelected = day;
       currentSelected.cancel = false;
-      currentSelected.showTodoLabel = false;
+      const { showLabelAlways } = getData('calendar');
+      if (showLabelAlways && currentSelected.showTodoLabel) {
+        currentSelected.showTodoLabel = true;
+      } else {
+        currentSelected.showTodoLabel = false;
+      }
       selectedDays.push(currentSelected);
     }
     const config = getCalendarConfig();
@@ -496,11 +501,19 @@ const conf = {
     if (preSelectedDate.day !== currentDay.day) {
       preSelectedDate.choosed = false;
       currentDay.choosed = true;
-      currentDay.showTodoLabel = false;
+      if (!calendar.showLabelAlways || !currentDay.showTodoLabel) {
+        currentDay.showTodoLabel = false;
+      }
       tmp['calendar.selectedDay'] = [currentSelected];
     } else if (config.inverse) {
       currentDay.choosed = !currentDay.choosed;
-      if (currentDay.choosed) currentDay.showTodoLabel = false;
+      if (currentDay.choosed) {
+        if (currentDay.showTodoLabel && calendar.showLabelAlways) {
+          currentDay.showTodoLabel = true;
+        } else {
+          currentDay.showTodoLabel = false;
+        }
+      }
       tmp['calendar.selectedDay'] = [];
     }
     setData(tmp);
@@ -555,8 +568,13 @@ const conf = {
     }
     const days = calendar.days.slice();
     const { curYear, curMonth } = calendar;
-    const { days: todoDays = [], pos = 'bottom', dotColor = '', circle } =
-      options || this.todoConfig;
+    const {
+      circle,
+      dotColor = '',
+      pos = 'bottom',
+      showLabelAlways,
+      days: todoDays = []
+    } = options || this.todoConfig;
     const { todoLabels = [], todoLabelPos, todoLabelColor } = calendar;
     const shouldMarkerTodoDay = todoDays.filter(
       item => +item.year === +curYear && +item.month === +curMonth
@@ -572,7 +590,11 @@ const conf = {
         target = days[item.day - 1];
       }
       if (target) {
-        target.showTodoLabel = !target.choosed;
+        if (showLabelAlways) {
+          target.showTodoLabel = true;
+        } else {
+          target.showTodoLabel = !target.choosed;
+        }
         if (target.showTodoLabel && item.todoText) {
           target.todoText = item.todoText;
         }
@@ -587,10 +609,9 @@ const conf = {
       if (dotColor && dotColor !== todoLabelColor) {
         o['calendar.todoLabelColor'] = dotColor;
       }
-      o['calendar.todoLabelCircle'] = false;
-    } else {
-      o['calendar.todoLabelCircle'] = true;
     }
+    o['calendar.todoLabelCircle'] = circle || false;
+    o['calendar.showLabelAlways'] = showLabelAlways || false;
     setData(o);
   },
   /**
@@ -748,7 +769,9 @@ const conf = {
    */
   initSelectedDay(days) {
     const daysCopy = days.slice();
-    const { selectedDay = [], todoLabels = [] } = getData('calendar');
+    const { selectedDay = [], todoLabels = [], showLabelAlways } = getData(
+      'calendar'
+    );
     const selectedDayStr = selectedDay.map(
       item => `${+item.year}-${+item.month}-${+item.day}`
     );
@@ -767,7 +790,11 @@ const conf = {
         `${+item.year}-${+item.month}-${+item.day}`
       );
       if (idx !== -1) {
-        item.showTodoLabel = !item.choosed;
+        if (showLabelAlways) {
+          item.showTodoLabel = true;
+        } else {
+          item.showTodoLabel = !item.choosed;
+        }
         const todoLabel = todoLabels[idx];
         if (item.showTodoLabel && todoLabel && todoLabel.todoText)
           item.todoText = todoLabel.todoText;
@@ -1291,7 +1318,7 @@ export function setSelectedDays(selected, componentId) {
   if (!config.multi) {
     return warn('单选模式下不能设置多日期选中，请配置 multi');
   }
-  const { selectedDay, days } = getData('calendar');
+  const { selectedDay, days, showLabelAlways } = getData('calendar');
   let newSelectedDay = [];
   if (!selected) {
     days.map(item => {
@@ -1317,7 +1344,11 @@ export function setSelectedDays(selected, componentId) {
         currentSelectedDays.includes(`${item.year}-${item.month}-${item.day}`)
       ) {
         item.choosed = true;
-        item.showTodoLabel = false;
+        if (showLabelAlways && item.showTodoLabel) {
+          item.showTodoLabel = true;
+        } else {
+          item.showTodoLabel = false;
+        }
       }
     });
   }
