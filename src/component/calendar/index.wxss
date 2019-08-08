@@ -140,16 +140,32 @@
     top: 8rpx;
 }
 
+.todo-dot.todo-dot-top-always {
+    top: -3rpx;
+}
+
 .todo-dot.todo-dot-bottom {
     bottom: 0;
+}
+
+.todo-dot.todo-dot-bottom-always {
+    bottom: -5rpx;
 }
 
 .todo-text.todo-text-top {
     top: -6rpx;
 }
 
+.todo-text.todo-text-top-always {
+    top: -20rpx;
+}
+
 .todo-text.todo-text-bottom {
     bottom: -8rpx;
+}
+
+.todo-text.todo-text-bottom-always {
+    bottom: -20rpx;
 }
 
 .dot-day-height {
