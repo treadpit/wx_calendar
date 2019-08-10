@@ -1,14 +1,14 @@
+import Todo from './todo';
+import WxData from './wxData';
 import {
-  WxData,
   GetDate,
-  initialTasks,
   delRepeatedEnableDay,
   converEnableDaysToTimestamp
 } from './utils';
 
 const getDate = new GetDate();
 
-export class Calendar {
+class Calendar {
   constructor(component) {
     this.Component = component;
   }
@@ -22,28 +22,25 @@ export class Calendar {
    * @param {number} curDate
    */
   renderCalendar(curYear, curMonth, curDate) {
-    if (this.Component && this.Component.config) this.Component = this;
-    this.calculateEmptyGrids(curYear, curMonth);
-    this.calculateDays(curYear, curMonth, curDate);
-    const wxData = new WxData(this.Component);
-    const { todoLabels } = wxData.getData('calendar') || {};
-    if (
-      todoLabels &&
-      todoLabels instanceof Array &&
-      todoLabels.find(item => +item.month === +curMonth)
-    ) {
-      this.setTodoLabels();
-    }
-
-    if (!Component.firstRender) {
-      // mountEventsOnPage(getCurrentPage());
-      Component.triggerEvent('afterCalendarRender', Component);
-      Component.firstRender = true;
-      initialTasks.flag = 'finished';
-      if (initialTasks.tasks.length) {
-        initialTasks.tasks.shift()();
+    return new Promise((resolve, reject) => {
+      // if (this.Component && this.Component.config) this.Component = this;
+      this.calculateEmptyGrids(curYear, curMonth);
+      this.calculateDays(curYear, curMonth, curDate);
+      const wxData = WxData(this.Component);
+      const { todoLabels } = wxData.getData('calendar') || {};
+      if (
+        todoLabels &&
+        todoLabels instanceof Array &&
+        todoLabels.find(item => +item.month === +curMonth)
+      ) {
+        // this.setTodoLabels();
+        Todo(this.Component).setTodoLabels();
       }
-    }
+
+      if (!this.Component.firstRender) {
+        resolve();
+      }
+    });
   }
   /**
    * 计算当前月份前后两月应占的格子
@@ -71,7 +68,7 @@ export class Calendar {
         firstDayOfWeek -= 1;
       }
     }
-    const wxData = new WxData(this.Component);
+    const wxData = WxData(this.Component);
     if (firstDayOfWeek > 0) {
       const len = prevMonthDays - firstDayOfWeek;
       const { onlyShowCurrentMonth } = config;
@@ -108,7 +105,7 @@ export class Calendar {
         lastDayWeek -= 1;
       }
     }
-    const wxData = new WxData(this.Component);
+    const wxData = WxData(this.Component);
     if (+lastDayWeek !== 6) {
       let len = 7 - (lastDayWeek + 1);
       const { onlyShowCurrentMonth } = config;
@@ -141,7 +138,7 @@ export class Calendar {
       selectedDay = [];
       config.noDefault = false;
     } else {
-      const wxData = new WxData(this.Component);
+      const wxData = WxData(this.Component);
       const data = wxData.getData('calendar') || {};
       selectedDay = curDate
         ? [
@@ -163,7 +160,7 @@ export class Calendar {
    * @param {number} month  月份
    */
   calculateDays(year, month, curDate) {
-    const wxData = new WxData(this.Component);
+    const wxData = WxData(this.Component);
     let days = [];
     const {
       todayTimestamp,
@@ -231,3 +228,5 @@ export class Calendar {
     });
   }
 }
+
+export default component => new Calendar(component);

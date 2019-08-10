@@ -1,12 +1,11 @@
-import { Logger, Slide } from './utils';
+import Week from './func/week';
+import { Logger, Slide } from './func/utils';
 import initCalendar, {
   jump,
   whenChangeDate,
   renderCalendar,
   whenMulitSelect,
-  whenSingleSelect,
-  calculateNextWeekDays,
-  calculatePrevWeekDays
+  whenSingleSelect
 } from './main.js';
 
 const slide = new Slide();
@@ -166,7 +165,10 @@ Component({
         this.setData({
           'calendar.leftSwipe': 1
         });
-        if (this.weekMode) return calculateNextWeekDays.call(this);
+        if (this.weekMode) {
+          this.slideLock = false;
+          return Week(this).calculateNextWeekDays();
+        }
         this.chooseMonth('next_month');
         this.slideLock = false;
       }
@@ -174,7 +176,10 @@ Component({
         this.setData({
           'calendar.rightSwipe': 1
         });
-        if (this.weekMode) return calculatePrevWeekDays.call(this);
+        if (this.weekMode) {
+          this.slideLock = false;
+          return Week(this).calculatePrevWeekDays();
+        }
         this.chooseMonth('prev_month');
         this.slideLock = false;
       }
