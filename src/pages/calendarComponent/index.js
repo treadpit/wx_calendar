@@ -1,22 +1,12 @@
 const conf = {
   data: {
-    calendarConfig: {
-      // multi: true,
-      // inverse: 1, // 单选模式下是否可以取消选择
-      // defaultDay: '2019-5-19'
-      onlyShowCurrentMonth: 1
-      // disablePastDay: 1
-    }
-  },
-  onShow: function() {
-    // initCalendar();
-    this.setTodo();
+    calendarConfig: {}
   },
   setTodo() {
     const data = [
       {
         year: '2019',
-        month: '7',
+        month: '8',
         day: '15'
       },
       {
@@ -29,12 +19,11 @@ const conf = {
     // 异步请求
     setTimeout(() => {
       this.calendar.setTodoLabels({
-        circle: true,
-        // pos: 'top',
+        // showLabelAlways: true,
         days: data
       });
     }, 1000);
-    this.calendar.enableArea(['2019-5-7', '2019-10-28']);
+    this.calendar.enableArea(['2019-8-7', '2019-9-28']);
   },
   afterTapDay(e) {
     console.log('afterTapDay', e.detail);
@@ -46,6 +35,7 @@ const conf = {
     console.log('onTapDay', e.detail);
   },
   afterCalendarRender(e) {
+    this.setTodo();
     console.log('afterCalendarRender', e);
   }
 };
