@@ -1,11 +1,8 @@
 import {
-  warn,
-  tips,
-  newDate,
+  WxData,
+  Logger,
+  GetDate,
   initialTasks,
-  getDayOfWeek,
-  getThisMonthDays,
-  getFirstDayOfWeek,
   getCurrentPage,
   getComponent,
   uniqueArrayByDate,
@@ -15,6 +12,8 @@ import {
 } from './utils';
 
 let Component = {};
+let logger = new Logger();
+let getDate = new GetDate();
 
 /**
  * 全局赋值正在操作的组件实例，方便读/写各自的 data
@@ -31,34 +30,13 @@ function bindCurrentComponent(componentId, self) {
 
 function getData(key, componentId) {
   bindCurrentComponent(componentId, this);
-  if (!key) return Component.data;
-  if (key.includes('.')) {
-    let keys = key.split('.');
-    let len = keys.length;
-    let tmp = null;
-    for (let i = 0; i < len; i++) {
-      const v = keys[i];
-      if (i === 0) {
-        if (Component.data[v] !== undefined) {
-          tmp = Component.data[v];
-        }
-      } else {
-        if (tmp[v] !== undefined) {
-          tmp = tmp[v];
-        }
-      }
-    }
-    return tmp;
-  } else {
-    return Component.data[key];
-  }
+  const dataInstance = new WxData(Component);
+  return dataInstance.getData(key);
 }
 
 function setData(data, callback = () => {}) {
-  if (!data) return;
-  if (typeof data === 'object') {
-    Component.setData(data, callback);
-  }
+  const dataInstance = new WxData(Component);
+  return dataInstance.setData(data, callback);
 }
 
 function getCalendarConfig() {
@@ -67,102 +45,6 @@ function getCalendarConfig() {
 
 function setCalendarConfig(key, value) {
   Component.config[key] = value;
-}
-
-function getTodayDate() {
-  const _date = new Date();
-  const year = _date.getFullYear();
-  const month = _date.getMonth() + 1;
-  const date = _date.getDate();
-  return {
-    year,
-    month,
-    date
-  };
-}
-
-function getTodayTimestamp() {
-  const { year, month, date } = getTodayDate();
-  const timestamp = newDate(year, month, date).getTime();
-  return timestamp;
-}
-
-/**
- * 上滑
- * @param {object} e 事件对象
- * @returns {boolean} 布尔值
- */
-export function isUpSlide(e) {
-  const { startX, startY } = getData.call(this, 'gesture') || {};
-  if (this.slideLock) {
-    const t = e.touches[0];
-    const deltaX = t.clientX - startX;
-    const deltaY = t.clientY - startY;
-    if (deltaY < -60 && deltaX < 20 && deltaX > -20) {
-      this.slideLock = false;
-      return true;
-    } else {
-      return false;
-    }
-  }
-}
-/**
- * 下滑
- * @param {object} e 事件对象
- * @returns {boolean} 布尔值
- */
-export function isDownSlide(e) {
-  const { startX, startY } = getData.call(this, 'gesture') || {};
-  if (this.slideLock) {
-    const t = e.touches[0];
-    const deltaX = t.clientX - startX;
-    const deltaY = t.clientY - startY;
-    if (deltaY > 60 && deltaX < 20 && deltaX > -20) {
-      this.slideLock = false;
-      return true;
-    } else {
-      return false;
-    }
-  }
-}
-/**
- * 左滑
- * @param {object} e 事件对象
- * @returns {boolean} 布尔值
- */
-export function isLeftSlide(e) {
-  const { startX, startY } = getData.call(this, 'gesture') || {};
-  if (this.slideLock) {
-    const t = e.touches[0];
-    const deltaX = t.clientX - startX;
-    const deltaY = t.clientY - startY;
-    if (deltaX < -60 && deltaY < 20 && deltaY > -20) {
-      this.slideLock = false;
-      return true;
-    } else {
-      return false;
-    }
-  }
-}
-/**
- * 右滑
- * @param {object} e 事件对象
- * @returns {boolean} 布尔值
- */
-export function isRightSlide(e) {
-  const { startX, startY } = getData.call(this, 'gesture') || {};
-  if (this.slideLock) {
-    const t = e.touches[0];
-    const deltaX = t.clientX - startX;
-    const deltaY = t.clientY - startY;
-
-    if (deltaX > 60 && deltaY < 20 && deltaY > -20) {
-      this.slideLock = false;
-      return true;
-    } else {
-      return false;
-    }
-  }
 }
 
 const conf = {
@@ -211,8 +93,8 @@ const conf = {
    */
   calculatePrevMonthGrids(year, month) {
     let empytGrids = [];
-    const prevMonthDays = getThisMonthDays(year, month - 1);
-    let firstDayOfWeek = getFirstDayOfWeek(year, month);
+    const prevMonthDays = getDate.thisMonthDays(year, month - 1);
+    let firstDayOfWeek = getDate.firstDayOfWeek(year, month);
     const config = getCalendarConfig() || {};
     if (config.firstDayOfWeek === 'Mon') {
       if (firstDayOfWeek === 0) {
@@ -247,8 +129,8 @@ const conf = {
    */
   calculateNextMonthGrids(year, month) {
     let lastEmptyGrids = [];
-    const thisMonthDays = getThisMonthDays(year, month);
-    let lastDayWeek = getDayOfWeek(year, month, thisMonthDays);
+    const thisMonthDays = getDate.thisMonthDays(year, month);
+    let lastDayWeek = getDate.dayOfWeek(year, month, thisMonthDays);
     const config = getCalendarConfig() || {};
     if (config.firstDayOfWeek === 'Mon') {
       if (lastDayWeek === 0) {
@@ -297,7 +179,7 @@ const conf = {
               month,
               day: curDate,
               choosed: true,
-              week: getDayOfWeek(year, month, curDate)
+              week: getDate.dayOfWeek(year, month, curDate)
             }
           ]
         : data.selectedDay;
@@ -318,7 +200,7 @@ const conf = {
       enableDays = [],
       enableAreaTimestamp = []
     } = getData('calendar');
-    const thisMonthDays = getThisMonthDays(year, month);
+    const thisMonthDays = getDate.thisMonthDays(year, month);
     let expectEnableDaysTimestamp = converEnableDaysToTimestamp(enableDays);
     if (enableArea.length) {
       expectEnableDaysTimestamp = delRepeatedEnableDay(enableDays, enableArea);
@@ -329,7 +211,7 @@ const conf = {
         month,
         day: i,
         choosed: false,
-        week: getDayOfWeek(year, month, i)
+        week: getDate.dayOfWeek(year, month, i)
       });
     }
     const selectedDay = conf.initSelectedDayWhenRender(year, month, curDate);
@@ -343,7 +225,9 @@ const conf = {
       const cur = `${+item.year}-${+item.month}-${+item.day}`;
       if (selectedDayCol.includes(cur)) item.choosed = true;
       if (disableDaysCol.includes(cur)) item.disable = true;
-      const timestamp = newDate(item.year, item.month, item.day).getTime();
+      const timestamp = getDate
+        .newDate(item.year, item.month, item.day)
+        .getTime();
       const { disablePastDay } = getCalendarConfig();
       if (disablePastDay && timestamp - todayTimestamp < 0 && !item.disable) {
         item.disable = true;
@@ -564,7 +448,7 @@ const conf = {
     if (options) this.todoConfig = options;
     const calendar = getData('calendar');
     if (!calendar || !calendar.days) {
-      return warn('请等待日历初始化完成后再调用该方法');
+      return logger.logger.warn('请等待日历初始化完成后再调用该方法');
     }
     const days = calendar.days.slice();
     const { curYear, curMonth } = calendar;
@@ -668,8 +552,12 @@ const conf = {
    * 跳转至今天
    */
   jumpToToday() {
-    const { year: curYear, month: curMonth, date: curDate } = getTodayDate();
-    const timestamp = getTodayTimestamp();
+    const {
+      year: curYear,
+      month: curMonth,
+      date: curDate
+    } = getDate.todayDate();
+    const timestamp = getDate.todayTimestamp();
     setData({
       'calendar.curYear': curYear,
       'calendar.curMonth': curMonth,
@@ -692,7 +580,7 @@ const conf = {
     let { days, curYear, curMonth } = getData('calendar');
     const { month: firstMonth } = days[0];
     const { month: lastMonth } = days[days.length - 1];
-    const lastDayOfThisMonth = getThisMonthDays(curYear, curMonth);
+    const lastDayOfThisMonth = getDate.thisMonthDays(curYear, curMonth);
     const lastDayOfThisWeek = days[days.length - 1];
     const firstDayOfThisWeek = days[0];
     if (
@@ -727,7 +615,7 @@ const conf = {
   calculateLastDay() {
     const { days, curYear, curMonth } = getData('calendar');
     const lastDayInThisWeek = days[days.length - 1].day;
-    const lastDayInThisMonth = getThisMonthDays(curYear, curMonth);
+    const lastDayInThisMonth = getDate.thisMonthDays(curYear, curMonth);
     return { lastDayInThisWeek, lastDayInThisMonth };
   },
   /**
@@ -744,7 +632,7 @@ const conf = {
    * @param {number} month
    */
   firstWeekInMonth(year, month) {
-    const firstDay = getDayOfWeek(year, month, 1);
+    const firstDay = getDate.dayOfWeek(year, month, 1);
     const firstWeekDays = [1, 1 + (6 - firstDay)];
     const { days } = getData('calendar');
     const daysCut = days.slice(firstWeekDays[0] - 1, firstWeekDays[1]);
@@ -756,8 +644,8 @@ const conf = {
    * @param {number} month
    */
   lastWeekInMonth(year, month) {
-    const lastDay = getThisMonthDays(year, month);
-    const lastDayWeek = getDayOfWeek(year, month, lastDay);
+    const lastDay = getDate.thisMonthDays(year, month);
+    const lastDayWeek = getDate.dayOfWeek(year, month, lastDay);
     const lastWeekDays = [lastDay - lastDayWeek, lastDay];
     const { days } = getData('calendar');
     const daysCut = days.slice(lastWeekDays[0] - 1, lastWeekDays[1]);
@@ -813,7 +701,9 @@ const conf = {
       enableDaysTimestamp = []
     } = getData('calendar');
     days.forEach(item => {
-      const timestamp = newDate(item.year, item.month, item.day).getTime();
+      const timestamp = getDate
+        .newDate(item.year, item.month, item.day)
+        .getTime();
 
       let setDisable = false;
       if (enableAreaTimestamp.length) {
@@ -861,7 +751,7 @@ const conf = {
           year: curYear,
           month: curMonth,
           day: i,
-          week: getDayOfWeek(curYear, curMonth, i)
+          week: getDate.dayOfWeek(curYear, curMonth, i)
         });
       }
     } else {
@@ -870,7 +760,7 @@ const conf = {
           year: curYear,
           month: curMonth,
           day: i,
-          week: getDayOfWeek(curYear, curMonth, i)
+          week: getDate.dayOfWeek(curYear, curMonth, i)
         });
       }
       const { Uyear, Umonth } = conf.updateCurrYearAndMonth('next');
@@ -881,7 +771,7 @@ const conf = {
           year: curYear,
           month: curMonth,
           day: i,
-          week: getDayOfWeek(curYear, curMonth, i)
+          week: getDate.dayOfWeek(curYear, curMonth, i)
         });
       }
     }
@@ -910,7 +800,7 @@ const conf = {
           year: curYear,
           month: curMonth,
           day: i,
-          week: getDayOfWeek(curYear, curMonth, i)
+          week: getDate.dayOfWeek(curYear, curMonth, i)
         });
       }
     } else {
@@ -920,13 +810,13 @@ const conf = {
           year: curYear,
           month: curMonth,
           day: i,
-          week: getDayOfWeek(curYear, curMonth, i)
+          week: getDate.dayOfWeek(curYear, curMonth, i)
         });
       }
       const { Uyear, Umonth } = conf.updateCurrYearAndMonth('prev');
       curYear = Uyear;
       curMonth = Umonth;
-      const prevMonthDays = getThisMonthDays(curYear, curMonth);
+      const prevMonthDays = getDate.thisMonthDays(curYear, curMonth);
       for (
         let i = prevMonthDays - Math.abs(firstDayInThisWeek - 7);
         i <= prevMonthDays;
@@ -936,7 +826,7 @@ const conf = {
           year: curYear,
           month: curMonth,
           day: i,
-          week: getDayOfWeek(curYear, curMonth, i)
+          week: getDate.dayOfWeek(curYear, curMonth, i)
         });
       }
       days = days.concat(temp);
@@ -965,7 +855,7 @@ const conf = {
     if (firstWeekDays.find(item => item.day === day)) {
       // 当前选择的日期为该月第一周
       let temp = [];
-      const lastDayInThisMonth = getThisMonthDays(year, month - 1);
+      const lastDayInThisMonth = getDate.thisMonthDays(year, month - 1);
       const { Uyear, Umonth } = conf.updateCurrYearAndMonth('prev');
       curYear = Uyear;
       curMonth = Umonth;
@@ -978,7 +868,7 @@ const conf = {
           year: curYear,
           month: curMonth,
           day: i,
-          week: getDayOfWeek(curYear, curMonth, i)
+          week: getDate.dayOfWeek(curYear, curMonth, i)
         });
       }
       days = temp.concat(firstWeekDays);
@@ -997,13 +887,13 @@ const conf = {
             year: curYear,
             month: curMonth,
             day: i,
-            week: getDayOfWeek(curYear, curMonth, i)
+            week: getDate.dayOfWeek(curYear, curMonth, i)
           });
         }
       }
       days = lastWeekDays.concat(temp);
     } else {
-      const week = getDayOfWeek(year, month, day);
+      const week = getDate.dayOfWeek(year, month, day);
       const range = [day - week, day + (6 - week)];
       days = days.slice(range[0] - 1, range[1]);
     }
@@ -1020,7 +910,8 @@ const conf = {
    * @param {object} day  {year: 2017, month: 11, day: 1}
    */
   switchWeek(view, day) {
-    if (getCalendarConfig().multi) return warn('多选模式不能切换周月视图');
+    if (getCalendarConfig().multi)
+      return logger.warn('多选模式不能切换周月视图');
     const { selectedDay = [], curYear, curMonth } = getData('calendar');
     if (!selectedDay.length) return;
     const currentDay = selectedDay[0];
@@ -1046,7 +937,7 @@ const conf = {
   disableDays(data) {
     const { disableDays = [], days } = getData('calendar');
     if (Object.prototype.toString.call(data) !== '[object Array]') {
-      return warn('disableDays 参数为数组');
+      return logger.warn('disableDays 参数为数组');
     }
     let _disableDays = [];
     if (data.length) {
@@ -1113,9 +1004,9 @@ export function jump(year, month, day, componentId) {
   }
   if (year && month) {
     if (typeof +year !== 'number' || typeof +month !== 'number') {
-      return warn('jump 函数年月日参数必须为数字');
+      return logger.warn('jump 函数年月日参数必须为数字');
     }
-    const timestamp = getTodayTimestamp();
+    const timestamp = getDate.todayTimestamp();
     let tmp = {
       'calendar.curYear': year,
       'calendar.curMonth': month,
@@ -1212,27 +1103,33 @@ export function enableArea(area = [], componentId) {
       startTimestamp,
       endTimestamp
     } = convertEnableAreaToTimestamp(area);
-    const startMonthDays = getThisMonthDays(start[0], start[1]);
-    const endMonthDays = getThisMonthDays(end[0], end[1]);
+    const startMonthDays = getDate.thisMonthDays(start[0], start[1]);
+    const endMonthDays = getDate.thisMonthDays(end[0], end[1]);
     if (start[2] > startMonthDays || start[2] < 1) {
-      return warn('enableArea() 开始日期错误，指定日期不在当前月份天数范围内');
+      return logger.warn(
+        'enableArea() 开始日期错误，指定日期不在当前月份天数范围内'
+      );
     }
     if (start[1] > 12 || start[1] < 1) {
-      return warn('enableArea() 开始日期错误，月份超出1-12月份');
+      return logger.warn('enableArea() 开始日期错误，月份超出1-12月份');
     }
     if (end[2] > endMonthDays || end[2] < 1) {
-      return warn('enableArea() 截止日期错误，指定日期不在当前月份天数范围内');
+      return logger.warn(
+        'enableArea() 截止日期错误，指定日期不在当前月份天数范围内'
+      );
     }
     if (end[1] > 12 || end[1] < 1) {
-      return warn('enableArea() 截止日期错误，月份超出1-12月份');
+      return logger.warn('enableArea() 截止日期错误，月份超出1-12月份');
     }
     if (startTimestamp > endTimestamp) {
-      warn('enableArea()参数最小日期大于了最大日期');
+      logger.warn('enableArea()参数最小日期大于了最大日期');
     } else {
       let { days = [], selectedDay = [] } = getData('calendar');
       const daysCopy = days.slice();
       daysCopy.forEach(item => {
-        const timestamp = newDate(item.year, item.month, item.day).getTime();
+        const timestamp = getDate
+          .newDate(item.year, item.month, item.day)
+          .getTime();
         if (
           (+startTimestamp > +timestamp || +timestamp > +endTimestamp) &&
           !expectEnableDaysTimestamp.includes(+timestamp)
@@ -1258,7 +1155,9 @@ export function enableArea(area = [], componentId) {
       });
     }
   } else {
-    warn('enableArea()参数需为时间范围数组，形如：["2018-8-4" , "2018-8-24"]');
+    logger.warn(
+      'enableArea()参数需为时间范围数组，形如：["2018-8-4" , "2018-8-24"]'
+    );
   }
 }
 /**
@@ -1277,7 +1176,9 @@ export function enableDays(days = [], componentId) {
   let { days: allDays = [], selectedDay = [] } = getData('calendar');
   const daysCopy = allDays.slice();
   daysCopy.forEach(item => {
-    const timestamp = newDate(item.year, item.month, item.day).getTime();
+    const timestamp = getDate
+      .newDate(item.year, item.month, item.day)
+      .getTime();
     let setDisable = false;
     if (enableAreaTimestamp.length) {
       if (
@@ -1316,7 +1217,7 @@ export function setSelectedDays(selected, componentId) {
   bindCurrentComponent(componentId, this);
   const config = getCalendarConfig();
   if (!config.multi) {
-    return warn('单选模式下不能设置多日期选中，请配置 multi');
+    return logger.warn('单选模式下不能设置多日期选中，请配置 multi');
   }
   const { selectedDay, days, showLabelAlways } = getData('calendar');
   let newSelectedDay = [];
@@ -1381,7 +1282,7 @@ function mountEventsOnPage(page) {
 
 function init(component, config) {
   initialTasks.flag = 'process';
-  tips(
+  logger.tips(
     '使用中若遇问题请反馈至 https://github.com/treadpit/wx_calendar/issues ✍️'
   );
   let weeksCh = ['日', '一', '二', '三', '四', '五', '六'];
@@ -1396,7 +1297,7 @@ function init(component, config) {
   if (config.defaultDay && typeof config.defaultDay === 'string') {
     const day = config.defaultDay.split('-');
     if (day.length < 3) {
-      return warn('配置 jumpTo 格式应为: 2018-4-2 或 2018-04-02');
+      return logger.warn('配置 jumpTo 格式应为: 2018-4-2 或 2018-04-02');
     }
     jump(+day[0], +day[1], +day[2]);
   } else {

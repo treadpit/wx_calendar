@@ -1,5 +1,6 @@
 <view class="flex b tb ac" wx:if="{{calendar}}">
   <view class="calendar pink-color b tb">
+    <!-- 头部操作栏 -->
     <view wx:if="{{!calendarConfig.hideHeadOnWeekMode}}" class="top-handle fs28 b lr ac pc">
       <view class="prev fs36" wx:if="{{calendarConfig.showHandlerOnWeekMode || !calendar.weekMode}}">
         <text class="prev-handle iconfont icon-doubleleft" bindtap="chooseDate" data-type="prev_year"></text>
@@ -11,20 +12,24 @@
         <text class="next-handle iconfont icon-doubleright" bindtap="chooseDate" data-type="next_year"></text>
       </view>
     </view>
+    <!-- 星期栏 -->
     <view class="weeks b lr ac">
       <view class="week fs28" wx:for="{{calendar.weeksCh}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
     </view>
+    <!-- 日历面板主体 -->
     <view class="perspective">
       <view class="days b lr box-wrap {{calendar.leftSwipe ? 'leftRoate' : ''}}  {{calendar.rightSwipe ? 'rightRoate' : ''}}"
         bindtouchstart="calendarTouchstart"
         bindtouchmove="calendarTouchmove"
         bindtouchend="calendarTouchend">
+        <!-- 上月日期格子 -->
         <view wx:if="{{calendar.empytGrids}}" class="grid disable-day-color b ac pc"
           wx:for="{{calendar.empytGrids}}"
           wx:key="{{index}}"
           data-idx="{{index}}">
             <view class="day b ac pc">{{item}}</view>
         </view>
+        <!-- 本月日期格子 -->
         <view class="grid normal-day-color b ac pc"
           wx:for="{{calendar.days}}"
           wx:key="{{index}}"
@@ -48,6 +53,7 @@
               <view class="day border-radius {{(item.week === 0 || item.week === 6) ? 'pink-color' : ''}} {{item.showTodoLabel && !item.choosed ? 'day-circle' : '' }} {{item.choosed ? 'day-choosed-color day-choosed-bg' : ''}} {{ item.disable ? 'disable-day-color disable-day-bg' : '' }} b ac pc">{{item.day}}</view>
             </view>
         </view>
+        <!-- 下月日期格子 -->
         <view class="grid disable-day-color b ac pc"
           wx:for="{{calendar.lastEmptyGrids}}"
           wx:key="{{index}}"

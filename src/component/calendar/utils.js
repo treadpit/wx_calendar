@@ -5,28 +5,185 @@ export function getSystemInfo() {
   return systemInfo;
 }
 
-export function info(msg) {
-  console.log(
-    '%cInfo: %c' + msg,
-    'color:#FF0080;font-weight:bold',
-    'color: #FF509B'
-  );
+export class Logger {
+  info(msg) {
+    console.log(
+      '%cInfo: %c' + msg,
+      'color:#FF0080;font-weight:bold',
+      'color: #FF509B'
+    );
+  }
+  warn(msg) {
+    console.log(
+      '%cWarn: %c' + msg,
+      'color:#FF6600;font-weight:bold',
+      'color: #FF9933'
+    );
+  }
+  tips(msg) {
+    console.log(
+      '%cTips: %c' + msg,
+      'color:#00B200;font-weight:bold',
+      'color: #00CC33'
+    );
+  }
 }
 
-export function warn(msg) {
-  console.log(
-    '%cWarn: %c' + msg,
-    'color:#FF6600;font-weight:bold',
-    'color: #FF9933'
-  );
+export class WxData {
+  constructor(component) {
+    this.Component = component;
+  }
+  getData(key) {
+    if (!key) return this.Component.data;
+    if (key.includes('.')) {
+      let keys = key.split('.');
+      let len = keys.length;
+      let tmp = null;
+      for (let i = 0; i < len; i++) {
+        const v = keys[i];
+        if (i === 0) {
+          if (this.Component.data[v] !== undefined) {
+            tmp = this.Component.data[v];
+          }
+        } else {
+          if (tmp[v] !== undefined) {
+            tmp = tmp[v];
+          }
+        }
+      }
+      return tmp;
+    } else {
+      return this.Component.data[key];
+    }
+  }
+  setData(data, cb = () => {}) {
+    if (!data) return;
+    if (typeof data === 'object') {
+      this.Component.setData(data, cb);
+    }
+  }
 }
 
-export function tips(msg) {
-  console.log(
-    '%cTips: %c' + msg,
-    'color:#00B200;font-weight:bold',
-    'color: #00CC33'
-  );
+export class Slide {
+  /**
+   * 上滑
+   * @param {object} e 事件对象
+   * @returns {boolean} 布尔值
+   */
+  isUp(gesture = {}, touche = {}) {
+    const { startX, startY } = gesture;
+    const deltaX = touche.clientX - startX;
+    const deltaY = touche.clientY - startY;
+    if (deltaY < -60 && deltaX < 20 && deltaX > -20) {
+      this.slideLock = false;
+      return true;
+    } else {
+      return false;
+    }
+  }
+  /**
+   * 下滑
+   * @param {object} e 事件对象
+   * @returns {boolean} 布尔值
+   */
+  isDown(gesture = {}, touche = {}) {
+    const { startX, startY } = gesture;
+    const deltaX = touche.clientX - startX;
+    const deltaY = touche.clientY - startY;
+    if (deltaY > 60 && deltaX < 20 && deltaX > -20) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  /**
+   * 左滑
+   * @param {object} e 事件对象
+   * @returns {boolean} 布尔值
+   */
+  isLeft(gesture = {}, touche = {}) {
+    const { startX, startY } = gesture;
+    const deltaX = touche.clientX - startX;
+    const deltaY = touche.clientY - startY;
+    if (deltaX < -60 && deltaY < 20 && deltaY > -20) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  /**
+   * 右滑
+   * @param {object} e 事件对象
+   * @returns {boolean} 布尔值
+   */
+  isRight(gesture = {}, touche = {}) {
+    const { startX, startY } = gesture;
+    const deltaX = touche.clientX - startX;
+    const deltaY = touche.clientY - startY;
+
+    if (deltaX > 60 && deltaY < 20 && deltaY > -20) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+export class GetDate {
+  /**
+   * new Date 区分平台
+   * @param {number} year
+   * @param {number} month
+   * @param {number} day
+   */
+  newDate(year, month, day) {
+    let cur = `${+year}-${+month}-${+day}`;
+    if (isIos()) {
+      cur = `${+year}/${+month}/${+day}`;
+    }
+    return new Date(cur);
+  }
+  /**
+   * 计算指定月份共多少天
+   * @param {number} year 年份
+   * @param {number} month  月份
+   */
+  thisMonthDays(year, month) {
+    return new Date(year, month, 0).getDate();
+  }
+  /**
+   * 计算指定月份第一天星期几
+   * @param {number} year 年份
+   * @param {number} month  月份
+   */
+  firstDayOfWeek(year, month) {
+    return new Date(Date.UTC(year, month - 1, 1)).getDay();
+  }
+  /**
+   * 计算指定日期星期几
+   * @param {number} year 年份
+   * @param {number} month  月份
+   * @param {number} date 日期
+   */
+  dayOfWeek(year, month, date) {
+    return new Date(Date.UTC(year, month - 1, date)).getDay();
+  }
+  todayDate() {
+    const _date = new Date();
+    const year = _date.getFullYear();
+    const month = _date.getMonth() + 1;
+    const date = _date.getDate();
+    return {
+      year,
+      month,
+      date
+    };
+  }
+  todayTimestamp() {
+    const { year, month, date } = this.todayDate();
+    const timestamp = this.newDate(year, month, date).getTime();
+    return timestamp;
+  }
 }
 
 export function isIos() {
@@ -44,58 +201,17 @@ export function getCurrentPage() {
 }
 
 export function getComponent(componentId) {
+  const logger = new Logger();
   let page = getCurrentPage() || {};
   if (page.selectComponent && typeof page.selectComponent === 'function') {
     if (componentId) {
       return page.selectComponent(componentId);
     } else {
-      warn('请传入组件ID');
+      logger.warn('请传入组件ID');
     }
   } else {
-    warn('该基础库暂不支持多个小程序日历组件');
+    logger.warn('该基础库暂不支持多个小程序日历组件');
   }
-}
-
-/**
- * new Date 区分平台
- * @param {number} year
- * @param {number} month
- * @param {number} day
- */
-export function newDate(year, month, day) {
-  let cur = `${+year}-${+month}-${+day}`;
-  if (isIos()) {
-    cur = `${+year}/${+month}/${+day}`;
-  }
-  return new Date(cur);
-}
-
-/**
- * 计算指定月份共多少天
- * @param {number} year 年份
- * @param {number} month  月份
- */
-export function getThisMonthDays(year, month) {
-  return new Date(year, month, 0).getDate();
-}
-
-/**
- * 计算指定月份第一天星期几
- * @param {number} year 年份
- * @param {number} month  月份
- */
-export function getFirstDayOfWeek(year, month) {
-  return new Date(Date.UTC(year, month - 1, 1)).getDay();
-}
-
-/**
- * 计算指定日期星期几
- * @param {number} year 年份
- * @param {number} month  月份
- * @param {number} date 日期
- */
-export function getDayOfWeek(year, month, date) {
-  return new Date(Date.UTC(year, month - 1, date)).getDay();
 }
 
 /**
@@ -141,10 +257,13 @@ export function delRepeatedEnableDay(enableDays = [], enableArea = []) {
  * @param {array} timearea 时间区域
  */
 export function convertEnableAreaToTimestamp(timearea = []) {
+  const getDate = new GetDate();
   const start = timearea[0].split('-');
   const end = timearea[1].split('-');
-  const startTimestamp = newDate(start[0], start[1], start[2]).getTime();
-  const endTimestamp = newDate(end[0], end[1], end[2]).getTime();
+  const startTimestamp = getDate
+    .newDate(start[0], start[1], start[2])
+    .getTime();
+  const endTimestamp = getDate.newDate(end[0], end[1], end[2]).getTime();
   return {
     start,
     end,
@@ -158,12 +277,15 @@ export function convertEnableAreaToTimestamp(timearea = []) {
  * @param {array} enableDays 指定时间数组
  */
 export function converEnableDaysToTimestamp(enableDays = []) {
+  const logger = new Logger();
+  const getDate = new GetDate();
   const enableDaysTimestamp = [];
   enableDays.forEach(item => {
-    if (typeof item !== 'string') return warn('enableDays()入参日期格式错误');
+    if (typeof item !== 'string')
+      return logger.warn('enableDays()入参日期格式错误');
     const tmp = item.split('-');
-    if (tmp.length !== 3) return warn('enableDays()入参日期格式错误');
-    const timestamp = newDate(tmp[0], tmp[1], tmp[2]).getTime();
+    if (tmp.length !== 3) return logger.warn('enableDays()入参日期格式错误');
+    const timestamp = getDate.newDate(tmp[0], tmp[1], tmp[2]).getTime();
     enableDaysTimestamp.push(timestamp);
   });
   return enableDaysTimestamp;
