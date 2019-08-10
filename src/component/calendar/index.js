@@ -1,15 +1,15 @@
-import { warn } from './utils';
+import Week from './func/week';
+import { Logger, Slide } from './func/utils';
 import initCalendar, {
   jump,
-  isLeftSlide,
-  isRightSlide,
   whenChangeDate,
   renderCalendar,
   whenMulitSelect,
-  whenSingleSelect,
-  calculateNextWeekDays,
-  calculatePrevWeekDays
+  whenSingleSelect
 } from './main.js';
+
+const slide = new Slide();
+const logger = new Logger();
 
 Component({
   options: {
@@ -21,14 +21,6 @@ Component({
       value: {}
     }
   },
-  lifetimes: {
-    attached: function() {
-      initCalendar(this, this.data.calendarConfig);
-    }
-  },
-  attached: function() {
-    initCalendar(this, this.data.calendarConfig);
-  },
   data: {
     handleMap: {
       prev_year: 'chooseYear',
@@ -36,6 +28,14 @@ Component({
       next_month: 'chooseMonth',
       next_year: 'chooseYear'
     }
+  },
+  lifetimes: {
+    attached: function() {
+      initCalendar(this, this.data.calendarConfig);
+    }
+  },
+  attached: function() {
+    initCalendar(this, this.data.calendarConfig);
   },
   methods: {
     chooseDate(e) {
@@ -46,7 +46,7 @@ Component({
     },
     chooseYear(type) {
       const { curYear, curMonth } = this.data.calendar;
-      if (!curYear || !curMonth) return warn('异常：未获取到当前年月');
+      if (!curYear || !curMonth) return logger.warn('异常：未获取到当前年月');
       if (this.weekMode) {
         return console.warn('周视图下不支持点击切换年月');
       }
@@ -61,7 +61,7 @@ Component({
     },
     chooseMonth(type) {
       const { curYear, curMonth } = this.data.calendar;
-      if (!curYear || !curMonth) return warn('异常：未获取到当前年月');
+      if (!curYear || !curMonth) return logger.warn('异常：未获取到当前年月');
       if (this.weekMode) {
         return console.warn('周视图下不支持点击切换年月');
       }
@@ -159,19 +159,29 @@ Component({
      * @param {object} e
      */
     calendarTouchmove(e) {
-      if (isLeftSlide.call(this, e)) {
+      const { gesture } = this.data;
+      if (!this.slideLock) return;
+      if (slide.isLeft(gesture, e.touches[0])) {
         this.setData({
           'calendar.leftSwipe': 1
         });
-        if (this.weekMode) return calculateNextWeekDays.call(this);
+        if (this.weekMode) {
+          this.slideLock = false;
+          return Week(this).calculateNextWeekDays();
+        }
         this.chooseMonth('next_month');
+        this.slideLock = false;
       }
-      if (isRightSlide.call(this, e)) {
+      if (slide.isRight(gesture, e.touches[0])) {
         this.setData({
           'calendar.rightSwipe': 1
         });
-        if (this.weekMode) return calculatePrevWeekDays.call(this);
+        if (this.weekMode) {
+          this.slideLock = false;
+          return Week(this).calculatePrevWeekDays();
+        }
         this.chooseMonth('prev_month');
+        this.slideLock = false;
       }
     },
     calendarTouchend(e) {

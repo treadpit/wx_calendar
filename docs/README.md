@@ -302,16 +302,18 @@ this.calendar.setSelectedDays(toSet);
 
 `switchView('week')`，默认值为'month'；
 
+> `switchView()` 返回 `Promise`
+
 > 因周视图模式特殊性，该模式下会隐藏年月切换操作栏
 
 ```js
 // 切换为周视图
-this.calendar.switchView('week');
+this.calendar.switchView('week').then(() => {});
 
 // 切换为月视图
-this.calendar.switchView();
+this.calendar.switchView.then(() => {});
 // 或者
-this.calendar.switchView('month');
+this.calendar.switchView('month').then(() => {});
 ```
 
 ### 日历模板(Template)
