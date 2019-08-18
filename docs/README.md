@@ -200,7 +200,6 @@ this.calendar.jump(2018, 6, 6); // 跳转至2018-6-6
 const selectedDay = this.calendar.getSelectedDay();
 
 // => { year: 2019, month: 12, day: 1}
-// => { year: 2019, month: 12, day: 1}
 ```
 
 #### 7. 获取日历当前年月
