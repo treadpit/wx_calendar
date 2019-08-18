@@ -31,7 +31,9 @@ class WeekMode {
         wxData.setData({
           'calendar.weekMode': true
         });
-        this.selectedDayWeekAllDays(day || currentDay).then(resolve);
+        this.selectedDayWeekAllDays(day || currentDay)
+          .then(resolve)
+          .catch(reject);
       } else {
         this.Component.weekMode = false;
         wxData.setData({
@@ -39,7 +41,8 @@ class WeekMode {
         });
         Render(this.Component)
           .renderCalendar(curYear, curMonth, day)
-          .then(resolve);
+          .then(resolve)
+          .catch(reject);
       }
     });
   }
@@ -108,7 +111,7 @@ class WeekMode {
   firstWeekInMonth(year, month) {
     const firstDay = getDate.dayOfWeek(year, month, 1);
     const firstWeekDays = [1, 1 + (6 - firstDay)];
-    const { days } = WxData(this.Component).getData('calendar');
+    const days = WxData(this.Component).getData('calendar.days') || [];
     const daysCut = days.slice(firstWeekDays[0] - 1, firstWeekDays[1]);
     return daysCut;
   }
@@ -121,7 +124,7 @@ class WeekMode {
     const lastDay = getDate.thisMonthDays(year, month);
     const lastDayWeek = getDate.dayOfWeek(year, month, lastDay);
     const lastWeekDays = [lastDay - lastDayWeek, lastDay];
-    const { days } = WxData(this.Component).getData('calendar');
+    const days = WxData(this.Component).getData('calendar.days') || [];
     const daysCut = days.slice(lastWeekDays[0] - 1, lastWeekDays[1]);
     return daysCut;
   }
@@ -130,7 +133,7 @@ class WeekMode {
    * @param {array} days 当前日期数组
    */
   initSelectedDay(days) {
-    const daysCopy = days.slice();
+    const daysCopy = [...days];
     const { selectedDay = [], todoLabels = [], showLabelAlways } = WxData(
       this.Component
     ).getData('calendar');

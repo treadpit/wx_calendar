@@ -53,36 +53,34 @@ Component({
       let newYear = +curYear;
       let newMonth = +curMonth;
       if (type === 'prev_year') {
-        newYear = +curYear - 1;
+        newYear -= 1;
       } else if (type === 'next_year') {
-        newYear = +curYear + 1;
+        newYear += 1;
       }
       this.calculate(curYear, curMonth, newYear, newMonth);
     },
     chooseMonth(type) {
       const { curYear, curMonth } = this.data.calendar;
       if (!curYear || !curMonth) return logger.warn('异常：未获取到当前年月');
-      if (this.weekMode) {
-        return console.warn('周视图下不支持点击切换年月');
-      }
+      if (this.weekMode) return console.warn('周视图下不支持点击切换年月');
       let newYear = +curYear;
       let newMonth = +curMonth;
       if (type === 'prev_month') {
-        newMonth = +curMonth - 1;
+        newMonth = newMonth - 1;
         if (newMonth < 1) {
-          newYear = +curYear - 1;
+          newYear -= 1;
           newMonth = 12;
         }
       } else if (type === 'next_month') {
-        newMonth = +curMonth + 1;
+        newMonth += 1;
         if (newMonth > 12) {
-          newYear = +curYear + 1;
+          newYear += 1;
           newMonth = 1;
         }
       }
-      this.calculate(curYear, curMonth, newYear, newMonth);
+      this.render(curYear, curMonth, newYear, newMonth);
     },
-    calculate(curYear, curMonth, newYear, newMonth) {
+    render(curYear, curMonth, newYear, newMonth) {
       whenChangeDate.call(this, {
         curYear,
         curMonth,
@@ -105,15 +103,15 @@ Component({
       let currentSelected = {}; // 当前选中日期
       let { days, selectedDay: selectedDays, todoLabels } =
         this.data.calendar || []; // 所有选中日期
-      const config = this.config;
+      const config = this.config || {};
       const { multi, onTapDay } = config;
       const opts = {
         e,
         idx,
         onTapDay,
-        currentSelected,
-        selectedDays,
         todoLabels,
+        selectedDays,
+        currentSelected,
         days: days.slice()
       };
       if (multi) {

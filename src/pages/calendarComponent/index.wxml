@@ -1,4 +1,4 @@
-<view style="width: 90%;margin: 0 auto;">
+<view style="width: 90%;margin: 0 auto 40rpx;">
   <calendar
     calendarConfig="{{calendarConfig}}"
     bind:afterTapDay="afterTapDay"
@@ -6,4 +6,18 @@
     bind:onTapDay="onTapDay"
     bind:afterCalendarRender="afterCalendarRender"
   ></calendar>
+</view>
+
+<view class='b cc wrap btn-wrap'>
+    <button
+      class='b cc btn btn-{{item.color}}'
+      wx:for="{{actionBtn}}"
+      wx:key="action"
+      data-action="{{item.action}}"
+      data-disable="{{item.disable}}"
+      bindtap="handleAction">{{item.text}}</button>
+</view>
+
+<view class="show-rst-wrap">
+  <view wx:for="{{rst}}" wx:key="*this" class="show-rst">{{item}}</view>
 </view>

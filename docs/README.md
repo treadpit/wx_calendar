@@ -197,8 +197,17 @@ this.calendar.jump(2018, 6, 6); // 跳转至2018-6-6
 #### 6. 获取当前选择的日期
 
 ```js
-console.log(this.calendar.getSelectedDay());
+const selectedDay = this.calendar.getSelectedDay();
 ```
+
+#### 6. 获取日历当前年月
+
+> 用于无选中日期时
+
+```js
+const ym = this.calendar.getCurrentYM();
+```
+
 
 #### 7. 取消所有选中日期
 
@@ -208,7 +217,7 @@ this.calendar.cancelAllSelectedDay();
 
 #### 8. 待办事项
 
-##### 8.1 设置待办标记
+##### 8.1 设置待办事项
 
 ```js
 // 待办事项中若有 todoText 字段，则会在待办日期下面显示指定文字，如自定义节日等。
@@ -218,7 +227,7 @@ this.calendar.setTodoLabels({
   pos: 'bottom', // 待办点标记位置 ['top', 'bottom']
   dotColor: '#40', // 待办点标记颜色
   circle: true, // 待办圆圈标记设置（如圆圈标记已签到日期），该设置与点标记设置互斥
-  showLabelAlways: true, // 点击时是否显示代办标记（圆点/文字），在 circle 为 true 时无效
+  showLabelAlways: true, // 点击时是否显示待办事项（圆点/文字），在 circle 为 true 时无效
   days: [{
     year: 2018,
     month: 1,
@@ -232,7 +241,7 @@ this.calendar.setTodoLabels({
  });
 ```
 
-##### 8.2 删除代办标记
+##### 8.2 删除待办事项
 
 ```js
 this.calendar.deleteTodoLabels([{
@@ -246,7 +255,7 @@ this.calendar.deleteTodoLabels([{
 }]);
 ```
 
-##### 8.3 清空代办标记
+##### 8.3 清空待办事项
 
 ```js
 this.calendar.clearTodoLabels();

@@ -521,7 +521,7 @@ const conf = {
           selectedDays.length &&
           +selectedDays[0].day === +item.day
         ) {
-          // showTodoLabel 是否显示待办标记
+          // showTodoLabel 是否显示待办事项
           days[selectedDays[0].day - 1].showTodoLabel = true;
         }
       }
@@ -540,8 +540,8 @@ const conf = {
     conf.afterTapDay.call(this, currentSelected);
   },
   /**
-   * 设置代办事项标志
-   * @param {object} options 代办事项配置
+   * 设置待办事项标志
+   * @param {object} options 待办事项配置
    */
   setTodoLabels(options = {}) {
     const { calendar } = this.data;
@@ -590,7 +590,7 @@ const conf = {
   },
   /**
    * 筛选待办事项
-   * @param {array} todos 需要删除待办标记的日期
+   * @param {array} todos 需要删除待办事项的日期
    */
   filterTodos(todos) {
     const { todoLabels } = this.data.calendar;
@@ -603,8 +603,8 @@ const conf = {
     );
   },
   /**
-   *  删除指定日期的待办标识
-   * @param {array} todos 需要删除待办标记的日期
+   *  删除指定日期的待办事项
+   * @param {array} todos 需要删除待办事项的日期
    */
   deleteTodoLabels(todos) {
     if (!(todos instanceof Array) || !todos.length) return;
@@ -625,7 +625,7 @@ const conf = {
     });
   },
   /**
-   * 清空所有日期的待办标识
+   * 清空所有日期的待办事项
    */
   clearTodoLabels() {
     const { days = [] } = this.data.calendar;
@@ -1100,7 +1100,7 @@ export const jump = (year, month, day) => {
   conf.jumpToToday.call(self);
 };
 /**
- * 设置代办事项日期标记
+ * 设置待办事项日期标记
  * @param {object} todos  待办事项配置
  * @param {string} [todos.pos] 标记显示位置，默认值'bottom' ['bottom', 'top']
  * @param {string} [todos.dotColor] 标记点颜色，backgroundColor 支持的值都行
@@ -1110,14 +1110,14 @@ export const setTodoLabels = todos => {
   conf.setTodoLabels.call(currentPage, todos);
 };
 /**
- * 删除指定日期待办标记
+ * 删除指定日期待办事项
  * @param {array} todos 需要删除的待办日期数组
  */
 export const deleteTodoLabels = todos => {
   conf.deleteTodoLabels.call(currentPage, todos);
 };
 /**
- * 清空所有待办标记
+ * 清空所有待办事项
  */
 export const clearTodoLabels = () => {
   conf.clearTodoLabels.call(currentPage);

@@ -17,6 +17,8 @@ class WxData {
         } else {
           if (tmp[v] !== undefined) {
             tmp = tmp[v];
+          } else {
+            tmp = null;
           }
         }
       }

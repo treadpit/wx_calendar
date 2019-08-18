@@ -1,5 +1,5 @@
-import CalendarConfig from './config';
 import WxData from './wxData';
+import CalendarConfig from './config';
 import {
   Logger,
   GetDate,
@@ -9,8 +9,37 @@ import {
   converEnableDaysToTimestamp
 } from './utils';
 
-const getDate = new GetDate();
 const logger = new Logger();
+const getDate = new GetDate();
+
+function judegeParam(params) {
+  const {
+    start,
+    end,
+    startMonthDays,
+    endMonthDays,
+    startTimestamp,
+    endTimestamp
+  } = params;
+  if (start[2] > startMonthDays || start[2] < 1) {
+    logger.warn('enableArea() 开始日期错误，指定日期不在当前月份天数范围内');
+    return false;
+  } else if (start[1] > 12 || start[1] < 1) {
+    logger.warn('enableArea() 开始日期错误，月份超出1-12月份');
+    return false;
+  } else if (end[2] > endMonthDays || end[2] < 1) {
+    logger.warn('enableArea() 截止日期错误，指定日期不在当前月份天数范围内');
+    return false;
+  } else if (end[1] > 12 || end[1] < 1) {
+    logger.warn('enableArea() 截止日期错误，月份超出1-12月份');
+    return false;
+  } else if (startTimestamp > endTimestamp) {
+    logger.warn('enableArea()参数最小日期大于了最大日期');
+    return false;
+  } else {
+    return true;
+  }
+}
 
 class Day {
   constructor(component) {
@@ -22,7 +51,7 @@ class Day {
    */
   enableArea(area = []) {
     const wxData = WxData(this.Component);
-    const { enableDays = [] } = wxData.getData('calendar');
+    const enableDays = wxData.getData('calendar.enableDays') || [];
     let expectEnableDaysTimestamp = [];
     if (enableDays.length) {
       expectEnableDaysTimestamp = delRepeatedEnableDay(enableDays, area);
@@ -34,29 +63,20 @@ class Day {
         startTimestamp,
         endTimestamp
       } = convertEnableAreaToTimestamp(area);
+      if (!start || !end) return;
       const startMonthDays = getDate.thisMonthDays(start[0], start[1]);
       const endMonthDays = getDate.thisMonthDays(end[0], end[1]);
-      if (start[2] > startMonthDays || start[2] < 1) {
-        return logger.warn(
-          'enableArea() 开始日期错误，指定日期不在当前月份天数范围内'
-        );
-      }
-      if (start[1] > 12 || start[1] < 1) {
-        return logger.warn('enableArea() 开始日期错误，月份超出1-12月份');
-      }
-      if (end[2] > endMonthDays || end[2] < 1) {
-        return logger.warn(
-          'enableArea() 截止日期错误，指定日期不在当前月份天数范围内'
-        );
-      }
-      if (end[1] > 12 || end[1] < 1) {
-        return logger.warn('enableArea() 截止日期错误，月份超出1-12月份');
-      }
-      if (startTimestamp > endTimestamp) {
-        logger.warn('enableArea()参数最小日期大于了最大日期');
-      } else {
+      const isRight = judegeParam({
+        start,
+        end,
+        startMonthDays,
+        endMonthDays,
+        startTimestamp,
+        endTimestamp
+      });
+      if (isRight) {
         let { days = [], selectedDay = [] } = wxData.getData('calendar');
-        const daysCopy = days.slice();
+        const daysCopy = [...days];
         daysCopy.forEach(item => {
           const timestamp = getDate
             .newDate(item.year, item.month, item.day)

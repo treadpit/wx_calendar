@@ -1,5 +1,5 @@
-import { Logger, uniqueArrayByDate } from './utils';
 import WxData from './wxData';
+import { Logger, uniqueArrayByDate } from './utils';
 
 const logger = new Logger();
 
@@ -8,7 +8,7 @@ class Todo {
     this.Component = component;
   }
   /**
-   * 周、月视图下单选标记代办事项
+   * 周、月视图下单选标记待办事项
    * @param {array} todoDays
    * @param {array} days
    * @param {array} selectedDays
@@ -46,8 +46,8 @@ class Todo {
     });
   }
   /**
-   * 设置代办事项标志
-   * @param {object} options 代办事项配置
+   * 设置待办事项标志
+   * @param {object} options 待办事项配置
    */
   setTodoLabels(options) {
     const wxData = WxData(this.Component);
@@ -105,23 +105,22 @@ class Todo {
     wxData.setData(o);
   }
   /**
-   * 筛选待办事项
-   * @param {array} todos 需要删除待办标记的日期
+   * 过滤将删除的待办事项
+   * @param {array} todos 需要删除待办事项
    */
   filterTodos(todos) {
     const wxData = WxData(this.Component);
-    const { todoLabels } = wxData.getData('calendar');
+    const todoLabels = wxData.getData('calendar.todoLabels') || [];
     const deleteTodo = todos.map(
       item => `${item.year}-${item.month}-${item.day}`
     );
     return todoLabels.filter(
-      item =>
-        deleteTodo.indexOf(`${item.year}-${item.month}-${item.day}`) === -1
+      item => !deleteTodo.includes(`${item.year}-${item.month}-${item.day}`)
     );
   }
   /**
-   *  删除指定日期的待办标识
-   * @param {array} todos 需要删除待办标记的日期
+   *  删除指定日期的待办事项
+   * @param {array} todos 需要删除待办事项的日期
    */
   deleteTodoLabels(todos) {
     if (!(todos instanceof Array) || !todos.length) return;
@@ -143,7 +142,7 @@ class Todo {
     });
   }
   /**
-   * 清空所有日期的待办标识
+   * 清空所有待办事项
    */
   clearTodoLabels() {
     const wxData = WxData(this.Component);
@@ -156,6 +155,14 @@ class Todo {
       'calendar.days': _days,
       'calendar.todoLabels': []
     });
+  }
+  /**
+   * 获取所有待办事项
+   */
+  getTodoLabels() {
+    const wxData = WxData(this.Component);
+    const todoLabels = wxData.getData('calendar.todoLabels') || [];
+    return todoLabels;
   }
 }
 
