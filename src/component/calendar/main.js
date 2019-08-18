@@ -20,18 +20,15 @@ let dataInstance = null;
 /**
  * 全局赋值正在操作的组件实例，方便读/写各自的 data
  * @param {string} componentId 要操作的组件ID
- * @param {object} self 当前调用上下文
  */
-function bindCurrentComponent(componentId, self) {
+function bindCurrentComponent(componentId) {
   if (componentId) {
     Component = getComponent(componentId);
-  } else if (self && self.config) {
-    Component = self;
   }
 }
 
 function getData(key, componentId) {
-  bindCurrentComponent(componentId, this);
+  bindCurrentComponent(componentId);
   dataInstance = WxData(Component);
   return dataInstance.getData(key);
 }
@@ -79,23 +76,6 @@ const conf = {
         month: newMonth
       }
     });
-  },
-  /**
-   * 点击日期后触发事件
-   * @param {object} currentSelected 当前选择的日期
-   * @param {array} selectedDays  多选状态下选中的日期
-   */
-  afterTapDay(currentSelected, selectedDays) {
-    const config = CalendarConfig(Component).getCalendarConfig();
-    const { multi } = config;
-    if (!multi) {
-      Component.triggerEvent('afterTapDay', currentSelected);
-    } else {
-      Component.triggerEvent('afterTapDay', {
-        currentSelected,
-        selectedDays
-      });
-    }
   },
   /**
    * 多选
@@ -209,6 +189,23 @@ const conf = {
     setData(tmp);
   },
   /**
+   * 点击日期后触发事件
+   * @param {object} currentSelected 当前选择的日期
+   * @param {array} selectedDays  多选状态下选中的日期
+   */
+  afterTapDay(currentSelected, selectedDays) {
+    const config = CalendarConfig(Component).getCalendarConfig();
+    const { multi } = config;
+    if (!multi) {
+      Component.triggerEvent('afterTapDay', currentSelected);
+    } else {
+      Component.triggerEvent('afterTapDay', {
+        currentSelected,
+        selectedDays
+      });
+    }
+  },
+  /**
    * 跳转至今天
    */
   jumpToToday() {
@@ -243,10 +240,21 @@ export const calculatePrevWeekDays = conf.calculatePrevWeekDays;
 export const calculateNextWeekDays = conf.calculateNextWeekDays;
 
 /**
+ * 获取当前年月
+ */
+export function getCurrentYM(componentId) {
+  bindCurrentComponent(componentId);
+  return {
+    year: getData('calendar.curYear'),
+    month: getData('calendar.curMonth')
+  };
+}
+
+/**
  * 获取已选择的日期
  */
 export function getSelectedDay(componentId) {
-  bindCurrentComponent(componentId, this);
+  bindCurrentComponent(componentId);
   return getData('calendar.selectedDay');
 }
 
@@ -255,7 +263,7 @@ export function getSelectedDay(componentId) {
  * @param {string} componentId
  */
 export function cancelAllSelectedDay(componentId) {
-  bindCurrentComponent(componentId, this);
+  bindCurrentComponent(componentId);
   const days = [...getData('calendar.days')];
   days.map(item => {
     item.choosed = false;
@@ -268,10 +276,14 @@ export function cancelAllSelectedDay(componentId) {
 
 /**
  * 跳转至指定日期
+ * @param {number} year
+ * @param {number} month
+ * @param {number} day
+ * @param {string} componentId
  */
 export function jump(year, month, day, componentId) {
-  bindCurrentComponent(componentId, this);
-  const { selectedDay = [] } = getData('calendar');
+  bindCurrentComponent(componentId);
+  const { selectedDay = [] } = getData('calendar') || {};
   const { year: y, month: m, day: d } = selectedDay[0] || {};
   if (+y === +year && +m === +month && +d === +day) {
     return;
@@ -296,66 +308,44 @@ export function jump(year, month, day, componentId) {
     conf.jumpToToday();
   }
 }
+
 /**
- * 设置代办事项日期标记
+ * 设置待办事项日期标记
  * @param {object} todos  待办事项配置
  * @param {string} [todos.pos] 标记显示位置，默认值'bottom' ['bottom', 'top']
  * @param {string} [todos.dotColor] 标记点颜色，backgroundColor 支持的值都行
- * @param {object[]} todos.days 需要标记的所有日期，如：[{year: 2015, month: 5, day: 12}]，其中年月日字段必填
+ * @param {object[]} [todos.days] 需要标记的所有日期，如：[{year: 2015, month: 5, day: 12}]，其中年月日字段必填
  */
 export function setTodoLabels(todos, componentId) {
-  bindCurrentComponent(componentId, this);
+  bindCurrentComponent(componentId);
   Todo(Component).setTodoLabels(todos);
 }
+
 /**
- * 删除指定日期待办标记
+ * 删除指定日期待办事项
  * @param {array} todos 需要删除的待办日期数组
  */
 export function deleteTodoLabels(todos, componentId) {
-  bindCurrentComponent(componentId, this);
+  bindCurrentComponent(componentId);
   Todo(Component).deleteTodoLabels(todos);
 }
+
 /**
- * 清空所有待办标记
+ * 清空所有待办事项
  */
 export function clearTodoLabels(componentId) {
-  bindCurrentComponent(componentId, this);
+  bindCurrentComponent(componentId);
   Todo(Component).clearTodoLabels();
 }
+
 /**
- * 获取所有 TODO 日期
+ * 获取所有待办事项
  */
 export function getTodoLabels(componentId) {
-  bindCurrentComponent(componentId, this);
-  return getData('calendar.todoLabels');
+  bindCurrentComponent(componentId);
+  return Todo(Component).getTodoLabels();
 }
-/**
- * 切换周月视图
- * args[0] view 视图模式[week, month]
- * 剩余两参数为切换到某一天day(如: {year: 2019, month: 1, day: 3})或者 componentId
- */
-export function switchView(...args) {
-  return new Promise((resolve, reject) => {
-    const view = args[0];
-    if (!args[1])
-      return Week(Component)
-        .switchWeek(view)
-        .then(resolve);
-    if (typeof args[1] === 'string') {
-      bindCurrentComponent(args[1], this);
-      Week(Component)
-        .switchWeek(view, args[2])
-        .then(resolve);
-    } else if (typeof args[1] === 'object') {
-      if (typeof args[2] === 'string') {
-        bindCurrentComponent(args[1], this);
-      }
-      Week(Component)
-        .switchWeek(view, args[1])
-        .then(resolve);
-    }
-  });
-}
+
 /**
  * 禁用指定日期
  * @param {array} days 日期
@@ -364,7 +354,7 @@ export function switchView(...args) {
  * @param {number} [days.day]
  */
 export function disableDay(days = [], componentId) {
-  bindCurrentComponent(componentId, this);
+  bindCurrentComponent(componentId);
   Day(Component).disableDays(days);
 }
 
@@ -373,7 +363,7 @@ export function disableDay(days = [], componentId) {
  * @param {array} area 日期访问数组
  */
 export function enableArea(area = [], componentId) {
-  bindCurrentComponent(componentId, this);
+  bindCurrentComponent(componentId);
   Day(Component).enableArea(area);
 }
 /**
@@ -381,13 +371,56 @@ export function enableArea(area = [], componentId) {
  * @param {array} days 指定日期数组
  */
 export function enableDays(days = [], componentId) {
-  bindCurrentComponent(componentId, this);
+  bindCurrentComponent(componentId);
   Day(Component).enableDays(days);
 }
 
 export function setSelectedDays(selected, componentId) {
-  bindCurrentComponent(componentId, this);
+  bindCurrentComponent(componentId);
   Day(Component).setSelectedDays(selected);
+}
+
+export function getCalendarConfig(componentId) {
+  bindCurrentComponent(componentId);
+  CalendarConfig(Component).getCalendarConfig();
+}
+
+export function setCalendarConfig(key, value, componentId) {
+  bindCurrentComponent(componentId);
+  CalendarConfig(Component).setCalendarConfig(key, value);
+}
+
+/**
+ * 切换周月视图
+ * 切换视图时可传入指定日期，如: {year: 2019, month: 1, day: 3}
+ * args[0] view 视图模式[week, month]
+ * args[1]|args[2]为day object或者 componentId
+ */
+export function switchView(...args) {
+  return new Promise((resolve, reject) => {
+    const view = args[0];
+    if (!args[1]) {
+      return Week(Component)
+        .switchWeek(view)
+        .then(resolve)
+        .catch(reject);
+    }
+    if (typeof args[1] === 'string') {
+      bindCurrentComponent(args[1], this);
+      Week(Component)
+        .switchWeek(view, args[2])
+        .then(resolve)
+        .catch(reject);
+    } else if (typeof args[1] === 'object') {
+      if (typeof args[2] === 'string') {
+        bindCurrentComponent(args[1], this);
+      }
+      Week(Component)
+        .switchWeek(view, args[1])
+        .then(resolve)
+        .catch(reject);
+    }
+  });
 }
 
 /**
@@ -401,31 +434,32 @@ function mountEventsOnPage(page) {
     disableDay,
     enableArea,
     enableDays,
+    getCurrentYM,
     getSelectedDay,
     cancelAllSelectedDay,
     setTodoLabels,
+    getTodoLabels,
     deleteTodoLabels,
     clearTodoLabels,
-    setSelectedDays
+    setSelectedDays,
+    getCalendarConfig,
+    setCalendarConfig
   };
 }
 
-function init(component, config) {
-  initialTasks.flag = 'process';
-  logger.tips(
-    '使用中若遇问题请反馈至 https://github.com/treadpit/wx_calendar/issues ✍️'
-  );
+function setWeekHeader(firstDayOfWeek) {
   let weeksCh = ['日', '一', '二', '三', '四', '五', '六'];
-  if (config.firstDayOfWeek === 'Mon') {
+  if (firstDayOfWeek === 'Mon') {
     weeksCh = ['一', '二', '三', '四', '五', '六', '日'];
   }
-  Component = component;
-  Component.config = config;
   setData({
     'calendar.weeksCh': weeksCh
   });
-  if (config.defaultDay && typeof config.defaultDay === 'string') {
-    const day = config.defaultDay.split('-');
+}
+
+function autoSelectDay(defaultDay) {
+  if (defaultDay && typeof defaultDay === 'string') {
+    const day = defaultDay.split('-');
     if (day.length < 3) {
       return logger.warn('配置 jumpTo 格式应为: 2018-4-2 或 2018-04-02');
     }
@@ -433,6 +467,17 @@ function init(component, config) {
   } else {
     jump();
   }
+}
+
+function init(component, config) {
+  initialTasks.flag = 'process';
+  Component = component;
+  Component.config = config;
+  setWeekHeader(config.firstDayOfWeek);
+  autoSelectDay(config.defaultDay);
+  logger.tips(
+    '使用中若遇问题请反馈至 https://github.com/treadpit/wx_calendar/issues ✍️'
+  );
 }
 
 export default (component, config = {}) => {

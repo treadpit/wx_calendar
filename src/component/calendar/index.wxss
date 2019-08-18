@@ -1,4 +1,4 @@
-@import './iconfont//iconfont.wxss';
+@import './iconfont/iconfont.wxss';
 
 .b {
     display: flex;

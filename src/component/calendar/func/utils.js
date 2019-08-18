@@ -225,6 +225,11 @@ export function convertEnableAreaToTimestamp(timearea = []) {
   const getDate = new GetDate();
   const start = timearea[0].split('-');
   const end = timearea[1].split('-');
+  const logger = new Logger();
+  if (start.length !== 3 || end.length !== 3) {
+    logger.warn('enableArea() 参数格式为: ["2018-2-1", "2018-3-1"]');
+    return {};
+  }
   const startTimestamp = getDate
     .newDate(start[0], start[1], start[2])
     .getTime();
