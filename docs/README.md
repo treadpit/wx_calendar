@@ -12,12 +12,12 @@
 
 #### 1. 引入组件
 
-将 `src/component` 文件夹拷贝至自己的组件目录，页面 `json` 文件中配置组件
+将 `calendar` 文件夹拷贝至自己的组件目录，页面 `json` 文件中配置组件，组件路径根据项目实际情况填写
 
 ```json
 {
   "usingComponents": {
-    "calendar": "../../component/calendar/index"
+    "calendar": "/component/calendar/index"
   }
 }
 ```
