@@ -23,6 +23,7 @@
 ```
 
 在页面 `wxml` 中引入组件，提供了几个自定义事件，数据返回均在 `event` 参数对象中（数据获取可参考小程序官方文档中自定义组件的自定义事件）
+
 ```xml
 <calendar
   calendarConfig="{{calendarConfig}}"
@@ -32,6 +33,7 @@
   bind:afterCalendarRender="afterCalendarRender"
 ></calendar>
 ```
+
 其中自定义事件功能对应如下，返回参数的具体格式可运行 `calendarComponent` 页面查看
 
 ```js
@@ -65,9 +67,8 @@ Page({
   afterCalendarRender(e) {
     console.log('afterCalendarRender', e);
   }
-})
+});
 ```
-
 
 #### 2. 日历组件初始化
 
@@ -82,6 +83,11 @@ const conf = {
   data: {
     // 此处为日历自定义配置字段
     calendarConfig: {
+      /**
+       * 初始化日历时指定默认选中日期，如：'2018-3-6' 或 '2018-03-06'
+       * 初始化时不默认选中当天，则将该值配置为false。
+       */
+      defaultDay: '2018-3-6',
       multi: true, // 是否开启多选,
       inverse: true, // 单选模式下是否支持取消选中,
       takeoverTap: true, // 是否完全接管日期点击事件（日期不会选中），配合 onTapDay() 使用
@@ -89,13 +95,7 @@ const conf = {
       firstDayOfWeek: 'Mon', // 每周第一天为周一还是周日，默认按周日开始
       onlyShowCurrentMonth: true, // 日历面板是否只显示本月日期
       hideHeadOnWeekMode: true, // 周视图模式是否隐藏日历头部
-      showHandlerOnWeekMode: true, // 周视图模式是否显示日历头部操作栏，hideHeadOnWeekMode 优先级高于此配置
-      /**
-       * 初始化日历时指定默认选中日期，如：'2018-3-6' 或 '2018-03-06'
-       * 注意：若想初始化时不默认选中当天，则将该值配置为除 undefined 以外的其他非值即可，如：空字符串, 0 ,false等。
-      */
-      defaultDay: '2018-3-6', // 初始化后是否默认选中指定日期
-      noDefault: true, // 初始化后是否自动选中当天日期，优先级高于defaultDay配置，两者请勿一起配置
+      showHandlerOnWeekMode: true // 周视图模式是否显示日历头部操作栏，hideHeadOnWeekMode 优先级高于此配置
     }
   }
 };
@@ -106,9 +106,9 @@ Page(conf);
 
 同一页面如果有多个不同配置的日历组件，可分别定义配置。
 
-组件必须有ID属性，在调用提供的各个日历API时需注意，最后一个参数为要操作的组件ID（多个组件模式下必传），表示当前要操作的是哪一个日历组件数据。
+组件必须有 ID 属性，在调用提供的各个日历 API 时需注意，最后一个参数为要操作的组件 ID（多个组件模式下必传），表示当前要操作的是哪一个日历组件数据。
 
-具体示例可参考  [/pages/calendarMoreComponent/index页面](https://github.com/treadpit/wx_calendar/tree/master/src/pages/calendarMoreComponent)
+具体示例可参考 [/pages/calendarMoreComponent/index 页面](https://github.com/treadpit/wx_calendar/tree/master/src/pages/calendarMoreComponent)
 
 ```js
 Page({
@@ -124,17 +124,22 @@ Page({
   },
   doSomething() {
     const todoLabels = this.calendar.getTodoLabels('#calendar1');
-    this.calendar.setTodoLabels({
-      circle: true,
-      days: [{
-        year: 2018,
-        month: 1,
-        day: 1,
-        todoText: '待办'
-      }],
-    }, '#calendar2');
+    this.calendar.setTodoLabels(
+      {
+        circle: true,
+        days: [
+          {
+            year: 2018,
+            month: 1,
+            day: 1,
+            todoText: '待办'
+          }
+        ]
+      },
+      '#calendar2'
+    );
   }
-})
+});
 ```
 
 ```xml
@@ -158,7 +163,7 @@ Page({
 
 #### 日历事件使用说明
 
-在初始化日历后，调用日历暴露的方法可采用 ***两种*** 方式，以 `jump` 函数为例
+在初始化日历后，调用日历暴露的方法可采用 **_两种_** 方式，以 `jump` 函数为例
 
 > 注意页面 **多日历组件** 时方法调用需要的参数 [componentId]，参考 **多日历组件一节** 文档说明，以下示例均以单日历组件为例
 
@@ -172,7 +177,7 @@ Page({
 })
 ```
 
- - (2) 手动引入方法
+- (2) 手动引入方法
 
 ```js
 import { jump } from '../../component/calendar/main.js';
@@ -187,7 +192,6 @@ import { jump } from '../../component/calendar/main.js';
 #### 5. 跳转至指定日期
 
 ```js
-
 // 不传入参数则默认跳转至今天
 this.calendar.jump();
 // 入参必须为数字
@@ -204,14 +208,11 @@ const selectedDay = this.calendar.getSelectedDay();
 
 #### 7. 获取日历当前年月
 
-> 用于无选中日期时
-
 ```js
 const ym = this.calendar.getCurrentYM();
 
 // => { year: 2019, month: 12}
 ```
-
 
 #### 8. 取消所有选中日期
 
@@ -232,31 +233,37 @@ this.calendar.setTodoLabels({
   dotColor: '#40', // 待办点标记颜色
   circle: true, // 待办圆圈标记设置（如圆圈标记已签到日期），该设置与点标记设置互斥
   showLabelAlways: true, // 点击时是否显示待办事项（圆点/文字），在 circle 为 true 时无效
-  days: [{
-    year: 2018,
-    month: 1,
-    day: 1,
-    todoText: '待办'
-  }, {
-    year: 2018,
-    month: 5,
-    day: 15,
-  }],
- });
+  days: [
+    {
+      year: 2018,
+      month: 1,
+      day: 1,
+      todoText: '待办'
+    },
+    {
+      year: 2018,
+      month: 5,
+      day: 15
+    }
+  ]
+});
 ```
 
 ##### 9.2 删除待办事项
 
 ```js
-this.calendar.deleteTodoLabels([{
-  year: 2018,
-  month: 5,
-  day: 12,
-}, {
-  year: 2018,
-  month: 5,
-  day: 15,
-}]);
+this.calendar.deleteTodoLabels([
+  {
+    year: 2018,
+    month: 5,
+    day: 12
+  },
+  {
+    year: 2018,
+    month: 5,
+    day: 15
+  }
+]);
 ```
 
 ##### 9.3 清空待办事项
@@ -266,6 +273,7 @@ this.calendar.clearTodoLabels();
 ```
 
 ##### 9.4 获取所有代办日期
+
 ```js
 this.calendar.getTodoLabels();
 ```
@@ -275,11 +283,13 @@ this.calendar.getTodoLabels();
 注意：若入参为空数组，则清空所有禁选日期
 
 ```js
-this.calendar.disableDay([{
-  year: 2018,
-  month: 7,
-  day: 31,
-}]);
+this.calendar.disableDay([
+  {
+    year: 2018,
+    month: 7,
+    day: 31
+  }
+]);
 ```
 
 #### 11. 指定可选日期
@@ -307,7 +317,7 @@ const toSet = [
     month: 3,
     day: 18
   }
-]
+];
 this.calendar.setSelectedDays(toSet);
 ```
 
@@ -336,6 +346,7 @@ this.calendar.switchView('month').then(() => {});
 <p class="tip">除引入方式不一致外，日历配置及其他方法调用参考日历组件文档</p>
 
 #### 1. 引入`wxml`及`wxss`
+
 ```xml
 // example.wxml
 <import src="../../template/calendar/index.wxml"/>
@@ -343,12 +354,14 @@ this.calendar.switchView('month').then(() => {});
    <template is="calendar" data="{{...calendar}}" />
 </view>
 ```
+
 ```css
 /* example.wxss */
 @import '../../template/calendar/index.wxss';
 ```
 
 #### 2. 日历模板初始化
+
 ```js
 import initCalendar from '../../template/calendar/index';
 const conf = {
@@ -360,9 +373,11 @@ Page(conf);
 ```
 
 ### 日期选择器(Template)
+
 <p class="tip">此 `template` 带有 `input` 输入框，不影响模板的使用，可配置隐藏</p>
 
 #### 1. 引入`wxml`及`wxss`
+
 ```xml
 // example.wxml
 <import src="../../template/datepicker/index.wxml"/>
@@ -371,29 +386,31 @@ Page(conf);
   <template is="datepicker" data="{{...datepicker}}" />
 </view>
 ```
+
 ```css
 /* example.wxss */
 @import '../../template/datepicker/index.wxss';
 ```
 
 #### 2. 日期选择器初始化
+
 ```js
 import initDatepicker from '../../template/datepicker/index';
 const conf = {
   onShow: function() {
     initDatepicker(); // 使用默认配置初始化日历选择器
-  },
+  }
 };
 Page(conf);
 ```
 
 #### 3. 日期选择器配置
 
-> 此处config配置参考日历组件
+> 此处 config 配置参考日历组件
 >
 > 不同之处在于增加两个函数 showDatepicker/closeDatepicker, 控制开/关选择器面板
 >
-> 打开面板跳转至指定日期，使用showDatepicker()，参数形如：'2019-2-12'，不传则默认为当天
+> 打开面板跳转至指定日期，使用 showDatepicker()，参数形如：'2019-2-12'，不传则默认为当天
 
 ```js
 import initDatepicker, {
@@ -406,7 +423,7 @@ const conf = {
   afterTapDay: currentSelect => {
     console.log('当前点击的日期', currentSelect);
     console.log('getSelectedDay方法', getSelectedDay());
-  },
+  }
 };
 
 initDatepicker(conf);

@@ -41,8 +41,9 @@ function judegeParam(params) {
   }
 }
 
-class Day {
+class Day extends WxData {
   constructor(component) {
+    super(component);
     this.Component = component;
   }
   /**
@@ -50,8 +51,7 @@ class Day {
    * @param {array} area 日期访问数组
    */
   enableArea(area = []) {
-    const wxData = WxData(this.Component);
-    const enableDays = wxData.getData('calendar.enableDays') || [];
+    const enableDays = this.getData('calendar.enableDays') || [];
     let expectEnableDaysTimestamp = [];
     if (enableDays.length) {
       expectEnableDaysTimestamp = delRepeatedEnableDay(enableDays, area);
@@ -75,7 +75,7 @@ class Day {
         endTimestamp
       });
       if (isRight) {
-        let { days = [], selectedDay = [] } = wxData.getData('calendar');
+        let { days = [], selectedDay = [] } = this.getData('calendar');
         const daysCopy = [...days];
         daysCopy.forEach(item => {
           const timestamp = getDate
@@ -98,7 +98,7 @@ class Day {
             item.disable = false;
           }
         });
-        wxData.setData({
+        this.setData({
           'calendar.days': daysCopy,
           'calendar.selectedDay': selectedDay,
           'calendar.enableArea': area,
@@ -116,8 +116,7 @@ class Day {
    * @param {array} days 指定日期数组
    */
   enableDays(days = []) {
-    const wxData = WxData(this.Component);
-    const { enableArea = [], enableAreaTimestamp = [] } = wxData.getData(
+    const { enableArea = [], enableAreaTimestamp = [] } = this.getData(
       'calendar'
     );
     let expectEnableDaysTimestamp = [];
@@ -126,7 +125,7 @@ class Day {
     } else {
       expectEnableDaysTimestamp = converEnableDaysToTimestamp(days);
     }
-    let { days: allDays = [], selectedDay = [] } = wxData.getData('calendar');
+    let { days: allDays = [], selectedDay = [] } = this.getData('calendar');
     const daysCopy = allDays.slice();
     daysCopy.forEach(item => {
       const timestamp = getDate
@@ -158,7 +157,7 @@ class Day {
         item.disable = false;
       }
     });
-    wxData.setData({
+    this.setData({
       'calendar.days': daysCopy,
       'calendar.selectedDay': selectedDay,
       'calendar.enableDays': days,
@@ -166,12 +165,11 @@ class Day {
     });
   }
   setSelectedDays(selected) {
-    const wxData = WxData(this.Component);
     const config = CalendarConfig(this.Component).getCalendarConfig();
     if (!config.multi) {
       return logger.warn('单选模式下不能设置多日期选中，请配置 multi');
     }
-    const { selectedDay, days, showLabelAlways } = wxData.getData('calendar');
+    const { selectedDay, days, showLabelAlways } = this.getData('calendar');
     let newSelectedDay = [];
     if (!selected) {
       days.map(item => {
@@ -206,7 +204,7 @@ class Day {
       });
     }
     CalendarConfig(this.Component).setCalendarConfig('multi', true);
-    wxData.setData({
+    this.setData({
       'calendar.days': days,
       'calendar.selectedDay': newSelectedDay
     });
@@ -216,8 +214,7 @@ class Day {
    * @param {array} days  禁用
    */
   disableDays(data) {
-    const wxData = WxData(this.Component);
-    const { disableDays = [], days } = wxData.getData('calendar');
+    const { disableDays = [], days } = this.getData('calendar');
     if (Object.prototype.toString.call(data) !== '[object Array]') {
       return logger.warn('disableDays 参数为数组');
     }
@@ -236,7 +233,7 @@ class Day {
         item.disable = false;
       });
     }
-    wxData.setData({
+    this.setData({
       'calendar.days': days,
       'calendar.disableDays': _disableDays
     });
