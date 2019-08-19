@@ -35,4 +35,4 @@ class WxData {
   }
 }
 
-export default component => new WxData(component);
+export default WxData;

@@ -6,8 +6,9 @@ import { GetDate, Logger } from './utils';
 const getDate = new GetDate();
 const logger = new Logger();
 
-class WeekMode {
+class WeekMode extends WxData {
   constructor(component) {
+    super(component);
     this.Component = component;
   }
   /**
@@ -16,19 +17,16 @@ class WeekMode {
    * @param {object} day  {year: 2017, month: 11, day: 1}
    */
   switchWeek(view, day) {
-    const wxData = WxData(this.Component);
     return new Promise((resolve, reject) => {
       if (CalendarConfig(this.Component).getCalendarConfig().multi)
         return logger.warn('多选模式不能切换周月视图');
-      const { selectedDay = [], curYear, curMonth } = wxData.getData(
-        'calendar'
-      );
+      const { selectedDay = [], curYear, curMonth } = this.getData('calendar');
       if (!selectedDay.length) return;
       const currentDay = selectedDay[0];
       if (view === 'week') {
         if (this.Component.weekMode) return;
         this.Component.weekMode = true;
-        wxData.setData({
+        this.setData({
           'calendar.weekMode': true
         });
         this.selectedDayWeekAllDays(day || currentDay)
@@ -36,7 +34,7 @@ class WeekMode {
           .catch(reject);
       } else {
         this.Component.weekMode = false;
-        wxData.setData({
+        this.setData({
           'calendar.weekMode': false
         });
         Render(this.Component)
@@ -50,9 +48,7 @@ class WeekMode {
    * 更新当前年月
    */
   updateCurrYearAndMonth(type) {
-    let { days, curYear, curMonth } = WxData(this.Component).getData(
-      'calendar'
-    );
+    let { days, curYear, curMonth } = this.getData('calendar');
     const { month: firstMonth } = days[0];
     const { month: lastMonth } = days[days.length - 1];
     const lastDayOfThisMonth = getDate.thisMonthDays(curYear, curMonth);
@@ -88,9 +84,7 @@ class WeekMode {
    * 计算周视图下当前这一周和当月的最后一天
    */
   calculateLastDay() {
-    const { days, curYear, curMonth } = WxData(this.Component).getData(
-      'calendar'
-    );
+    const { days, curYear, curMonth } = this.getData('calendar');
     const lastDayInThisWeek = days[days.length - 1].day;
     const lastDayInThisMonth = getDate.thisMonthDays(curYear, curMonth);
     return { lastDayInThisWeek, lastDayInThisMonth };
@@ -99,7 +93,7 @@ class WeekMode {
    * 计算周视图下当前这一周第一天
    */
   calculateFirstDay() {
-    const { days } = WxData(this.Component).getData('calendar');
+    const { days } = this.getData('calendar');
     const firstDayInThisWeek = days[0].day;
     return { firstDayInThisWeek };
   }
@@ -111,7 +105,7 @@ class WeekMode {
   firstWeekInMonth(year, month) {
     const firstDay = getDate.dayOfWeek(year, month, 1);
     const firstWeekDays = [1, 1 + (6 - firstDay)];
-    const days = WxData(this.Component).getData('calendar.days') || [];
+    const days = this.getData('calendar.days') || [];
     const daysCut = days.slice(firstWeekDays[0] - 1, firstWeekDays[1]);
     return daysCut;
   }
@@ -124,7 +118,7 @@ class WeekMode {
     const lastDay = getDate.thisMonthDays(year, month);
     const lastDayWeek = getDate.dayOfWeek(year, month, lastDay);
     const lastWeekDays = [lastDay - lastDayWeek, lastDay];
-    const days = WxData(this.Component).getData('calendar.days') || [];
+    const days = this.getData('calendar.days') || [];
     const daysCut = days.slice(lastWeekDays[0] - 1, lastWeekDays[1]);
     return daysCut;
   }
@@ -134,9 +128,9 @@ class WeekMode {
    */
   initSelectedDay(days) {
     const daysCopy = [...days];
-    const { selectedDay = [], todoLabels = [], showLabelAlways } = WxData(
-      this.Component
-    ).getData('calendar');
+    const { selectedDay = [], todoLabels = [], showLabelAlways } = this.getData(
+      'calendar'
+    );
     const selectedDayStr = selectedDay.map(
       item => `${+item.year}-${+item.month}-${+item.day}`
     );
@@ -176,7 +170,7 @@ class WeekMode {
       todayTimestamp,
       enableAreaTimestamp = [],
       enableDaysTimestamp = []
-    } = WxData(this.Component).getData('calendar');
+    } = this.getData('calendar');
     days.forEach(item => {
       const timestamp = getDate
         .newDate(item.year, item.month, item.day)
@@ -213,7 +207,7 @@ class WeekMode {
    */
   calculateNextWeekDays() {
     let { lastDayInThisWeek, lastDayInThisMonth } = this.calculateLastDay();
-    let { curYear, curMonth } = WxData(this.Component).getData('calendar');
+    let { curYear, curMonth } = this.getData('calendar');
     let days = [];
     if (lastDayInThisMonth - lastDayInThisWeek >= 7) {
       const { Uyear, Umonth } = this.updateCurrYearAndMonth('next');
@@ -250,7 +244,7 @@ class WeekMode {
     }
     days = this.initSelectedDay(days);
     this.setEnableAreaOnWeekMode(days);
-    WxData(this.Component).setData({
+    this.setData({
       'calendar.curYear': curYear,
       'calendar.curMonth': curMonth,
       'calendar.days': days
@@ -261,7 +255,7 @@ class WeekMode {
    */
   calculatePrevWeekDays() {
     let { firstDayInThisWeek } = this.calculateFirstDay();
-    let { curYear, curMonth } = WxData(this.Component).getData('calendar');
+    let { curYear, curMonth } = this.getData('calendar');
     let days = [];
 
     if (firstDayInThisWeek - 7 > 0) {
@@ -306,7 +300,7 @@ class WeekMode {
     }
     days = this.initSelectedDay(days);
     this.setEnableAreaOnWeekMode(days);
-    WxData(this.Component).setData({
+    this.setData({
       'calendar.curYear': curYear,
       'calendar.curMonth': curMonth,
       'calendar.days': days
@@ -318,9 +312,7 @@ class WeekMode {
    */
   selectedDayWeekAllDays(currentDay) {
     return new Promise((resolve, reject) => {
-      let { days, curYear, curMonth } = WxData(this.Component).getData(
-        'calendar'
-      );
+      let { days, curYear, curMonth } = this.getData('calendar');
       let { year, month, day } = currentDay;
       let lastWeekDays = this.lastWeekInMonth(year, month);
       const firstWeekDays = this.firstWeekInMonth(year, month);
@@ -371,7 +363,7 @@ class WeekMode {
         days = days.slice(range[0] - 1, range[1]);
       }
       days = this.initSelectedDay(days);
-      WxData(this.Component).setData(
+      this.setData(
         {
           'calendar.days': days,
           'calendar.empytGrids': [],

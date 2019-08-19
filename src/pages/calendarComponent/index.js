@@ -112,6 +112,9 @@ const conf = {
     if (disable) {
       this.showToast('抱歉，还不支持～😂');
     }
+    this.setData({
+      rst: []
+    });
     const calendar = this.calendar;
     const { year, month } = calendar.getCurrentYM();
     switch (action) {
@@ -155,6 +158,14 @@ const conf = {
         if (todos && todos.length) {
           todos.length = 1;
           calendar[action](todos);
+          const _todos = [...calendar.getTodoLabels()];
+          setTimeout(() => {
+            const rst = _todos.map(item => JSON.stringify(item));
+            rst.map(item => JSON.stringify(item));
+            this.setData({
+              rst
+            });
+          });
         } else {
           this.showToast('没有待办事项');
         }

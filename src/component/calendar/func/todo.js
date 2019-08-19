@@ -3,8 +3,9 @@ import { Logger, uniqueArrayByDate } from './utils';
 
 const logger = new Logger();
 
-class Todo {
+class Todo extends WxData {
   constructor(component) {
+    super(component);
     this.Component = component;
   }
   /**
@@ -50,9 +51,8 @@ class Todo {
    * @param {object} options 待办事项配置
    */
   setTodoLabels(options) {
-    const wxData = WxData(this.Component);
     if (options) this.Component.todoConfig = options;
-    const calendar = wxData.getData('calendar');
+    const calendar = this.getData('calendar');
     if (!calendar || !calendar.days) {
       return logger.warn('请等待日历初始化完成后再调用该方法');
     }
@@ -102,15 +102,14 @@ class Todo {
     }
     o['calendar.todoLabelCircle'] = circle || false;
     o['calendar.showLabelAlways'] = showLabelAlways || false;
-    wxData.setData(o);
+    this.setData(o);
   }
   /**
    * 过滤将删除的待办事项
    * @param {array} todos 需要删除待办事项
    */
   filterTodos(todos) {
-    const wxData = WxData(this.Component);
-    const todoLabels = wxData.getData('calendar.todoLabels') || [];
+    const todoLabels = this.getData('calendar.todoLabels') || [];
     const deleteTodo = todos.map(
       item => `${item.year}-${item.month}-${item.day}`
     );
@@ -124,9 +123,8 @@ class Todo {
    */
   deleteTodoLabels(todos) {
     if (!(todos instanceof Array) || !todos.length) return;
-    const wxData = WxData(this.Component);
     const todoLabels = this.filterTodos(todos);
-    const { days, curYear, curMonth } = wxData.getData('calendar');
+    const { days, curYear, curMonth } = this.getData('calendar');
     const currentMonthTodoLabels = todoLabels.filter(
       item => curYear === +item.year && curMonth === +item.month
     );
@@ -136,7 +134,7 @@ class Todo {
     currentMonthTodoLabels.forEach(item => {
       days[item.day - 1].showTodoLabel = !days[item.day - 1].choosed;
     });
-    wxData.setData({
+    this.setData({
       'calendar.days': days,
       'calendar.todoLabels': todoLabels
     });
@@ -145,13 +143,12 @@ class Todo {
    * 清空所有待办事项
    */
   clearTodoLabels() {
-    const wxData = WxData(this.Component);
-    const { days = [] } = wxData.getData('calendar');
+    const { days = [] } = this.getData('calendar');
     const _days = [].concat(days);
     _days.forEach(item => {
       item.showTodoLabel = false;
     });
-    wxData.setData({
+    this.setData({
       'calendar.days': _days,
       'calendar.todoLabels': []
     });
@@ -160,8 +157,7 @@ class Todo {
    * 获取所有待办事项
    */
   getTodoLabels() {
-    const wxData = WxData(this.Component);
-    const todoLabels = wxData.getData('calendar.todoLabels') || [];
+    const todoLabels = this.getData('calendar.todoLabels') || [];
     return todoLabels;
   }
 }

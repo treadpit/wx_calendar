@@ -29,12 +29,12 @@ function bindCurrentComponent(componentId) {
 
 function getData(key, componentId) {
   bindCurrentComponent(componentId);
-  dataInstance = WxData(Component);
+  dataInstance = new WxData(Component);
   return dataInstance.getData(key);
 }
 
 function setData(data, callback = () => {}) {
-  const dataInstance = WxData(Component);
+  const dataInstance = new WxData(Component);
   return dataInstance.setData(data, callback);
 }
 
@@ -464,6 +464,9 @@ function autoSelectDay(defaultDay) {
       return logger.warn('配置 jumpTo 格式应为: 2018-4-2 或 2018-04-02');
     }
     jump(+day[0], +day[1], +day[2]);
+  } else if (defaultDay === false) {
+    Component.config.noDefault = true;
+    jump();
   } else {
     jump();
   }

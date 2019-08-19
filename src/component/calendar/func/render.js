@@ -8,8 +8,9 @@ import {
 
 const getDate = new GetDate();
 
-class Calendar {
+class Calendar extends WxData {
   constructor(component) {
+    super(component);
     this.Component = component;
   }
   getCalendarConfig() {
@@ -26,8 +27,7 @@ class Calendar {
       // if (this.Component && this.Component.config) this.Component = this;
       this.calculateEmptyGrids(curYear, curMonth);
       this.calculateDays(curYear, curMonth, curDate);
-      const wxData = WxData(this.Component);
-      const { todoLabels } = wxData.getData('calendar') || {};
+      const { todoLabels } = this.getData('calendar') || {};
       if (
         todoLabels &&
         todoLabels instanceof Array &&
@@ -68,7 +68,6 @@ class Calendar {
         firstDayOfWeek -= 1;
       }
     }
-    const wxData = WxData(this.Component);
     if (firstDayOfWeek > 0) {
       const len = prevMonthDays - firstDayOfWeek;
       const { onlyShowCurrentMonth } = config;
@@ -79,11 +78,11 @@ class Calendar {
           empytGrids.push(i);
         }
       }
-      wxData.setData({
+      this.setData({
         'calendar.empytGrids': empytGrids.reverse()
       });
     } else {
-      wxData.setData({
+      this.setData({
         'calendar.empytGrids': null
       });
     }
@@ -105,7 +104,6 @@ class Calendar {
         lastDayWeek -= 1;
       }
     }
-    const wxData = WxData(this.Component);
     if (+lastDayWeek !== 6) {
       let len = 7 - (lastDayWeek + 1);
       const { onlyShowCurrentMonth } = config;
@@ -116,11 +114,11 @@ class Calendar {
           lastEmptyGrids.push(i);
         }
       }
-      wxData.setData({
+      this.setData({
         'calendar.lastEmptyGrids': lastEmptyGrids
       });
     } else {
-      wxData.setData({
+      this.setData({
         'calendar.lastEmptyGrids': null
       });
     }
@@ -138,8 +136,7 @@ class Calendar {
       selectedDay = [];
       config.noDefault = false;
     } else {
-      const wxData = WxData(this.Component);
-      const data = wxData.getData('calendar') || {};
+      const data = this.getData('calendar') || {};
       selectedDay = curDate
         ? [
             {
@@ -160,7 +157,6 @@ class Calendar {
    * @param {number} month  月份
    */
   calculateDays(year, month, curDate) {
-    const wxData = WxData(this.Component);
     let days = [];
     const {
       todayTimestamp,
@@ -168,7 +164,7 @@ class Calendar {
       enableArea = [],
       enableDays = [],
       enableAreaTimestamp = []
-    } = wxData.getData('calendar');
+    } = this.getData('calendar');
     const thisMonthDays = getDate.thisMonthDays(year, month);
     let expectEnableDaysTimestamp = converEnableDaysToTimestamp(enableDays);
     if (enableArea.length) {
@@ -222,7 +218,7 @@ class Calendar {
         item.choosed = false;
       }
     });
-    wxData.setData({
+    this.setData({
       'calendar.days': days,
       'calendar.selectedDay': selectedDay || []
     });
