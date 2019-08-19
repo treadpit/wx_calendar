@@ -39,7 +39,7 @@
 }
 
 .pink-color {
-    color: #ff629a;
+    color: #e03997;
 }
 
 .white-color {
@@ -103,7 +103,7 @@
 }
 
 .normal-day-color {
-    color: #88d2ac;
+    color: #8dc63f;
 }
 
 .day-choosed-color {
@@ -199,7 +199,7 @@
 
 /* 日期选中 */
 .day-choosed-bg {
-    background-color: #ff629a;
+    background-color: #e03997;
     transition: all 0.3s;
     animation-name: choosed;
     animation-duration: 0.5s;

@@ -62,6 +62,7 @@ typings/
 
 # user custom folder
 dist/
+example/
 
 # vscode config
 .vscode/
