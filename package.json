@@ -4,7 +4,7 @@
   "description": "one small calendar demo",
   "main": "app.js",
   "scripts": {
-    "dev": "npm run build && gulp watch",
+    "dev": "gulp watch",
     "build": "rm -rf component-calendar && webpack && gulp && gulp clean",
     "build:example": "rm -rf example && gulp example",
     "test": "jest",

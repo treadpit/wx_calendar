@@ -1,6 +1,7 @@
 import WxData from './wxData';
 import Render from './render';
 import CalendarConfig from './config';
+import convertSolarLunar from './convertSolarLunar';
 import { GetDate, Logger } from './utils';
 
 const getDate = new GetDate();
@@ -10,6 +11,7 @@ class WeekMode extends WxData {
   constructor(component) {
     super(component);
     this.Component = component;
+    this.getCalendarConfig = CalendarConfig(this.Component).getCalendarConfig;
   }
   /**
    * 周、月视图切换
@@ -18,8 +20,8 @@ class WeekMode extends WxData {
    */
   switchWeek(view, day) {
     return new Promise((resolve, reject) => {
-      if (CalendarConfig(this.Component).getCalendarConfig().multi)
-        return logger.warn('多选模式不能切换周月视图');
+      const config = CalendarConfig(this.Component).getCalendarConfig();
+      if (config.multi) return logger.warn('多选模式不能切换周月视图');
       const { selectedDay = [], curYear, curMonth } = this.getData('calendar');
       if (!selectedDay.length) return;
       const currentDay = selectedDay[0];
@@ -102,11 +104,14 @@ class WeekMode extends WxData {
    * @param {number} year
    * @param {number} month
    */
-  firstWeekInMonth(year, month) {
+  firstWeekInMonth(year, month, firstDayOfWeekIsMon) {
     const firstDay = getDate.dayOfWeek(year, month, 1);
-    const firstWeekDays = [1, 1 + (6 - firstDay)];
+    const firstWeekDays = [0, 7 - firstDay];
     const days = this.getData('calendar.days') || [];
-    const daysCut = days.slice(firstWeekDays[0] - 1, firstWeekDays[1]);
+    const daysCut = days.slice(
+      0,
+      firstDayOfWeekIsMon ? firstWeekDays[1] + 1 : firstWeekDays[1]
+    );
     return daysCut;
   }
   /**
@@ -137,6 +142,7 @@ class WeekMode extends WxData {
     const todoLabelsCol = todoLabels.map(
       d => `${+d.year}-${+d.month}-${+d.day}`
     );
+    const config = this.getCalendarConfig();
     daysCopy.forEach(item => {
       if (
         selectedDayStr.includes(`${+item.year}-${+item.month}-${+item.day}`)
@@ -157,6 +163,13 @@ class WeekMode extends WxData {
         const todoLabel = todoLabels[idx];
         if (item.showTodoLabel && todoLabel && todoLabel.todoText)
           item.todoText = todoLabel.todoText;
+      }
+      if (config.showLunar) {
+        item.lunar = convertSolarLunar.solar2lunar(
+          +item.year,
+          +item.month,
+          +item.day
+        );
       }
     });
     return daysCopy;
@@ -311,11 +324,17 @@ class WeekMode extends WxData {
    * @param {object} currentDay 当前选择日期
    */
   selectedDayWeekAllDays(currentDay) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       let { days, curYear, curMonth } = this.getData('calendar');
       let { year, month, day } = currentDay;
       let lastWeekDays = this.lastWeekInMonth(year, month);
-      const firstWeekDays = this.firstWeekInMonth(year, month);
+      const config = this.getCalendarConfig();
+      const firstDayOfWeekIsMon = config.firstDayOfWeek === 'Mon';
+      const firstWeekDays = this.firstWeekInMonth(
+        year,
+        month,
+        firstDayOfWeekIsMon
+      );
       // 判断选中日期的月份是否与当前月份一致
       if (curYear !== year || curMonth !== month) day = 1;
       if (curYear !== year) year = curYear;
@@ -359,7 +378,10 @@ class WeekMode extends WxData {
         days = lastWeekDays.concat(temp);
       } else {
         const week = getDate.dayOfWeek(year, month, day);
-        const range = [day - week, day + (6 - week)];
+        let range = [day - week, day + (6 - week)];
+        if (firstDayOfWeekIsMon) {
+          range = [day + 1 - week, day + (7 - week)];
+        }
         days = days.slice(range[0] - 1, range[1]);
       }
       days = this.initSelectedDay(days);

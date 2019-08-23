@@ -1,0 +1,16 @@
+{
+  "pages":[
+    "pages/index/index",
+    "pages/calendar/index",
+    "pages/calendarTemplate/index",
+    "pages/calendarComponent/index",
+    "pages/calendarMoreComponent/index",
+    "pages/datepickerTemplate/index"
+  ],
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "小程序日历",
+    "navigationBarTextStyle":"black"
+  }
+}

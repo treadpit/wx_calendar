@@ -4,6 +4,7 @@ import Todo from './func/todo';
 import WxData from './func/wxData';
 import Calendar from './func/render';
 import CalendarConfig from './func/config';
+import convertSolarLunar from './func/convertSolarLunar';
 import {
   Logger,
   GetDate,
@@ -215,6 +216,7 @@ const conf = {
       date: curDate
     } = getDate.todayDate();
     const timestamp = getDate.todayTimestamp();
+    const config = CalendarConfig(Component).getCalendarConfig();
     setData({
       'calendar.curYear': curYear,
       'calendar.curMonth': curMonth,
@@ -223,7 +225,10 @@ const conf = {
           year: curYear,
           day: curDate,
           month: curMonth,
-          choosed: true
+          choosed: true,
+          lunar: config.showLunar
+            ? convertSolarLunar.solar2lunar(curYear, curMonth, curDate)
+            : null
         }
       ],
       'calendar.todayTimestamp': timestamp

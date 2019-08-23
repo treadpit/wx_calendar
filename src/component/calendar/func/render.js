@@ -1,5 +1,6 @@
 import Todo from './todo';
 import WxData from './wxData';
+import convertSolarLunar from './convertSolarLunar';
 import {
   GetDate,
   delRepeatedEnableDay,
@@ -23,8 +24,7 @@ class Calendar extends WxData {
    * @param {number} curDate
    */
   renderCalendar(curYear, curMonth, curDate) {
-    return new Promise((resolve, reject) => {
-      // if (this.Component && this.Component.config) this.Component = this;
+    return new Promise(resolve => {
       this.calculateEmptyGrids(curYear, curMonth);
       this.calculateDays(curYear, curMonth, curDate);
       const { todoLabels } = this.getData('calendar') || {};
@@ -33,7 +33,6 @@ class Calendar extends WxData {
         todoLabels instanceof Array &&
         todoLabels.find(item => +item.month === +curMonth)
       ) {
-        // this.setTodoLabels();
         Todo(this.Component).setTodoLabels();
       }
 
@@ -71,11 +70,17 @@ class Calendar extends WxData {
     if (firstDayOfWeek > 0) {
       const len = prevMonthDays - firstDayOfWeek;
       const { onlyShowCurrentMonth } = config;
+      const { showLunar } = this.getCalendarConfig();
       for (let i = prevMonthDays; i > len; i--) {
         if (onlyShowCurrentMonth) {
           empytGrids.push('');
         } else {
-          empytGrids.push(i);
+          empytGrids.push({
+            day: i,
+            lunar: showLunar
+              ? convertSolarLunar.solar2lunar(year, month - 1, i)
+              : null
+          });
         }
       }
       this.setData({
@@ -106,12 +111,17 @@ class Calendar extends WxData {
     }
     if (+lastDayWeek !== 6) {
       let len = 7 - (lastDayWeek + 1);
-      const { onlyShowCurrentMonth } = config;
+      const { onlyShowCurrentMonth, showLunar } = config;
       for (let i = 1; i <= len; i++) {
         if (onlyShowCurrentMonth) {
           lastEmptyGrids.push('');
         } else {
-          lastEmptyGrids.push(i);
+          lastEmptyGrids.push({
+            day: i,
+            lunar: showLunar
+              ? convertSolarLunar.solar2lunar(year, month + 1, i)
+              : null
+          });
         }
       }
       this.setData({
@@ -137,6 +147,7 @@ class Calendar extends WxData {
       config.noDefault = false;
     } else {
       const data = this.getData('calendar') || {};
+      const { showLunar } = this.getCalendarConfig();
       selectedDay = curDate
         ? [
             {
@@ -144,7 +155,10 @@ class Calendar extends WxData {
               month,
               day: curDate,
               choosed: true,
-              week: getDate.dayOfWeek(year, month, curDate)
+              week: getDate.dayOfWeek(year, month, curDate),
+              lunar: showLunar
+                ? convertSolarLunar.solar2lunar(year, month, curDate)
+                : null
             }
           ]
         : data.selectedDay;
@@ -193,7 +207,14 @@ class Calendar extends WxData {
       const timestamp = getDate
         .newDate(item.year, item.month, item.day)
         .getTime();
-      const { disablePastDay } = this.getCalendarConfig();
+      const { disablePastDay, showLunar } = this.getCalendarConfig();
+      if (showLunar) {
+        item.lunar = convertSolarLunar.solar2lunar(
+          +item.year,
+          +item.month,
+          +item.day
+        );
+      }
       if (disablePastDay && timestamp - todayTimestamp < 0 && !item.disable) {
         item.disable = true;
         item.choosed = false;
