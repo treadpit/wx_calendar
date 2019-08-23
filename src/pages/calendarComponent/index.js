@@ -1,6 +1,8 @@
 const conf = {
   data: {
-    calendarConfig: {},
+    calendarConfig: {
+      showLunar: true
+    },
     actionBtn: [
       {
         text: '跳转指定日期',
@@ -131,6 +133,7 @@ const conf = {
         const selected = calendar[action]();
         if (!selected || !selected.length)
           return this.showToast('当前未选择任何日期');
+        console.log('get selected days: ', selected);
         const rst = selected.map(item => JSON.stringify(item));
         this.setData({
           rst
@@ -141,16 +144,19 @@ const conf = {
         calendar[action]();
         break;
       case 'setTodoLabels': {
+        const days = [
+          {
+            year,
+            month,
+            day: this.generateRandomDate('date'),
+            todoText: Math.random() * 10 > 5 ? '领奖日' : ''
+          }
+        ];
         calendar[action]({
           showLabelAlways: true,
-          days: [
-            {
-              year,
-              month,
-              day: this.generateRandomDate('date')
-            }
-          ]
+          days
         });
+        console.log('set todo labels: ', days);
         break;
       }
       case 'deleteTodoLabels': {
@@ -161,10 +167,14 @@ const conf = {
           const _todos = [...calendar.getTodoLabels()];
           setTimeout(() => {
             const rst = _todos.map(item => JSON.stringify(item));
-            rst.map(item => JSON.stringify(item));
-            this.setData({
-              rst
-            });
+            this.setData(
+              {
+                rst
+              },
+              () => {
+                console.log('set todo labels: ', todos);
+              }
+            );
           });
         } else {
           this.showToast('没有待办事项');
@@ -198,9 +208,18 @@ const conf = {
           }
         ]);
         break;
-      case 'enableArea':
-        calendar[action]([`${year}-${month}-9`, `${year}-${month}-26`]);
+      case 'enableArea': {
+        let sDate = this.generateRandomDate('date');
+        let eDate = this.generateRandomDate('date');
+        if (sDate > eDate) {
+          [eDate, sDate] = [sDate, eDate];
+        }
+        calendar[action]([
+          `${year}-${month}-${sDate}`,
+          `${year}-${month}-${eDate}`
+        ]);
         break;
+      }
       case 'enableDays':
         calendar[action]([
           `${year}-${month}-${this.generateRandomDate('date')}`,

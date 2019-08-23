@@ -23,11 +23,16 @@
         bindtouchmove="calendarTouchmove"
         bindtouchend="calendarTouchend">
         <!-- 上月日期格子 -->
-        <view wx:if="{{calendar.empytGrids}}" class="grid disable-day-color b ac pc"
+        <view wx:if="{{calendar.empytGrids}}" class="grid disable-day disable-day-color b ac pc"
           wx:for="{{calendar.empytGrids}}"
           wx:key="{{index}}"
           data-idx="{{index}}">
-            <view class="day b ac pc">{{item}}</view>
+            <view class="day b ac pc">{{item.day}}</view>
+            <view
+              wx:if="{{calendarConfig.showLunar && item.lunar}}"
+              class="todo-text todo-text-bottom disable-day-color {{item.choosed ? 'todo-text-bottom-always' : ''}}">
+                {{item.lunar.Term || item.lunar.IDayCn}}
+            </view>
         </view>
         <!-- 本月日期格子 -->
         <view class="grid normal-day-color b ac pc"
@@ -43,22 +48,32 @@
                 {{item.day}}
               </view>
               <view
-                wx:if="{{item.showTodoLabel}}"
-                class="{{item.todoText ? 'todo-text' : 'todo-dot'}} {{calendar.todoLabelPos === 'bottom' ? 'todo-text-bottom todo-dot-bottom' : 'todo-text-top todo-dot-top'}} {{calendar.showLabelAlways && item.choosed && calendar.todoLabelPos === 'bottom' ? 'todo-text-bottom-always todo-dot-bottom-always' : ''}} {{calendar.showLabelAlways && item.choosed && calendar.todoLabelPos === 'top' ? 'todo-text-top-always todo-dot-top-always' : ''}}"
+                  wx:if="{{calendarConfig.showLunar && item.lunar && !item.showTodoLabel}}"
+                  class="todo-text todo-text-bottom {{item.choosed ? 'todo-text-bottom-always' : ''}}">
+                {{item.lunar.Term || item.lunar.IDayCn}}
+              </view>
+              <view
+                wx:elif="{{item.showTodoLabel}}"b
+                class="{{item.todoText ? 'todo-text' : 'todo-dot'}} {{calendarConfig.showLunar ? 'lunar-todo-text' : ''}} {{calendar.todoLabelPos === 'bottom' ? 'todo-text-bottom todo-dot-bottom' : 'todo-text-top todo-dot-top'}} {{calendar.showLabelAlways && item.choosed && calendar.todoLabelPos === 'bottom' ? 'todo-text-bottom-always todo-dot-bottom-always' : ''}} {{calendar.showLabelAlways && item.choosed && calendar.todoLabelPos === 'top' ? 'todo-text-top-always todo-dot-top-always' : ''}}"
                 style="background-color: {{calendar.todoLabelColor}};">
                   {{item.todoText}}
-                </view>
+              </view>
             </view>
             <view wx:else class="dot-day-height b tb ac pc">
               <view class="day border-radius {{(item.week === 0 || item.week === 6) ? 'pink-color' : ''}} {{item.showTodoLabel && !item.choosed ? 'day-circle' : '' }} {{item.choosed ? 'day-choosed-color day-choosed-bg' : ''}} {{ item.disable ? 'disable-day-color disable-day-bg' : '' }} b ac pc">{{item.day}}</view>
             </view>
         </view>
         <!-- 下月日期格子 -->
-        <view class="grid disable-day-color b ac pc"
+        <view class="grid disable-day disable-day-color b ac pc"
           wx:for="{{calendar.lastEmptyGrids}}"
           wx:key="{{index}}"
           data-idx="{{index}}">
-            <view class="day b ac pc">{{item}}</view>
+            <view class="day b ac pc">{{item.day}}</view>
+            <view
+              wx:if="{{calendarConfig.showLunar && item.lunar}}"
+              class="todo-text todo-text-bottom disable-day-color {{item.choosed ? 'todo-text-bottom-always' : ''}}">
+                {{item.lunar.Term || item.lunar.IDayCn}}
+            </view>
         </view>
       </view>
     </view>

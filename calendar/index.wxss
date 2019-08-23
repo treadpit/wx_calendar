@@ -39,7 +39,7 @@
 }
 
 .pink-color {
-    color: #e03997;
+    color: #ff629a;
 }
 
 .white-color {
@@ -103,7 +103,7 @@
 }
 
 .normal-day-color {
-    color: #8dc63f;
+    color: #88d2ac;
 }
 
 .day-choosed-color {
@@ -123,7 +123,7 @@
 
 .todo-text {
     width: 150%;
-    font-size: 22rpx;
+    font-size: 20rpx;
     color: #c2c2c2;
     position: absolute;
     left: 50%;
@@ -134,6 +134,10 @@
     white-space: nowrap;
     -webkit-line-clamp: 1;
     text-align: center;
+}
+
+.lunar-todo-text {
+    color: #be4138;
 }
 
 .todo-dot-top {
@@ -176,6 +180,12 @@
 }
 
 /* 不可选日期 */
+.disable-day {
+    position: relative;
+    left: 0;
+    top: 0;
+}
+
 .disable-day-color {
     color: #cacaca;
 }
@@ -199,7 +209,7 @@
 
 /* 日期选中 */
 .day-choosed-bg {
-    background-color: #e03997;
+    background-color: #ff629a;
     transition: all 0.3s;
     animation-name: choosed;
     animation-duration: 0.5s;
