@@ -20,7 +20,7 @@ function copyExample(dir) {
 
 function CopyCompJs() {
   return gulp
-    .src('dist/*')
+    .src('calendar-dist/*')
     .pipe(
       debug({
         title: '复制:'
@@ -49,7 +49,7 @@ exports.copyCalendar = gulp.series(copyCalendar, CopyCompJs);
 gulp.task('default', gulp.series(copyCalendar, CopyCompJs));
 gulp.task('example', () => copyExample('example'));
 gulp.task('clean', function() {
-  return del(['dist']);
+  return del(['calendar-dist']);
 });
 gulp.task('watch', () => {
   gulp.watch(['src/**/*', 'src/*'], () => copyExample('dist'));

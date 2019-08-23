@@ -4,7 +4,7 @@ module.exports = {
   mode: 'production',
   entry: './src/component/calendar/index.js',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'calendar-dist'),
     filename: 'index.js'
   },
   module: {
