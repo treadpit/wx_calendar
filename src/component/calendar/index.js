@@ -31,13 +31,25 @@ Component({
   },
   lifetimes: {
     attached: function() {
-      initCalendar(this, this.data.calendarConfig);
+      this.initComp();
     }
   },
   attached: function() {
-    initCalendar(this, this.data.calendarConfig);
+    this.initComp();
   },
   methods: {
+    initComp() {
+      const { calendarConfig } = this.data;
+      initCalendar(this, calendarConfig);
+      if (!calendarConfig.theme) {
+        this.setDefaultTheme();
+      }
+    },
+    setDefaultTheme() {
+      this.setData({
+        'calendarConfig.theme': 'default'
+      });
+    },
     chooseDate(e) {
       const { type } = e.currentTarget.dataset;
       if (!type) return;

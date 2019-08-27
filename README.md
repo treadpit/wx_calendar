@@ -29,7 +29,7 @@
 ```json
 {
   "usingComponents": {
-    "calendar": "../../component/calendar/index"
+    "calendar": "/component/calendar/index"
   }
 }
 ```
@@ -47,7 +47,7 @@ const conf = {
   data: {
     calendarConfig: {
       multi: true,
-      defaultDay: '2019-5-19'
+      theme: 'elegant' // 配置内置主题
     }
   },
   doSomeThing() {
