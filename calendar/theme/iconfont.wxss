@@ -27,4 +27,3 @@
 .icon-doubleright::before {
     content: "\e7ee";
 }
-

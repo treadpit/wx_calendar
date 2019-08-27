@@ -1,4 +1,6 @@
-@import './iconfont/iconfont.wxss';
+@import './theme/iconfont.wxss';
+@import './theme/theme-default.wxss';
+@import './theme/theme-elegant.wxss';
 
 .b {
     display: flex;
@@ -38,10 +40,6 @@
     overflow: hidden;
 }
 
-.pink-color {
-    color: #ff629a;
-}
-
 .white-color {
     color: #fff;
 }
@@ -67,7 +65,9 @@
     box-sizing: border-box;
 }
 
-.top-handle {
+/* 日历操作栏 */
+
+.handle {
     height: 80rpx;
 }
 
@@ -76,9 +76,11 @@
     padding: 20rpx;
 }
 
-.date-area {
+.date-in-handle {
     height: 80rpx;
 }
+
+/* 星期栏 */
 
 .weeks {
     height: 50rpx;
@@ -95,36 +97,36 @@
     width: 14.286014285714286%;
 }
 
-.day {
-    width: 60rpx;
-    height: 60rpx;
+.date-wrap {
+    height: 72rpx;
+    position: relative;
+    left: 0;
+    top: 0;
+}
+
+.date {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 55rpx;
+    height: 55rpx;
+    text-align: center;
+    line-height: 55rpx;
     font-size: 26rpx;
     font-weight: 200;
-}
-
-.normal-day-color {
-    color: #88d2ac;
-}
-
-.day-choosed-color {
-    color: #fff;
-}
-
-/* todo相关样式 */
-.todo-dot {
-    width: 10rpx;
-    height: 10rpx;
     border-radius: 50%;
-    background-color: #e54d42;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    transition: all 0.3s;
+    animation-name: choosed;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
 }
 
-.todo-text {
+.date-desc {
     width: 150%;
+    height: 32rpx;
     font-size: 20rpx;
-    color: #c2c2c2;
+    line-height: 32rpx;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
@@ -134,87 +136,6 @@
     white-space: nowrap;
     -webkit-line-clamp: 1;
     text-align: center;
-}
-
-.lunar-todo-text {
-    color: #be4138;
-}
-
-.todo-dot-top {
-    top: 8rpx;
-}
-
-.todo-dot.todo-dot-top-always {
-    top: -3rpx;
-}
-
-.todo-dot.todo-dot-bottom {
-    bottom: 0;
-}
-
-.todo-dot.todo-dot-bottom-always {
-    bottom: -5rpx;
-}
-
-.todo-text.todo-text-top {
-    top: -6rpx;
-}
-
-.todo-text.todo-text-top-always {
-    top: -20rpx;
-}
-
-.todo-text.todo-text-bottom {
-    bottom: -8rpx;
-}
-
-.todo-text.todo-text-bottom-always {
-    bottom: -20rpx;
-}
-
-.dot-day-height {
-    height: 72rpx;
-    position: relative;
-    left: 0;
-    top: 0;
-}
-
-/* 不可选日期 */
-.disable-day {
-    position: relative;
-    left: 0;
-    top: 0;
-}
-
-.disable-day-color {
-    color: #cacaca;
-}
-
-.disable-day-bg {
-    background-color: #f6f6f7;
-}
-
-/* 日期圆圈标记 */
-.day-circle {
-    border: 1rpx solid #88d2ac;
-    box-sizing: border-box;
-}
-
-.border-radius {
-    border-radius: 50%;
-    position: relative;
-    left: 0;
-    top: 0;
-}
-
-/* 日期选中 */
-.day-choosed-bg {
-    background-color: #ff629a;
-    transition: all 0.3s;
-    animation-name: choosed;
-    animation-duration: 0.5s;
-    animation-timing-function: linear;
-    animation-iteration-count: 1;
 }
 
 @keyframes choosed {
@@ -229,4 +150,55 @@
     to {
         transform: scale(1);
     }
+}
+
+/* 日期圆圈标记 */
+.todo-circle {
+    border-width: 1rpx;
+    border-style: solid;
+    box-sizing: border-box;
+}
+
+/* 待办点标记相关样式 */
+.todo-dot {
+    width: 10rpx;
+    height: 10rpx;
+    border-radius: 50%;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.todo-dot-top {
+    top: 3rpx;
+}
+
+.todo-dot.todo-dot-top-always {
+    top: -8rpx;
+}
+
+.todo-dot.todo-dot-bottom {
+    bottom: 0;
+}
+
+.todo-dot.todo-dot-bottom-always {
+    bottom: -10rpx;
+}
+
+/* 日期描述文字（待办文字/农历）相关样式 */
+
+.date-desc.date-desc-top {
+    top: -6rpx;
+}
+
+.date-desc.date-desc-top-always {
+    top: -20rpx;
+}
+
+.date-desc.date-desc-bottom {
+    bottom: -14rpx;
+}
+
+.date-desc.date-desc-bottom-always {
+    bottom: -28rpx;
 }
