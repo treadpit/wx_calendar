@@ -57,7 +57,7 @@ Component({
       } else if (type === 'next_year') {
         newYear += 1;
       }
-      this.calculate(curYear, curMonth, newYear, newMonth);
+      this.render(curYear, curMonth, newYear, newMonth);
     },
     chooseMonth(type) {
       const { curYear, curMonth } = this.data.calendar;
