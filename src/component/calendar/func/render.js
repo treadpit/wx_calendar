@@ -139,7 +139,7 @@ class Calendar extends WxData {
    * @param {number} month
    * @param {number} curDate
    */
-  initSelectedDayWhenRender(year, month, curDate) {
+  setSelectedDay(year, month, curDate) {
     let selectedDay = [];
     const config = this.getCalendarConfig();
     if (config.noDefault) {
@@ -166,6 +166,25 @@ class Calendar extends WxData {
     return selectedDay;
   }
   /**
+   *
+   * @param {number} year
+   * @param {number} month
+   */
+  buildDate(year, month) {
+    const thisMonthDays = getDate.thisMonthDays(year, month);
+    const dates = [];
+    for (let i = 1; i <= thisMonthDays; i++) {
+      dates.push({
+        year,
+        month,
+        day: i,
+        choosed: false,
+        week: getDate.dayOfWeek(year, month, i)
+      });
+    }
+    return dates;
+  }
+  /**
    * 设置日历面板数据
    * @param {number} year 年份
    * @param {number} month  月份
@@ -179,21 +198,12 @@ class Calendar extends WxData {
       enableDays = [],
       enableAreaTimestamp = []
     } = this.getData('calendar');
-    const thisMonthDays = getDate.thisMonthDays(year, month);
     let expectEnableDaysTimestamp = converEnableDaysToTimestamp(enableDays);
     if (enableArea.length) {
       expectEnableDaysTimestamp = delRepeatedEnableDay(enableDays, enableArea);
     }
-    for (let i = 1; i <= thisMonthDays; i++) {
-      days.push({
-        year,
-        month,
-        day: i,
-        choosed: false,
-        week: getDate.dayOfWeek(year, month, i)
-      });
-    }
-    const selectedDay = this.initSelectedDayWhenRender(year, month, curDate);
+    days = this.buildDate(year, month);
+    const selectedDay = this.setSelectedDay(year, month, curDate);
     const selectedDayCol = selectedDay.map(
       d => `${+d.year}-${+d.month}-${+d.day}`
     );

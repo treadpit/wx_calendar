@@ -39,7 +39,7 @@ Component({
   },
   methods: {
     initComp() {
-      const { calendarConfig } = this.data;
+      const calendarConfig = this.properties.calendarConfig || {};
       initCalendar(this, calendarConfig);
       if (!calendarConfig.theme) {
         this.setDefaultTheme();
