@@ -12,7 +12,7 @@ import {
 const logger = new Logger();
 const getDate = new GetDate();
 
-function judegeParam(params) {
+function judgeParam(params) {
   const {
     start,
     end,
@@ -66,7 +66,7 @@ class Day extends WxData {
       if (!start || !end) return;
       const startMonthDays = getDate.thisMonthDays(start[0], start[1]);
       const endMonthDays = getDate.thisMonthDays(end[0], end[1]);
-      const isRight = judegeParam({
+      const isRight = judgeParam({
         start,
         end,
         startMonthDays,
