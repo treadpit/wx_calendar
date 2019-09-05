@@ -103,9 +103,11 @@ class WeekMode extends WxData {
    * 当月第一周所有日期范围
    * @param {number} year
    * @param {number} month
+   * @param {boolean} firstDayOfWeekIsMon 每周是否配置为以周一开始
    */
   firstWeekInMonth(year, month, firstDayOfWeekIsMon) {
-    const firstDay = getDate.dayOfWeek(year, month, 1);
+    let firstDay = getDate.dayOfWeek(year, month, 1);
+    if (+firstDay === 0) firstDay = 7;
     const firstWeekDays = [0, 7 - firstDay];
     const days = this.getData('calendar.days') || [];
     const daysCut = days.slice(
@@ -118,13 +120,17 @@ class WeekMode extends WxData {
    * 当月最后一周所有日期范围
    * @param {number} year
    * @param {number} month
+   * @param {boolean} firstDayOfWeekIsMon 每周是否配置为以周一开始
    */
-  lastWeekInMonth(year, month) {
+  lastWeekInMonth(year, month, firstDayOfWeekIsMon) {
     const lastDay = getDate.thisMonthDays(year, month);
     const lastDayWeek = getDate.dayOfWeek(year, month, lastDay);
     const lastWeekDays = [lastDay - lastDayWeek, lastDay];
     const days = this.getData('calendar.days') || [];
-    const daysCut = days.slice(lastWeekDays[0] - 1, lastWeekDays[1]);
+    const daysCut = days.slice(
+      firstDayOfWeekIsMon ? lastWeekDays[0] : lastWeekDays[0] - 1,
+      lastWeekDays[1]
+    );
     return daysCut;
   }
   /**
@@ -327,9 +333,9 @@ class WeekMode extends WxData {
     return new Promise(resolve => {
       let { days, curYear, curMonth } = this.getData('calendar');
       let { year, month, day } = currentDay;
-      let lastWeekDays = this.lastWeekInMonth(year, month);
       const config = this.getCalendarConfig();
       const firstDayOfWeekIsMon = config.firstDayOfWeek === 'Mon';
+      let lastWeekDays = this.lastWeekInMonth(year, month, firstDayOfWeekIsMon);
       const firstWeekDays = this.firstWeekInMonth(
         year,
         month,
