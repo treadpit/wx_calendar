@@ -20,20 +20,28 @@ let dataInstance = null;
 
 /**
  * 全局赋值正在操作的组件实例，方便读/写各自的 data
- * @param {string} componentId 要操作的组件ID
+ * @param {string} componentId 要操作的日历组件ID
  */
 function bindCurrentComponent(componentId) {
   if (componentId) {
     Component = getComponent(componentId);
   }
 }
-
+/**
+ * 获取日历内部数据
+ * @param {string} key 获取值的键名
+ * @param {string} componentId 要操作的日历组件ID
+ */
 function getData(key, componentId) {
   bindCurrentComponent(componentId);
   dataInstance = new WxData(Component);
   return dataInstance.getData(key);
 }
-
+/**
+ * 设置日历内部数据
+ * @param {object}} data 待设置的数据
+ * @param {function} callback 设置成功回调函数
+ */
 function setData(data, callback = () => {}) {
   const dataInstance = new WxData(Component);
   return dataInstance.setData(data, callback);
@@ -146,6 +154,7 @@ const conf = {
     const { month: dMonth, year: dYear } = days[0] || {};
     const { calendar = {} } = getData();
     const currentDay = days[idx];
+    if (!currentDay) return;
     const config = CalendarConfig(Component).getCalendarConfig();
     currentSelected = currentDay;
     if (config.takeoverTap) {
@@ -159,13 +168,12 @@ const conf = {
       });
     }
     if (calendar.todoLabels) {
-      // 过滤所有待办日期中当月有待办事项的日期
+      // 筛选当月待办事项的日期
       shouldMarkerTodoDay = calendar.todoLabels.filter(
         item => +item.year === dYear && +item.month === dMonth
       );
     }
     Todo(Component).showTodoLabels(shouldMarkerTodoDay, days, selectedDays);
-    if (!currentDay) return;
     const tmp = {
       'calendar.days': days
     };
@@ -246,6 +254,7 @@ export const calculateNextWeekDays = conf.calculateNextWeekDays;
 
 /**
  * 获取当前年月
+ * @param {string} componentId 要操作的日历组件ID
  */
 export function getCurrentYM(componentId) {
   bindCurrentComponent(componentId);
@@ -257,6 +266,7 @@ export function getCurrentYM(componentId) {
 
 /**
  * 获取已选择的日期
+ * @param {string} componentId 要操作的日历组件ID
  */
 export function getSelectedDay(componentId) {
   bindCurrentComponent(componentId);
@@ -265,7 +275,7 @@ export function getSelectedDay(componentId) {
 
 /**
  * 取消所有选中日期
- * @param {string} componentId
+ * @param {string} componentId 要操作的日历组件ID
  */
 export function cancelAllSelectedDay(componentId) {
   bindCurrentComponent(componentId);
@@ -284,7 +294,7 @@ export function cancelAllSelectedDay(componentId) {
  * @param {number} year
  * @param {number} month
  * @param {number} day
- * @param {string} componentId
+ * @param {string} componentId 要操作的日历组件ID
  */
 export function jump(year, month, day, componentId) {
   bindCurrentComponent(componentId);
@@ -320,6 +330,7 @@ export function jump(year, month, day, componentId) {
  * @param {string} [todos.pos] 标记显示位置，默认值'bottom' ['bottom', 'top']
  * @param {string} [todos.dotColor] 标记点颜色，backgroundColor 支持的值都行
  * @param {object[]} [todos.days] 需要标记的所有日期，如：[{year: 2015, month: 5, day: 12}]，其中年月日字段必填
+ * @param {string} componentId 要操作的日历组件ID
  */
 export function setTodoLabels(todos, componentId) {
   bindCurrentComponent(componentId);
@@ -329,6 +340,7 @@ export function setTodoLabels(todos, componentId) {
 /**
  * 删除指定日期待办事项
  * @param {array} todos 需要删除的待办日期数组
+ * @param {string} componentId 要操作的日历组件ID
  */
 export function deleteTodoLabels(todos, componentId) {
   bindCurrentComponent(componentId);
@@ -337,6 +349,7 @@ export function deleteTodoLabels(todos, componentId) {
 
 /**
  * 清空所有待办事项
+ * @param {string} componentId 要操作的日历组件ID
  */
 export function clearTodoLabels(componentId) {
   bindCurrentComponent(componentId);
@@ -345,6 +358,7 @@ export function clearTodoLabels(componentId) {
 
 /**
  * 获取所有待办事项
+ * @param {string} componentId 要操作的日历组件ID
  */
 export function getTodoLabels(componentId) {
   bindCurrentComponent(componentId);
@@ -357,6 +371,7 @@ export function getTodoLabels(componentId) {
  * @param {number} [days.year]
  * @param {number} [days.month]
  * @param {number} [days.day]
+ * @param {string} componentId 要操作的日历组件ID
  */
 export function disableDay(days = [], componentId) {
   bindCurrentComponent(componentId);
@@ -366,33 +381,60 @@ export function disableDay(days = [], componentId) {
 /**
  * 指定可选日期范围
  * @param {array} area 日期访问数组
+ * @param {string} componentId 要操作的日历组件ID
  */
 export function enableArea(area = [], componentId) {
   bindCurrentComponent(componentId);
   Day(Component).enableArea(area);
 }
+
 /**
  * 指定特定日期可选
  * @param {array} days 指定日期数组
+ * @param {string} componentId 要操作的日历组件ID
  */
 export function enableDays(days = [], componentId) {
   bindCurrentComponent(componentId);
   Day(Component).enableDays(days);
 }
 
+/**
+ * 设置选中日期（多选模式下）
+ * @param {array} selected 需选中日期
+ * @param {string} componentId 要操作的日历组件ID
+ */
 export function setSelectedDays(selected, componentId) {
   bindCurrentComponent(componentId);
   Day(Component).setSelectedDays(selected);
 }
 
+/**
+ * 获取当前日历配置
+ * @param {string} componentId 要操作的日历组件ID
+ */
 export function getCalendarConfig(componentId) {
   bindCurrentComponent(componentId);
   CalendarConfig(Component).getCalendarConfig();
 }
 
+/**
+ * 设置日历配置
+ * @param {string} key
+ * @param {string|boolean} value
+ * @param {string} componentId 要操作的日历组件ID
+ */
 export function setCalendarConfig(key, value, componentId) {
   bindCurrentComponent(componentId);
   CalendarConfig(Component).setCalendarConfig(key, value);
+}
+
+/**
+ * 获取当前日历面板日期
+ * @param {string} componentId 要操作的日历组件ID
+ */
+export function getCalendarDates(componentId) {
+  bindCurrentComponent(componentId);
+  return getData('calendar.days', componentId);
 }
 
 /**
@@ -448,7 +490,8 @@ function mountEventsOnPage(page) {
     clearTodoLabels,
     setSelectedDays,
     getCalendarConfig,
-    setCalendarConfig
+    setCalendarConfig,
+    getCalendarDates
   };
 }
 

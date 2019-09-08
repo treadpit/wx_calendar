@@ -191,17 +191,7 @@ class Calendar extends WxData {
    */
   calculateDays(year, month, curDate) {
     let days = [];
-    const {
-      todayTimestamp,
-      disableDays = [],
-      enableArea = [],
-      enableDays = [],
-      enableAreaTimestamp = []
-    } = this.getData('calendar');
-    let expectEnableDaysTimestamp = converEnableDaysToTimestamp(enableDays);
-    if (enableArea.length) {
-      expectEnableDaysTimestamp = delRepeatedEnableDay(enableDays, enableArea);
-    }
+    const { todayTimestamp, disableDays = [] } = this.getData('calendar');
     days = this.buildDate(year, month);
     const selectedDay = this.setSelectedDay(year, month, curDate);
     const selectedDayCol = selectedDay.map(
@@ -225,26 +215,10 @@ class Calendar extends WxData {
           +item.day
         );
       }
-      if (disablePastDay && timestamp - todayTimestamp < 0 && !item.disable) {
-        item.disable = true;
-        item.choosed = false;
-      }
-      let setDisable = false;
-      if (enableAreaTimestamp.length) {
-        if (
-          (+enableAreaTimestamp[0] > +timestamp ||
-            +timestamp > +enableAreaTimestamp[1]) &&
-          !expectEnableDaysTimestamp.includes(+timestamp)
-        ) {
-          setDisable = true;
-        }
-      } else if (
-        expectEnableDaysTimestamp.length &&
-        !expectEnableDaysTimestamp.includes(+timestamp)
-      ) {
-        setDisable = true;
-      }
-      if (setDisable) {
+      const isDisablePastDates =
+        disablePastDay && timestamp - todayTimestamp < 0 && !item.disable;
+      const isDisable = isDisablePastDates || this.__isDisable(timestamp);
+      if (isDisable) {
         item.disable = true;
         item.choosed = false;
       }
@@ -253,6 +227,33 @@ class Calendar extends WxData {
       'calendar.days': days,
       'calendar.selectedDay': selectedDay || []
     });
+  }
+  __isDisable(timestamp) {
+    const {
+      enableArea = [],
+      enableDays = [],
+      enableAreaTimestamp = []
+    } = this.getData('calendar');
+    let setDisable = false;
+    let expectEnableDaysTimestamp = converEnableDaysToTimestamp(enableDays);
+    if (enableArea.length) {
+      expectEnableDaysTimestamp = delRepeatedEnableDay(enableDays, enableArea);
+    }
+    if (enableAreaTimestamp.length) {
+      if (
+        (+enableAreaTimestamp[0] > +timestamp ||
+          +timestamp > +enableAreaTimestamp[1]) &&
+        !expectEnableDaysTimestamp.includes(+timestamp)
+      ) {
+        setDisable = true;
+      }
+    } else if (
+      expectEnableDaysTimestamp.length &&
+      !expectEnableDaysTimestamp.includes(+timestamp)
+    ) {
+      setDisable = true;
+    }
+    return setDisable;
   }
 }
 

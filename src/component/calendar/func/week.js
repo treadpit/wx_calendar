@@ -23,7 +23,10 @@ class WeekMode extends WxData {
       const config = CalendarConfig(this.Component).getCalendarConfig();
       if (config.multi) return logger.warn('多选模式不能切换周月视图');
       const { selectedDay = [], curYear, curMonth } = this.getData('calendar');
-      if (!selectedDay.length) return;
+      if (!selectedDay.length)
+        return logger.info(
+          '未选中日期下切换为周视图，不能明确该展示哪一周的日期，故此情况不允许切换'
+        );
       const currentDay = selectedDay[0];
       if (view === 'week') {
         if (this.Component.weekMode) return;
