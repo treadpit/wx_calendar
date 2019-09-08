@@ -177,8 +177,11 @@ Component({
         });
         if (this.weekMode) {
           this.slideLock = false;
-          return Week(this).calculateNextWeekDays();
+          this.onSwipeCalendar('next_week');
+          Week(this).calculateNextWeekDays();
+          return;
         }
+        this.onSwipeCalendar('next_month');
         this.chooseMonth('next_month');
         this.slideLock = false;
       }
@@ -188,8 +191,11 @@ Component({
         });
         if (this.weekMode) {
           this.slideLock = false;
-          return Week(this).calculatePrevWeekDays();
+          this.onSwipeCalendar('prev_week');
+          Week(this).calculatePrevWeekDays();
+          return;
         }
+        this.onSwipeCalendar('prev_month');
         this.chooseMonth('prev_month');
         this.slideLock = false;
       }
@@ -198,6 +204,11 @@ Component({
       this.setData({
         'calendar.leftSwipe': 0,
         'calendar.rightSwipe': 0
+      });
+    },
+    onSwipeCalendar(direction) {
+      this.triggerEvent('onSwipe', {
+        directionType: direction
       });
     }
   }

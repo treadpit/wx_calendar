@@ -23,18 +23,19 @@ class WeekMode extends WxData {
       const config = CalendarConfig(this.Component).getCalendarConfig();
       if (config.multi) return logger.warn('多选模式不能切换周月视图');
       const { selectedDay = [], curYear, curMonth } = this.getData('calendar');
-      if (!selectedDay.length)
-        return logger.info(
-          '未选中日期下切换为周视图，不能明确该展示哪一周的日期，故此情况不允许切换'
-        );
+      if (!selectedDay.length) this.__tipsWhenCanNotSwtich();
       const currentDay = selectedDay[0];
       if (view === 'week') {
         if (this.Component.weekMode) return;
+        const selectedDate = day || currentDay;
+        const { year, month } = selectedDate;
+        if (curYear !== year || curMonth !== month)
+          return this.__tipsWhenCanNotSwtich();
         this.Component.weekMode = true;
         this.setData({
           'calendar.weekMode': true
         });
-        this.selectedDayWeekAllDays(day || currentDay)
+        this.selectedDayWeekAllDays(selectedDate)
           .then(resolve)
           .catch(reject);
       } else {
@@ -403,6 +404,11 @@ class WeekMode extends WxData {
         resolve
       );
     });
+  }
+  __tipsWhenCanNotSwtich() {
+    logger.info(
+      '当前月份未选中日期下切换为周视图，不能明确该展示哪一周的日期，故此情况不允许切换'
+    );
   }
 }
 
