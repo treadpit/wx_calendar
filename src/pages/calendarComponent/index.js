@@ -89,6 +89,9 @@ const conf = {
   afterCalendarRender(e) {
     console.log('afterCalendarRender', e);
   },
+  onSwipe(e) {
+    console.log('onSwipe', e);
+  },
   showToast(msg) {
     if (!msg || typeof msg !== 'string') return;
     wx.showToast({

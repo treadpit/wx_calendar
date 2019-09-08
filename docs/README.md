@@ -27,9 +27,10 @@
 ```xml
 <calendar
   calendarConfig="{{calendarConfig}}"
+  bind:onSwipe="onSwipe"
+  bind:onTapDay="onTapDay"
   bind:afterTapDay="afterTapDay"
   bind:whenChangeMonth="whenChangeMonth"
-  bind:onTapDay="onTapDay"
   bind:afterCalendarRender="afterCalendarRender"
 ></calendar>
 ```
@@ -45,6 +46,14 @@ Page({
    */
   afterTapDay(e) {
     console.log('afterTapDay', e.detail); // => { currentSelect: {}, allSelectedDays: [] }
+  },
+  /**
+   * 当日历滑动时触发(适用于周/月视图)
+   * 可在滑动时按需在该方法内获取当前日历的一些数据
+   */
+  onSwipe(e) {
+    console.log('onSwipe', e.detail);
+    const dates = this.calendar.getCalendarDates();
   },
   /**
    * 当改变月份时触发

@@ -1,9 +1,10 @@
 <view style="width: 90%;margin: 0 auto 40rpx;">
   <calendar
     calendarConfig="{{calendarConfig}}"
+    bind:onSwipe="onSwipe"
+    bind:onTapDay="onTapDay"
     bind:afterTapDay="afterTapDay"
     bind:whenChangeMonth="whenChangeMonth"
-    bind:onTapDay="onTapDay"
     bind:afterCalendarRender="afterCalendarRender"
   ></calendar>
 </view>
