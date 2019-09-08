@@ -299,11 +299,13 @@ this.calendar.disableDay([
 ```js
 // 指定可选时间区域
 this.calendar.enableArea(['2018-11-12', '2018-11-30']);
+
 // 指定特定可选日期
+// 注：若已调用enableArea() ，则会表现为追加
 this.calendar.enableDays(['2018-11-12', '2018-12-3', '2019-1-3']);
 ```
 
-#### 12. 选中指定日期
+#### 12. 设置选中多个日期
 
 <p class="tip">该方法仅在多选模式下可用，初始化日历时请配置 multi。参数为数组，不传参则默认全选当前月份所有日期</p>
 
@@ -323,7 +325,13 @@ const toSet = [
 this.calendar.setSelectedDays(toSet);
 ```
 
-#### 13. 周月视图切换
+#### 13. 获取当前日历面板日期
+
+```js
+const dates = calendar.getCalendarDates();
+```
+
+#### 14. 周月视图切换
 
 `switchView('week')`，默认值为'month'；
 

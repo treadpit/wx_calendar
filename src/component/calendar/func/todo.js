@@ -9,7 +9,7 @@ class Todo extends WxData {
     this.Component = component;
   }
   /**
-   * 周、月视图下单选标记待办事项
+   * 单选时显示待办事项
    * @param {array} todoDays
    * @param {array} days
    * @param {array} selectedDays

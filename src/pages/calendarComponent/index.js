@@ -69,6 +69,11 @@ const conf = {
         action: 'config',
         color: 'grey',
         disable: true
+      },
+      {
+        text: '获取日历面板日期',
+        action: 'getCalendarDates',
+        color: 'purple'
       }
     ]
   },
@@ -214,20 +219,25 @@ const conf = {
         if (sDate > eDate) {
           [eDate, sDate] = [sDate, eDate];
         }
-        calendar[action]([
-          `${year}-${month}-${sDate}`,
-          `${year}-${month}-${eDate}`
-        ]);
+        const area = [`${year}-${month}-${sDate}`, `${year}-${month}-${eDate}`];
+        calendar[action](area);
+        this.setData({
+          rstStr: JSON.stringify(area)
+        });
         break;
       }
       case 'enableDays':
-        calendar[action]([
+        const days = [
           `${year}-${month}-${this.generateRandomDate('date')}`,
           `${year}-${month}-${this.generateRandomDate('date')}`,
           `${year}-${month}-${this.generateRandomDate('date')}`,
           `${year}-${month}-${this.generateRandomDate('date')}`,
           `${year}-${month}-${this.generateRandomDate('date')}`
-        ]);
+        ];
+        calendar[action](days);
+        this.setData({
+          rstStr: JSON.stringify(days)
+        });
         break;
       case 'switchView':
         if (!this.week) {
@@ -252,6 +262,10 @@ const conf = {
           }
         ];
         calendar[action](toSet);
+        break;
+      case 'getCalendarDates':
+        this.showToast('请在控制台查看结果');
+        console.log(calendar.getCalendarDates());
         break;
       default:
         break;
