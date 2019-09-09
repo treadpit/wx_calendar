@@ -27,9 +27,10 @@
 ```xml
 <calendar
   calendarConfig="{{calendarConfig}}"
-  bind:onSwipe="onSwipe"
   bind:onTapDay="onTapDay"
   bind:afterTapDay="afterTapDay"
+  bind:onSwipe="onSwipe"
+  bind:whenChangeWeek="whenChangeWeek"
   bind:whenChangeMonth="whenChangeMonth"
   bind:afterCalendarRender="afterCalendarRender"
 ></calendar>
@@ -57,12 +58,24 @@ Page({
   },
   /**
    * 当改变月份时触发
-   * current 当前年月
-   * next 切换后的年月
+   * => current 当前年月 / next 切换后的年月
    */
   whenChangeMonth(e) {
-    console.log('whenChangeMonth', e.detail); // => { current: { month: 3, ... }, next: { month: 4, ... }}
+    console.log('whenChangeMonth', e.detail);
+    // => { current: { month: 3, ... }, next: { month: 4, ... }}
   },
+  /**
+   * 周视图下当改变周时触发
+   * => current 当前周信息 / next 切换后周信息
+   */
+  whenChangeWeek(e) {
+    console.log('whenChangeWeek', e.detail);
+    // {
+    //    current: { currentYM: {year: 2019, month: 1 }, dates: [{}] },
+    //    next: { currentYM: {year: 2019, month: 1}, dates: [{}] },
+    //    directionType: 'next_week'
+    // }
+  }
   /**
    * 日期点击事件（此事件会完全接管点击事件），需自定义配置 takeoverTap 值为真才能生效
    * currentSelect 当前点击的日期

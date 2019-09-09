@@ -2,10 +2,12 @@ import Week from './func/week';
 import { Logger, Slide } from './func/utils';
 import initCalendar, {
   jump,
+  getCurrentYM,
   whenChangeDate,
   renderCalendar,
   whenMulitSelect,
-  whenSingleSelect
+  whenSingleSelect,
+  getCalendarDates
 } from './main.js';
 
 const slide = new Slide();
@@ -177,12 +179,15 @@ Component({
         });
         if (this.weekMode) {
           this.slideLock = false;
-          this.onSwipeCalendar('next_week');
+          this.currentDates = getCalendarDates();
+          this.currentYM = getCurrentYM();
           Week(this).calculateNextWeekDays();
+          this.onSwipeCalendar('next_week');
+          this.onWeekChange('next_week');
           return;
         }
-        this.onSwipeCalendar('next_month');
         this.chooseMonth('next_month');
+        this.onSwipeCalendar('next_month');
         this.slideLock = false;
       }
       if (slide.isRight(gesture, e.touches[0])) {
@@ -191,12 +196,15 @@ Component({
         });
         if (this.weekMode) {
           this.slideLock = false;
-          this.onSwipeCalendar('prev_week');
+          this.currentDates = getCalendarDates();
+          this.currentYM = getCurrentYM();
           Week(this).calculatePrevWeekDays();
+          this.onSwipeCalendar('prev_week');
+          this.onWeekChange('prev_week');
           return;
         }
-        this.onSwipeCalendar('prev_month');
         this.chooseMonth('prev_month');
+        this.onSwipeCalendar('prev_month');
         this.slideLock = false;
       }
     },
@@ -210,6 +218,21 @@ Component({
       this.triggerEvent('onSwipe', {
         directionType: direction
       });
+    },
+    onWeekChange(direction) {
+      this.triggerEvent('whenChangeWeek', {
+        current: {
+          currentYM: this.currentYM,
+          dates: [...this.currentDates]
+        },
+        next: {
+          currentYM: getCurrentYM(),
+          dates: getCalendarDates()
+        },
+        directionType: direction
+      });
+      this.currentDates = null;
+      this.currentYM = null;
     }
   }
 });
