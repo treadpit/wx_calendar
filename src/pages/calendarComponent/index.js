@@ -83,6 +83,9 @@ const conf = {
   whenChangeMonth(e) {
     console.log('whenChangeMonth', e.detail);
   },
+  whenChangeWeek(e) {
+    console.log('whenChangeWeek', e.detail);
+  },
   onTapDay(e) {
     console.log('onTapDay', e.detail);
   },
