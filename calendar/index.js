@@ -1534,10 +1534,10 @@
       methods: {
         initComp() {
           const e = this.properties.calendarConfig || {};
-          (0, c.default)(this, e), e.theme || this.setDefaultTheme();
+          this.setTheme(e.theme), (0, c.default)(this, e);
         },
-        setDefaultTheme() {
-          this.setData({ 'calendarConfig.theme': 'default' });
+        setTheme(e) {
+          this.setData({ 'calendarConfig.theme': e || 'default' });
         },
         chooseDate(e) {
           const { type: t } = e.currentTarget.dataset;
@@ -2051,7 +2051,7 @@
         this.setData({
           'calendar.days': c.dates,
           'calendar.selectedDay': c.selectedDay,
-          'calendar.enableDays': n,
+          'calendar.enableDays': e,
           'calendar.enableDaysTimestamp': a
         });
       }
