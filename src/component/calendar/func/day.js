@@ -87,7 +87,7 @@ class Day extends WxData {
     this.setData({
       'calendar.days': dataAfterHandle.dates,
       'calendar.selectedDay': dataAfterHandle.selectedDay,
-      'calendar.enableDays': days,
+      'calendar.enableDays': dates,
       'calendar.enableDaysTimestamp': expectEnableDaysTimestamp
     });
   }
