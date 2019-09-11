@@ -42,14 +42,12 @@ Component({
   methods: {
     initComp() {
       const calendarConfig = this.properties.calendarConfig || {};
+      this.setTheme(calendarConfig.theme);
       initCalendar(this, calendarConfig);
-      if (!calendarConfig.theme) {
-        this.setDefaultTheme();
-      }
     },
-    setDefaultTheme() {
+    setTheme(theme) {
       this.setData({
-        'calendarConfig.theme': 'default'
+        'calendarConfig.theme': theme || 'default'
       });
     },
     chooseDate(e) {
