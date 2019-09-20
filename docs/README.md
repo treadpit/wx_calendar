@@ -115,7 +115,8 @@ const conf = {
       showLunar: true, // 是否显示农历，此配置会导致 setTodoLabels 中 showLabelAlways 配置失效
       inverse: true, // 单选模式下是否支持取消选中,
       takeoverTap: true, // 是否完全接管日期点击事件（日期不会选中），配合 onTapDay() 使用
-      disablePastDay: true, // 是否禁选过去的日期
+      disablePastDay: true, // 是否禁选当天之前的日期
+      disableLaterDay: true, // 是否禁选当天之后的日期
       firstDayOfWeek: 'Mon', // 每周第一天为周一还是周日，默认按周日开始
       onlyShowCurrentMonth: true, // 日历面板是否只显示本月日期
       hideHeadOnWeekMode: true, // 周视图模式是否隐藏日历头部
