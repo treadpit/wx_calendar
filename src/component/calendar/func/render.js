@@ -238,7 +238,7 @@ class Calendar extends WxData {
       const {
         showLunar,
         disablePastDay,
-        diabelLaterDay
+        disableLaterDay
       } = this.getCalendarConfig();
       if (showLunar) {
         item.lunar = convertSolarLunar.solar2lunar(
@@ -251,9 +251,9 @@ class Calendar extends WxData {
       if (disablePastDay) {
         disabelByConfig =
           disablePastDay && timestamp - todayTimestamp < 0 && !item.disable;
-      } else if (diabelLaterDay) {
+      } else if (disableLaterDay) {
         disabelByConfig =
-          diabelLaterDay && timestamp - todayTimestamp > 0 && !item.disable;
+          disableLaterDay && timestamp - todayTimestamp > 0 && !item.disable;
       }
       const isDisable = disabelByConfig || this.__isDisable(timestamp);
       if (isDisable) {
