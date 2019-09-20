@@ -93,6 +93,37 @@ class Calendar extends WxData {
     }
   }
   /**
+   * 计算下一月日期是否需要多展示的日期
+   * 某些月份日期为5排，某些月份6排，统一为6排
+   * @param {number} year
+   * @param {number} month
+   * @param {object} config
+   */
+  calculateExtraEmptyDate(year, month, config) {
+    let extDate = 0;
+    if (+month === 2) {
+      extDate += 7;
+      let firstDayofMonth = getDate.dayOfWeek(year, month, 1);
+      if (config.firstDayOfWeek === 'Mon') {
+        if (+firstDayofMonth === 1) extDate += 7;
+      } else {
+        if (+firstDayofMonth === 0) extDate += 7;
+      }
+    } else {
+      let firstDayofMonth = getDate.dayOfWeek(year, month, 1);
+      if (config.firstDayOfWeek === 'Mon') {
+        if (firstDayofMonth !== 0 && firstDayofMonth < 6) {
+          extDate += 7;
+        }
+      } else {
+        if (firstDayofMonth < 6) {
+          extDate += 7;
+        }
+      }
+    }
+    return extDate;
+  }
+  /**
    * 计算下月应占的格子
    * @param {number} year 年份
    * @param {number} month  月份
@@ -109,29 +140,26 @@ class Calendar extends WxData {
         lastDayWeek -= 1;
       }
     }
-    if (+lastDayWeek !== 6) {
-      let len = 7 - (lastDayWeek + 1);
-      const { onlyShowCurrentMonth, showLunar } = config;
-      for (let i = 1; i <= len; i++) {
-        if (onlyShowCurrentMonth) {
-          lastEmptyGrids.push('');
-        } else {
-          lastEmptyGrids.push({
-            day: i,
-            lunar: showLunar
-              ? convertSolarLunar.solar2lunar(year, month + 1, i)
-              : null
-          });
-        }
-      }
-      this.setData({
-        'calendar.lastEmptyGrids': lastEmptyGrids
-      });
-    } else {
-      this.setData({
-        'calendar.lastEmptyGrids': null
-      });
+    let len = 7 - (lastDayWeek + 1);
+    const { onlyShowCurrentMonth, showLunar } = config;
+    if (!onlyShowCurrentMonth) {
+      len = len + this.calculateExtraEmptyDate(year, month, config);
     }
+    for (let i = 1; i <= len; i++) {
+      if (onlyShowCurrentMonth) {
+        lastEmptyGrids.push('');
+      } else {
+        lastEmptyGrids.push({
+          day: i,
+          lunar: showLunar
+            ? convertSolarLunar.solar2lunar(year, month + 1, i)
+            : null
+        });
+      }
+    }
+    this.setData({
+      'calendar.lastEmptyGrids': lastEmptyGrids
+    });
   }
   /**
    * 日历初始化将默认值写入 selectDay
@@ -207,7 +235,11 @@ class Calendar extends WxData {
       const timestamp = getDate
         .newDate(item.year, item.month, item.day)
         .getTime();
-      const { disablePastDay, showLunar } = this.getCalendarConfig();
+      const {
+        showLunar,
+        disablePastDay,
+        diabelLaterDay
+      } = this.getCalendarConfig();
       if (showLunar) {
         item.lunar = convertSolarLunar.solar2lunar(
           +item.year,
@@ -215,9 +247,15 @@ class Calendar extends WxData {
           +item.day
         );
       }
-      const isDisablePastDates =
-        disablePastDay && timestamp - todayTimestamp < 0 && !item.disable;
-      const isDisable = isDisablePastDates || this.__isDisable(timestamp);
+      let disabelByConfig = false;
+      if (disablePastDay) {
+        disabelByConfig =
+          disablePastDay && timestamp - todayTimestamp < 0 && !item.disable;
+      } else if (diabelLaterDay) {
+        disabelByConfig =
+          diabelLaterDay && timestamp - todayTimestamp > 0 && !item.disable;
+      }
+      const isDisable = disabelByConfig || this.__isDisable(timestamp);
       if (isDisable) {
         item.disable = true;
         item.choosed = false;
