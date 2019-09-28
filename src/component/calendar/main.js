@@ -8,6 +8,7 @@ import convertSolarLunar from './func/convertSolarLunar';
 import {
   Logger,
   GetDate,
+  isComponent,
   initialTasks,
   getCurrentPage,
   getComponent
@@ -55,6 +56,7 @@ const conf = {
    * @param {number} curDate
    */
   renderCalendar(curYear, curMonth, curDate) {
+    if (isComponent(this)) Component = this;
     return new Promise((resolve, reject) => {
       Calendar(Component)
         .renderCalendar(curYear, curMonth, curDate)
@@ -91,7 +93,7 @@ const conf = {
    * @param {object} opts
    */
   whenMulitSelect(opts = {}) {
-    if (this && this.config) Component = this;
+    if (isComponent(this)) Component = this;
     let { currentSelected, selectedDays = [] } = opts;
     const { days, idx } = opts;
     const day = days[idx];
@@ -144,7 +146,7 @@ const conf = {
    * @param {object} opts
    */
   whenSingleSelect(opts = {}) {
-    if (this && this.config) Component = this;
+    if (isComponent(this)) Component = this;
     let { currentSelected, selectedDays = [] } = opts;
     let shouldMarkerTodoDay = [];
     const { days = [], idx } = opts;

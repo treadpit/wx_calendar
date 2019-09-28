@@ -5,6 +5,14 @@ export function getSystemInfo() {
   return systemInfo;
 }
 
+export function isComponent(target) {
+  return (
+    target &&
+    target.__wxExparserNodeId__ !== void 0 &&
+    typeof target.setData === 'function'
+  );
+}
+
 export class Logger {
   info(msg) {
     console.log(
