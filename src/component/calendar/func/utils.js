@@ -5,6 +5,14 @@ export function getSystemInfo() {
   return systemInfo;
 }
 
+export function isComponent(target) {
+  return (
+    target &&
+    target.__wxExparserNodeId__ !== void 0 &&
+    typeof target.setData === 'function'
+  );
+}
+
 export class Logger {
   info(msg) {
     console.log(
@@ -114,7 +122,7 @@ export class GetDate {
    * @param {number} month  月份
    */
   thisMonthDays(year, month) {
-    return new Date(year, month, 0).getDate();
+    return new Date(Date.UTC(year, month, 0)).getUTCDate();
   }
   /**
    * 计算指定月份第一天星期几
@@ -122,7 +130,7 @@ export class GetDate {
    * @param {number} month  月份
    */
   firstDayOfWeek(year, month) {
-    return new Date(Date.UTC(year, month - 1, 1)).getDay();
+    return new Date(Date.UTC(year, month - 1, 1)).getUTCDay();
   }
   /**
    * 计算指定日期星期几
@@ -131,7 +139,7 @@ export class GetDate {
    * @param {number} date 日期
    */
   dayOfWeek(year, month, date) {
-    return new Date(Date.UTC(year, month - 1, date)).getDay();
+    return new Date(Date.UTC(year, month - 1, date)).getUTCDay();
   }
   todayDate() {
     const _date = new Date();

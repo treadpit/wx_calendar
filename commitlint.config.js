@@ -10,6 +10,7 @@ module.exports = {
         'docs', // Adds or alters documentation.
         'chore', // Other changes that don't modify src or test files.
         'feat', // Adds a new feature.
+        'upd', // update a feature.
         'fix', // Solves a bug.
         'merge', // Merge branch ? of ?.
         'perf', // Improves performance.
