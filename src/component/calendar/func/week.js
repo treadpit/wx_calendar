@@ -35,7 +35,7 @@ class WeekMode extends WxData {
         this.setData({
           'calendar.weekMode': true
         });
-        this.selectedDayWeekAllDays(selectedDate)
+        this.jump(selectedDate)
           .then(resolve)
           .catch(reject);
       } else {
@@ -111,13 +111,13 @@ class WeekMode extends WxData {
    */
   firstWeekInMonth(year, month, firstDayOfWeekIsMon) {
     let firstDay = getDate.dayOfWeek(year, month, 1);
-    if (+firstDay === 0) firstDay = 7;
-    const firstWeekDays = [0, 7 - firstDay];
-    const days = this.getData('calendar.days') || [];
-    const daysCut = days.slice(
-      0,
-      firstDayOfWeekIsMon ? firstWeekDays[1] + 1 : firstWeekDays[1]
-    );
+    // if (+firstDay === 0) firstDay = 7;
+    const [, end] = [0, 7 - firstDay];
+    let days = this.getData('calendar.days') || [];
+    if (this.Component.weekMode) {
+      days = Render(this.Component).buildDate(year, month);
+    }
+    const daysCut = days.slice(0, firstDayOfWeekIsMon ? end + 1 : end);
     return daysCut;
   }
   /**
@@ -129,31 +129,29 @@ class WeekMode extends WxData {
   lastWeekInMonth(year, month, firstDayOfWeekIsMon) {
     const lastDay = getDate.thisMonthDays(year, month);
     const lastDayWeek = getDate.dayOfWeek(year, month, lastDay);
-    const lastWeekDays = [lastDay - lastDayWeek, lastDay];
-    const days = this.getData('calendar.days') || [];
-    const daysCut = days.slice(
-      firstDayOfWeekIsMon ? lastWeekDays[0] : lastWeekDays[0] - 1,
-      lastWeekDays[1]
-    );
+    const [start, end] = [lastDay - lastDayWeek, lastDay];
+    let days = this.getData('calendar.days') || [];
+    if (this.Component.weekMode) {
+      days = Render(this.Component).buildDate(year, month);
+    }
+    const daysCut = days.slice(firstDayOfWeekIsMon ? start : start - 1, end);
     return daysCut;
   }
   /**
    * 渲染日期之前初始化已选日期
-   * @param {array} days 当前日期数组
+   * @param {array} dates 当前日期数组
    */
-  initSelectedDay(days) {
-    const daysCopy = [...days];
+  initSelectedDay(dates) {
+    const datesCopy = [...dates];
     const { selectedDay = [], todoLabels = [], showLabelAlways } = this.getData(
       'calendar'
     );
     const selectedDayStr = selectedDay.map(
       item => `${+item.year}-${+item.month}-${+item.day}`
     );
-    const todoLabelsCol = todoLabels.map(
-      d => `${+d.year}-${+d.month}-${+d.day}`
-    );
+    const todosStr = todoLabels.map(d => `${+d.year}-${+d.month}-${+d.day}`);
     const config = this.getCalendarConfig();
-    daysCopy.forEach(item => {
+    datesCopy.forEach(item => {
       if (
         selectedDayStr.includes(`${+item.year}-${+item.month}-${+item.day}`)
       ) {
@@ -161,18 +159,15 @@ class WeekMode extends WxData {
       } else {
         item.choosed = false;
       }
-      const idx = todoLabelsCol.indexOf(
-        `${+item.year}-${+item.month}-${+item.day}`
-      );
+      const idx = todosStr.indexOf(`${+item.year}-${+item.month}-${+item.day}`);
       if (idx !== -1) {
         if (showLabelAlways) {
           item.showTodoLabel = true;
         } else {
           item.showTodoLabel = !item.choosed;
         }
-        const todoLabel = todoLabels[idx];
-        if (item.showTodoLabel && todoLabel && todoLabel.todoText)
-          item.todoText = todoLabel.todoText;
+        const todo = todoLabels[idx] || {};
+        if (item.showTodoLabel && todo.todoText) item.todoText = todo.todoText;
       }
       if (config.showLunar) {
         item.lunar = convertSolarLunar.solar2lunar(
@@ -182,19 +177,19 @@ class WeekMode extends WxData {
         );
       }
     });
-    return daysCopy;
+    return datesCopy;
   }
   /**
    * 周视图下设置可选日期范围
    * @param {object} days 当前展示的日期
    */
-  setEnableAreaOnWeekMode(days) {
+  setEnableAreaOnWeekMode(dates) {
     let {
       todayTimestamp,
       enableAreaTimestamp = [],
       enableDaysTimestamp = []
     } = this.getData('calendar');
-    days.forEach(item => {
+    dates.forEach(item => {
       const timestamp = getDate
         .newDate(item.year, item.month, item.day)
         .getTime();
@@ -329,81 +324,145 @@ class WeekMode extends WxData {
       'calendar.days': days
     });
   }
-  /**
-   * 计算当前选中日期所在周，并重新渲染日历
-   * @param {object} currentDay 当前选择日期
-   */
-  selectedDayWeekAllDays(currentDay) {
+  calculateDatesWhenJump(
+    { year, month, day },
+    { firstWeekDays, lastWeekDays },
+    firstDayOfWeekIsMon
+  ) {
+    const inFirstWeek = this.__dateIsInWeek(
+      { year, month, day },
+      firstWeekDays
+    );
+    const inLastWeek = this.__dateIsInWeek({ year, month, day }, lastWeekDays);
+    let dates = [];
+    if (inFirstWeek) {
+      dates = this.__calculateDatesWhenInFirstWeek(
+        firstWeekDays,
+        firstDayOfWeekIsMon
+      );
+    } else if (inLastWeek) {
+      dates = this.__calculateDatesWhenInLastWeek(
+        lastWeekDays,
+        firstDayOfWeekIsMon
+      );
+    } else {
+      dates = this.__calculateDates({ year, month, day });
+    }
+    return dates;
+  }
+  jump({ year, month, day }) {
     return new Promise(resolve => {
-      let { days, curYear, curMonth } = this.getData('calendar');
-      let { year, month, day } = currentDay;
+      if (!day) return;
       const config = this.getCalendarConfig();
       const firstDayOfWeekIsMon = config.firstDayOfWeek === 'Mon';
-      let lastWeekDays = this.lastWeekInMonth(year, month, firstDayOfWeekIsMon);
       const firstWeekDays = this.firstWeekInMonth(
         year,
         month,
         firstDayOfWeekIsMon
       );
-      // 判断选中日期的月份是否与当前月份一致
-      if (curYear !== year || curMonth !== month) day = 1;
-      if (curYear !== year) year = curYear;
-      if (curMonth !== month) month = curMonth;
-      if (firstWeekDays.find(item => item.day === day)) {
-        // 当前选择的日期为该月第一周
-        let temp = [];
-        const lastDayInThisMonth = getDate.thisMonthDays(year, month - 1);
-        const { Uyear, Umonth } = this.updateCurrYearAndMonth('prev');
-        curYear = Uyear;
-        curMonth = Umonth;
-        for (
-          let i = lastDayInThisMonth - (7 - firstWeekDays.length) + 1;
-          i <= lastDayInThisMonth;
-          i++
+      let lastWeekDays = this.lastWeekInMonth(year, month, firstDayOfWeekIsMon);
+      const dates = this.calculateDatesWhenJump(
+        { year, month, day },
+        {
+          firstWeekDays,
+          lastWeekDays
+        },
+        firstDayOfWeekIsMon
+      );
+      dates.map(date => {
+        if (
+          +date.year === +year &&
+          +date.month === +month &&
+          +date.day === +day
         ) {
-          temp.push({
-            year: curYear,
-            month: curMonth,
-            day: i,
-            week: getDate.dayOfWeek(curYear, curMonth, i)
-          });
+          date.choosed = true;
         }
-        days = temp.concat(firstWeekDays);
-      } else if (lastWeekDays.find(item => item.day === day)) {
-        // 当前选择的日期为该月最后一周
-        const temp = [];
-        if (lastWeekDays && lastWeekDays.length < 7) {
-          const { Uyear, Umonth } = this.updateCurrYearAndMonth('next');
-          curYear = Uyear;
-          curMonth = Umonth;
-          for (let i = 1, len = 7 - lastWeekDays.length; i <= len; i++) {
-            temp.push({
-              year: curYear,
-              month: curMonth,
-              day: i,
-              week: getDate.dayOfWeek(curYear, curMonth, i)
-            });
-          }
-        }
-        days = lastWeekDays.concat(temp);
-      } else {
-        const week = getDate.dayOfWeek(year, month, day);
-        let range = [day - week, day + (6 - week)];
-        if (firstDayOfWeekIsMon) {
-          range = [day + 1 - week, day + (7 - week)];
-        }
-        days = days.slice(range[0] - 1, range[1]);
-      }
-      days = this.initSelectedDay(days);
+      });
+      this.initSelectedDay(dates);
+      this.setEnableAreaOnWeekMode(dates);
       this.setData(
         {
-          'calendar.days': days,
+          'calendar.days': dates,
+          'calendar.curYear': year,
+          'calendar.curMonth': month,
           'calendar.empytGrids': [],
           'calendar.lastEmptyGrids': []
         },
         resolve
       );
     });
+  }
+  __calculateDatesWhenInFirstWeek(firstWeekDays, firstDayOfWeekIsMon) {
+    const dates = [...firstWeekDays];
+    if (dates.length < 7) {
+      let { year, month } = dates[0];
+      let len = 7 - dates.length;
+      let lastDate;
+      if (month > 1) {
+        month -= 1;
+        lastDate = getDate.thisMonthDays(year, month);
+      } else {
+        month = 12;
+        year -= 1;
+        lastDate = getDate.thisMonthDays(year, month);
+      }
+      while (len) {
+        dates.unshift({
+          year,
+          month,
+          day: lastDate,
+          week: getDate.dayOfWeek(year, month, lastDate)
+        });
+        lastDate -= 1;
+        len -= 1;
+      }
+    }
+    return dates;
+  }
+  __calculateDatesWhenInLastWeek(lastWeekDays, firstDayOfWeekIsMon) {
+    const dates = [...lastWeekDays];
+    if (firstDayOfWeekIsMon) {
+      if (dates.length < 7) {
+        let { year, month } = dates[0];
+        let len = 7 - dates.length;
+        let firstDate = 1;
+        if (month > 11) {
+          month = 1;
+          year += 1;
+        } else {
+          month += 1;
+        }
+        while (len) {
+          dates.push({
+            year,
+            month,
+            day: firstDate,
+            week: getDate.dayOfWeek(year, month, firstDate)
+          });
+          firstDate += 1;
+          len -= 1;
+        }
+      }
+    }
+    return dates;
+  }
+  __calculateDates({ year, month, day }, firstDayOfWeekIsMon) {
+    const week = getDate.dayOfWeek(year, month, day);
+    let range = [day - week, day + (6 - week)];
+    if (firstDayOfWeekIsMon) {
+      range = [day + 1 - week, day + (7 - week)];
+    }
+    const dates = Render(this.Component).buildDate(year, month);
+    const weekDates = dates.slice(range[0] - 1, range[1]);
+    return weekDates;
+  }
+  __dateIsInWeek(date, week) {
+    return week.find(
+      item =>
+        +item.year === +date.year &&
+        +item.month === +date.month &&
+        +item.day === +date.day
+    );
   }
   __tipsWhenCanNotSwtich() {
     logger.info(
