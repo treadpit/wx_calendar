@@ -217,10 +217,11 @@ import { jump } from '../../component/calendar/main.js';
 #### 5. 跳转至指定日期
 
 ```js
-// 不传入参数则默认跳转至今天
+// 默认跳转至今天
 this.calendar.jump();
-// 入参必须为数字
-this.calendar.jump(2018, 6, 6); // 跳转至2018-6-6
+// 入参为 number
+this.calendar.jump(2019, 10); // 跳转至某月
+this.calendar.jump(2019, 10, 6); // 跳转至某日
 ```
 
 #### 6. 获取当前选择的日期
@@ -376,7 +377,7 @@ this.calendar.switchView('month').then(() => {});
 
 提供 `template` [模板引入](https://mp.weixin.qq.com/debug/wxadoc/dev/framework/view/wxml/template.html)
 
-<p class="tip">除引入方式不一致外，日历配置及其他方法调用参考日历组件文档</p>
+<p class="tip">不建议使用该方式，不做维护及新功能扩展。除引入方式不一致外，日历配置及其他方法调用参考日历组件文档（部分新功能不支持）</p>
 
 #### 1. 引入`wxml`及`wxss`
 
@@ -407,7 +408,7 @@ Page(conf);
 
 ### 日期选择器(Template)
 
-<p class="tip">此 `template` 带有 `input` 输入框，不影响模板的使用，可配置隐藏</p>
+<p class="tip">仅提供部分简单功能，且不再维护，建议使用日历组件自行重写此选择器。此 `template` 带有 `input` 输入框，不影响模板的使用，可配置隐藏</p>
 
 #### 1. 引入`wxml`及`wxss`
 

@@ -300,10 +300,17 @@ export function cancelAllSelectedDay(componentId) {
  */
 export function jump(year, month, day, componentId) {
   bindCurrentComponent(componentId);
-  const { selectedDay = [] } = getData('calendar') || {};
+  const { selectedDay = [], weekMode } = getData('calendar') || {};
   const { year: y, month: m, day: d } = selectedDay[0] || {};
   if (+y === +year && +m === +month && +d === +day) {
     return;
+  }
+  if (weekMode) {
+    return Week(Component).jump({
+      year,
+      month,
+      day
+    });
   }
   if (year && month) {
     if (typeof +year !== 'number' || typeof +month !== 'number') {
