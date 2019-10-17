@@ -5,6 +5,11 @@
     color: #333;
 }
 
+.elegant_today {
+    color: #000;
+    background-color: #e1e7f5;
+}
+
 .elegant_choosed {
     color: #000;
     background-color: #e2e2e2;

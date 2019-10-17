@@ -46,11 +46,11 @@
           bindtap="tapDayItem">
             <view
               class="date-wrap b cc">
-              <view class="date b ac pc {{(item.week === 0 || item.week === 6) ? calendarConfig.theme + '_weekend-color' : ''}} {{calendar.todoLabelCircle && item.showTodoLabel && !item.choosed ? calendarConfig.theme + '_todo-circle todo-circle' : '' }} {{item.choosed ? calendarConfig.theme + '_choosed' : ''}} {{item.disable ? calendarConfig.theme + '_date-disable' : ''}}">
+              <view class="date b ac pc {{(item.week === 0 || item.week === 6) ? calendarConfig.theme + '_weekend-color' : ''}} {{calendar.todoLabelCircle && item.showTodoLabel && !item.choosed ? calendarConfig.theme + '_todo-circle todo-circle' : '' }} {{item.isToday ? calendarConfig.theme + '_today' : ''}} {{item.choosed ? calendarConfig.theme + '_choosed' : ''}} {{item.disable ? calendarConfig.theme + '_date-disable' : ''}}">
                 {{item.day}}
                 <view
                   wx:if="{{(calendarConfig.showLunar && item.lunar && !item.showTodoLabel) || (item.showTodoLabel && calendar.todoLabelPos !== 'bottom')}}"
-                  class="date-desc {{calendarConfig.theme}}_date-desc date-desc-bottom {{item.choosed ? 'date-desc-bottom-always' : ''}} {{item.disable ? calendarConfig.theme + '_date-desc-disable' : ''}}">
+                  class="date-desc {{calendarConfig.theme}}_date-desc date-desc-bottom {{(item.choosed || item.isToday) ? 'date-desc-bottom-always' : ''}} {{item.disable ? calendarConfig.theme + '_date-desc-disable' : ''}}">
                   {{item.lunar.Term || item.lunar.IDayCn}}
                 </view>
                 <view
