@@ -8,6 +8,11 @@
     color: #ff629a;
 }
 
+.default_today {
+    color: #fff;
+    background-color: #874fb4;
+}
+
 .default_choosed {
     color: #fff;
     background-color: #ff629a;

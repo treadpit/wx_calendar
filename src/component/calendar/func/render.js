@@ -199,15 +199,20 @@ class Calendar extends WxData {
    * @param {number} month
    */
   buildDate(year, month) {
+    const today = getDate.todayDate();
     const thisMonthDays = getDate.thisMonthDays(year, month);
     const dates = [];
     for (let i = 1; i <= thisMonthDays; i++) {
+      const isToday =
+        +today.year === +year && +today.month === +month && i === +today.date;
+      const config = this.getCalendarConfig();
       dates.push({
         year,
         month,
         day: i,
         choosed: false,
-        week: getDate.dayOfWeek(year, month, i)
+        week: getDate.dayOfWeek(year, month, i),
+        isToday: isToday && config.highlightToday
       });
     }
     return dates;

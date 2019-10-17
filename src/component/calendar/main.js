@@ -521,7 +521,7 @@ function autoSelectDay(defaultDay) {
       return logger.warn('配置 jumpTo 格式应为: 2018-4-2 或 2018-04-02');
     }
     jump(+day[0], +day[1], +day[2]);
-  } else if (defaultDay === false) {
+  } else if (!defaultDay) {
     Component.config.noDefault = true;
     jump();
   } else {

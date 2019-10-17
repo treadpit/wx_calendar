@@ -23,7 +23,7 @@ class WeekMode extends WxData {
       const config = CalendarConfig(this.Component).getCalendarConfig();
       if (config.multi) return logger.warn('多选模式不能切换周月视图');
       const { selectedDay = [], curYear, curMonth } = this.getData('calendar');
-      if (!selectedDay.length) this.__tipsWhenCanNotSwtich();
+      if (!selectedDay.length) return this.__tipsWhenCanNotSwtich();
       const currentDay = selectedDay[0];
       if (view === 'week') {
         if (this.Component.weekMode) return;
@@ -175,6 +175,14 @@ class WeekMode extends WxData {
           +item.month,
           +item.day
         );
+      }
+      if (config.highlightToday) {
+        const today = getDate.todayDate();
+        const isToday =
+          +today.year === +item.year &&
+          +today.month === +item.month &&
+          +item.day === +today.date;
+        item.isToday = isToday;
       }
     });
     return datesCopy;
