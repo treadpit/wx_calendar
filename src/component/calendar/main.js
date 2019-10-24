@@ -90,88 +90,80 @@ const conf = {
   },
   /**
    * 多选
-   * @param {object} opts
+   * @param {number} dateIdx 当前选中日期索引值
    */
-  whenMulitSelect(opts = {}) {
+  whenMulitSelect(dateIdx) {
     if (isComponent(this)) Component = this;
-    let { currentSelected, selectedDays = [] } = opts;
-    const { days, idx } = opts;
-    const day = days[idx];
-    if (!day) return;
-    day.choosed = !day.choosed;
-    if (!day.choosed) {
-      day.cancel = true; // 该次点击是否为取消日期操作
-      currentSelected = day;
+    const { calendar = {} } = getData();
+    const { days, todoLabels } = calendar;
+    let { selectedDay: selectedDays = [] } = calendar;
+    const currentDay = days[dateIdx];
+    if (!currentDay) return;
+    currentDay.choosed = !currentDay.choosed;
+    if (!currentDay.choosed) {
+      currentDay.cancel = true; // 该次点击是否为取消日期操作
+      const currentDayStr = `${currentDay.year}-${currentDay.month}-${
+        currentDay.day
+      }`;
       selectedDays = selectedDays.filter(
-        item =>
-          `${item.year}-${item.month}-${item.day}` !==
-          `${currentSelected.year}-${currentSelected.month}-${
-            currentSelected.day
-          }`
+        item => currentDayStr !== `${item.year}-${item.month}-${item.day}`
       );
-      if (opts.todoLabels) {
-        opts.todoLabels.forEach(item => {
-          if (
-            `${currentSelected.year}-${currentSelected.month}-${
-              currentSelected.day
-            }` === `${item.year}-${item.month}-${item.day}`
-          ) {
-            currentSelected.showTodoLabel = true;
+      if (todoLabels) {
+        todoLabels.forEach(item => {
+          if (currentDayStr === `${item.year}-${item.month}-${item.day}`) {
+            currentDay.showTodoLabel = true;
           }
         });
       }
     } else {
-      currentSelected = day;
-      currentSelected.cancel = false;
+      currentDay.cancel = false;
       const { showLabelAlways } = getData('calendar');
-      if (showLabelAlways && currentSelected.showTodoLabel) {
-        currentSelected.showTodoLabel = true;
+      if (showLabelAlways && currentDay.showTodoLabel) {
+        currentDay.showTodoLabel = true;
       } else {
-        currentSelected.showTodoLabel = false;
+        currentDay.showTodoLabel = false;
       }
-      selectedDays.push(currentSelected);
+      selectedDays.push(currentDay);
     }
     const config = CalendarConfig(Component).getCalendarConfig();
     if (config.takeoverTap) {
-      return Component.triggerEvent('onTapDay', currentSelected);
+      return Component.triggerEvent('onTapDay', currentDay);
     }
     setData({
       'calendar.days': days,
       'calendar.selectedDay': selectedDays
     });
-    conf.afterTapDay(currentSelected, selectedDays);
+    conf.afterTapDay(currentDay, selectedDays);
   },
   /**
    * 单选
-   * @param {object} opts
+   * @param {number} dateIdx 当前选中日期索引值
    */
-  whenSingleSelect(opts = {}) {
+  whenSingleSelect(dateIdx) {
     if (isComponent(this)) Component = this;
-    let { currentSelected, selectedDays = [] } = opts;
+    const { calendar = {} } = getData();
+    const { days, selectedDay: selectedDays = [], todoLabels } = calendar;
     let shouldMarkerTodoDay = [];
-    const { days = [], idx } = opts;
+    const currentDay = days[dateIdx];
+    if (!currentDay) return;
     const selectedDay = selectedDays[0] || {};
     const date = selectedDay.day;
     const preSelectedDate = (date && days[date - 1]) || {};
     const { month: dMonth, year: dYear } = days[0] || {};
-    const { calendar = {} } = getData();
-    const currentDay = days[idx];
-    if (!currentDay) return;
     const config = CalendarConfig(Component).getCalendarConfig();
-    currentSelected = currentDay;
     if (config.takeoverTap) {
-      return Component.triggerEvent('onTapDay', currentSelected);
+      return Component.triggerEvent('onTapDay', currentDay);
     }
-    conf.afterTapDay(currentSelected);
+    conf.afterTapDay(currentDay);
     if (!config.inverse && preSelectedDate.day === currentDay.day) return;
     if (Component.weekMode) {
       days.forEach((item, idx) => {
         if (item.day === date) days[idx].choosed = false;
       });
     }
-    if (calendar.todoLabels) {
+    if (todoLabels) {
       // 筛选当月待办事项的日期
-      shouldMarkerTodoDay = calendar.todoLabels.filter(
+      shouldMarkerTodoDay = todoLabels.filter(
         item => +item.year === dYear && +item.month === dMonth
       );
     }
@@ -185,7 +177,7 @@ const conf = {
       if (!calendar.showLabelAlways || !currentDay.showTodoLabel) {
         currentDay.showTodoLabel = false;
       }
-      tmp['calendar.selectedDay'] = [currentSelected];
+      tmp['calendar.selectedDay'] = [currentDay];
     } else if (config.inverse) {
       currentDay.choosed = !currentDay.choosed;
       if (currentDay.choosed) {
@@ -220,30 +212,26 @@ const conf = {
    * 跳转至今天
    */
   jumpToToday() {
-    const {
-      year: curYear,
-      month: curMonth,
-      date: curDate
-    } = getDate.todayDate();
+    const { year, month, date } = getDate.todayDate();
     const timestamp = getDate.todayTimestamp();
     const config = CalendarConfig(Component).getCalendarConfig();
     setData({
-      'calendar.curYear': curYear,
-      'calendar.curMonth': curMonth,
+      'calendar.curYear': year,
+      'calendar.curMonth': month,
       'calendar.selectedDay': [
         {
-          year: curYear,
-          day: curDate,
-          month: curMonth,
+          year: year,
+          day: date,
+          month: month,
           choosed: true,
           lunar: config.showLunar
-            ? convertSolarLunar.solar2lunar(curYear, curMonth, curDate)
+            ? convertSolarLunar.solar2lunar(year, month, date)
             : null
         }
       ],
       'calendar.todayTimestamp': timestamp
     });
-    conf.renderCalendar(curYear, curMonth, curDate);
+    conf.renderCalendar(year, month, date);
   }
 };
 
