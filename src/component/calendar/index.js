@@ -112,24 +112,12 @@ Component({
     tapDayItem(e) {
       const { idx, disable } = e.currentTarget.dataset;
       if (disable) return;
-      let currentSelected = {}; // 当前选中日期
-      let { days, selectedDay: selectedDays, todoLabels } =
-        this.data.calendar || []; // 所有选中日期
       const config = this.config || {};
-      const { multi, onTapDay } = config;
-      const opts = {
-        e,
-        idx,
-        onTapDay,
-        todoLabels,
-        selectedDays,
-        currentSelected,
-        days: days.slice()
-      };
+      const { multi } = config;
       if (multi) {
-        whenMulitSelect.call(this, opts);
+        whenMulitSelect.call(this, idx);
       } else {
-        whenSingleSelect.call(this, opts);
+        whenSingleSelect.call(this, idx);
       }
     },
     doubleClickToToday() {

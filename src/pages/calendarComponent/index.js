@@ -1,7 +1,8 @@
 const conf = {
   data: {
     calendarConfig: {
-      showLunar: true
+      showLunar: true,
+      multi: true
     },
     actionBtn: [
       {
