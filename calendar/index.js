@@ -1704,11 +1704,14 @@
           const { gesture: t } = this.data;
           if (this.slideLock) {
             if (c.isLeft(t, e.touches[0])) {
-              if ((this.setData({ 'calendar.leftSwipe': 1 }), this.weekMode))
+              if (
+                (this.setData({ 'calendar.leftSwipe': 1 }),
+                (this.currentYM = (0, o.getCurrentYM)()),
+                this.weekMode)
+              )
                 return (
                   (this.slideLock = !1),
                   (this.currentDates = (0, o.getCalendarDates)()),
-                  (this.currentYM = (0, o.getCurrentYM)()),
                   (0, s.default)(this).calculateNextWeekDays(),
                   this.onSwipeCalendar('next_week'),
                   void this.onWeekChange('next_week')
@@ -1718,11 +1721,14 @@
                 (this.slideLock = !1);
             }
             if (c.isRight(t, e.touches[0])) {
-              if ((this.setData({ 'calendar.rightSwipe': 1 }), this.weekMode))
+              if (
+                (this.setData({ 'calendar.rightSwipe': 1 }),
+                (this.currentYM = (0, o.getCurrentYM)()),
+                this.weekMode)
+              )
                 return (
                   (this.slideLock = !1),
                   (this.currentDates = (0, o.getCalendarDates)()),
-                  (this.currentYM = (0, o.getCurrentYM)()),
                   (0, s.default)(this).calculatePrevWeekDays(),
                   this.onSwipeCalendar('prev_week'),
                   void this.onWeekChange('prev_week')
@@ -1737,7 +1743,10 @@
           this.setData({ 'calendar.leftSwipe': 0, 'calendar.rightSwipe': 0 });
         },
         onSwipeCalendar(e) {
-          this.triggerEvent('onSwipe', { directionType: e });
+          this.triggerEvent('onSwipe', {
+            directionType: e,
+            currentYM: this.currentYM
+          });
         },
         onWeekChange(e) {
           this.triggerEvent('whenChangeWeek', {
@@ -1848,31 +1857,31 @@
         whenMulitSelect(e) {
           (0, d.isComponent)(this) && (i = this);
           const { calendar: t = {} } = D(),
-            { days: a, todoLabels: n } = t;
-          let { selectedDay: s = [] } = t;
-          const r = a[e];
-          if (r) {
-            if (((r.choosed = !r.choosed), r.choosed)) {
-              r.cancel = !1;
+            { days: a, todoLabels: n } = t,
+            s = (0, l.default)(i).getCalendarConfig();
+          let { selectedDay: r = [] } = t;
+          const o = a[e];
+          if (o) {
+            if (((o.choosed = !o.choosed), o.choosed)) {
+              o.cancel = !1;
               const { showLabelAlways: e } = D('calendar');
-              e && r.showTodoLabel
-                ? (r.showTodoLabel = !0)
-                : (r.showTodoLabel = !1),
-                s.push(r);
+              e && o.showTodoLabel
+                ? (o.showTodoLabel = !0)
+                : (o.showTodoLabel = !1),
+                s.takeoverTap || r.push(o);
             } else {
-              r.cancel = !0;
-              const e = `${r.year}-${r.month}-${r.day}`;
-              (s = s.filter(t => e !== `${t.year}-${t.month}-${t.day}`)),
+              o.cancel = !0;
+              const e = `${o.year}-${o.month}-${o.day}`;
+              (r = r.filter(t => e !== `${t.year}-${t.month}-${t.day}`)),
                 n &&
                   n.forEach(t => {
                     e === `${t.year}-${t.month}-${t.day}` &&
-                      (r.showTodoLabel = !0);
+                      (o.showTodoLabel = !0);
                   });
             }
-            if ((0, l.default)(i).getCalendarConfig().takeoverTap)
-              return i.triggerEvent('onTapDay', r);
-            g({ 'calendar.days': a, 'calendar.selectedDay': s }),
-              p.afterTapDay(r, s);
+            if (s.takeoverTap) return i.triggerEvent('onTapDay', o);
+            g({ 'calendar.days': a, 'calendar.selectedDay': r }),
+              p.afterTapDay(o, r);
           }
         },
         whenSingleSelect(e) {

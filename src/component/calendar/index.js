@@ -163,10 +163,10 @@ Component({
         this.setData({
           'calendar.leftSwipe': 1
         });
+        this.currentYM = getCurrentYM();
         if (this.weekMode) {
           this.slideLock = false;
           this.currentDates = getCalendarDates();
-          this.currentYM = getCurrentYM();
           Week(this).calculateNextWeekDays();
           this.onSwipeCalendar('next_week');
           this.onWeekChange('next_week');
@@ -180,10 +180,10 @@ Component({
         this.setData({
           'calendar.rightSwipe': 1
         });
+        this.currentYM = getCurrentYM();
         if (this.weekMode) {
           this.slideLock = false;
           this.currentDates = getCalendarDates();
-          this.currentYM = getCurrentYM();
           Week(this).calculatePrevWeekDays();
           this.onSwipeCalendar('prev_week');
           this.onWeekChange('prev_week');
@@ -202,7 +202,8 @@ Component({
     },
     onSwipeCalendar(direction) {
       this.triggerEvent('onSwipe', {
-        directionType: direction
+        directionType: direction,
+        currentYM: this.currentYM
       });
     },
     onWeekChange(direction) {
