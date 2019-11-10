@@ -4,7 +4,7 @@ import {
   delRepeatedEnableDay,
   convertEnableAreaToTimestamp,
   converEnableDaysToTimestamp
-} from '../src/component/calendar/utils';
+} from '../src/component/calendar/func/utils';
 
 test('unique days array by date', () => {
   expect(uniqueArrayByDate(mock.Days)).toEqual(mock.UniqueArrayByDate.Expected);

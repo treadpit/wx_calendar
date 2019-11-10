@@ -96,6 +96,7 @@ const conf = {
     if (isComponent(this)) Component = this;
     const { calendar = {} } = getData();
     const { days, todoLabels } = calendar;
+    const config = CalendarConfig(Component).getCalendarConfig();
     let { selectedDay: selectedDays = [] } = calendar;
     const currentDay = days[dateIdx];
     if (!currentDay) return;
@@ -123,9 +124,10 @@ const conf = {
       } else {
         currentDay.showTodoLabel = false;
       }
-      selectedDays.push(currentDay);
+      if (!config.takeoverTap) {
+        selectedDays.push(currentDay);
+      }
     }
-    const config = CalendarConfig(Component).getCalendarConfig();
     if (config.takeoverTap) {
       return Component.triggerEvent('onTapDay', currentDay);
     }
