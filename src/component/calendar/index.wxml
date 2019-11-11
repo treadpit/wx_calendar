@@ -14,7 +14,7 @@
     </view>
     <!-- 星期栏 -->
     <view class="weeks b lr ac {{calendarConfig.theme}}_week-color">
-      <view class="week fs28" wx:for="{{calendar.weeksCh}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
+      <view class="week fs28" wx:for="{{calendar.weeksCh}}" wx:key="index" data-idx="{{index}}">{{item}}</view>
     </view>
     <!-- 日历面板主体 -->
     <view class="b lr wrap"
@@ -26,7 +26,7 @@
           class="grid b ac pc {{calendarConfig.theme}}_prev-month-date"
           wx:if="{{calendar.empytGrids}}"
           wx:for="{{calendar.empytGrids}}"
-          wx:key="{{index}}"
+          wx:key="index"
           data-idx="{{index}}">
             <view class="date">
               {{item.day}}
@@ -40,7 +40,7 @@
         <!-- 本月日期格子 -->
         <view class="grid {{calendarConfig.theme}}_normal-date b ac pc"
           wx:for="{{calendar.days}}"
-          wx:key="{{index}}"
+          wx:key="index"
           data-disable="{{item.disable}}"
           data-idx="{{index}}"
           bindtap="tapDayItem">
@@ -66,7 +66,7 @@
         <view
           class="grid b ac pc {{calendarConfig.theme}}_next-month-date"
           wx:for="{{calendar.lastEmptyGrids}}"
-          wx:key="{{index}}"
+          wx:key="index"
           data-idx="{{index}}">
             <view class="date">
               {{item.day}}
