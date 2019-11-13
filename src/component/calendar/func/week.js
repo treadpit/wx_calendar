@@ -90,7 +90,7 @@ class WeekMode extends WxData {
    * 计算周视图下当前这一周和当月的最后一天
    */
   calculateLastDay() {
-    const { days, curYear, curMonth } = this.getData('calendar');
+    const { days = [], curYear, curMonth } = this.getData('calendar');
     const lastDayInThisWeek = days[days.length - 1].day;
     const lastDayInThisMonth = getDate.thisMonthDays(curYear, curMonth);
     return { lastDayInThisWeek, lastDayInThisMonth };
@@ -142,48 +142,29 @@ class WeekMode extends WxData {
    * @param {array} dates 当前日期数组
    */
   initSelectedDay(dates) {
-    const datesCopy = [...dates];
-    const { selectedDay = [], todoLabels = [], showLabelAlways } = this.getData(
-      'calendar'
-    );
+    let datesCopy = [...dates];
+    const { selectedDay = [] } = this.getData('calendar');
     const selectedDayStr = selectedDay.map(
       item => `${+item.year}-${+item.month}-${+item.day}`
     );
-    const todosStr = todoLabels.map(d => `${+d.year}-${+d.month}-${+d.day}`);
     const config = this.getCalendarConfig();
-    datesCopy.forEach(item => {
+    datesCopy = datesCopy.map(item => {
+      let date = { ...item };
       if (
-        selectedDayStr.includes(`${+item.year}-${+item.month}-${+item.day}`)
+        selectedDayStr.includes(`${+date.year}-${+date.month}-${+date.day}`)
       ) {
-        item.choosed = true;
+        date.choosed = true;
       } else {
-        item.choosed = false;
+        date.choosed = false;
       }
-      const idx = todosStr.indexOf(`${+item.year}-${+item.month}-${+item.day}`);
-      if (idx !== -1) {
-        if (showLabelAlways) {
-          item.showTodoLabel = true;
-        } else {
-          item.showTodoLabel = !item.choosed;
-        }
-        const todo = todoLabels[idx] || {};
-        if (item.showTodoLabel && todo.todoText) item.todoText = todo.todoText;
-      }
+      date = this.__setTodoWhenJump(date, config);
       if (config.showLunar) {
-        item.lunar = convertSolarLunar.solar2lunar(
-          +item.year,
-          +item.month,
-          +item.day
-        );
+        date = this.__setSolarLunar(date);
       }
       if (config.highlightToday) {
-        const today = getDate.todayDate();
-        const isToday =
-          +today.year === +item.year &&
-          +today.month === +item.month &&
-          +item.day === +today.date;
-        item.isToday = isToday;
+        date = this.__highlightToday(date);
       }
+      return date;
     });
     return datesCopy;
   }
@@ -191,7 +172,7 @@ class WeekMode extends WxData {
    * 周视图下设置可选日期范围
    * @param {object} days 当前展示的日期
    */
-  setEnableAreaOnWeekMode(dates) {
+  setEnableAreaOnWeekMode(dates = []) {
     let {
       todayTimestamp,
       enableAreaTimestamp = [],
@@ -369,7 +350,7 @@ class WeekMode extends WxData {
         firstDayOfWeekIsMon
       );
       let lastWeekDays = this.lastWeekInMonth(year, month, firstDayOfWeekIsMon);
-      const dates = this.calculateDatesWhenJump(
+      let dates = this.calculateDatesWhenJump(
         { year, month, day },
         {
           firstWeekDays,
@@ -377,7 +358,8 @@ class WeekMode extends WxData {
         },
         firstDayOfWeekIsMon
       );
-      dates.map(date => {
+      dates = dates.map(d => {
+        let date = { ...d };
         if (
           +date.year === +year &&
           +date.month === +month &&
@@ -385,8 +367,15 @@ class WeekMode extends WxData {
         ) {
           date.choosed = true;
         }
+        date = this.__setTodoWhenJump(date, config);
+        if (config.showLunar) {
+          date = this.__setSolarLunar(date);
+        }
+        if (config.highlightToday) {
+          date = this.__highlightToday(date);
+        }
+        return date;
       });
-      this.initSelectedDay(dates);
       this.setEnableAreaOnWeekMode(dates);
       this.setData(
         {
@@ -394,11 +383,47 @@ class WeekMode extends WxData {
           'calendar.curYear': year,
           'calendar.curMonth': month,
           'calendar.empytGrids': [],
-          'calendar.lastEmptyGrids': []
+          'calendar.lastEmptyGrids': [],
+          'calendar.selectedDay': dates.filter(item => item.choosed)
         },
         resolve
       );
     });
+  }
+  __setTodoWhenJump(dateInfo) {
+    const date = { ...dateInfo };
+    const { todoLabels = [], showLabelAlways } = this.getData('calendar');
+    const todosStr = todoLabels.map(d => `${+d.year}-${+d.month}-${+d.day}`);
+    const idx = todosStr.indexOf(`${+date.year}-${+date.month}-${+date.day}`);
+    if (idx !== -1) {
+      if (showLabelAlways) {
+        date.showTodoLabel = true;
+      } else {
+        date.showTodoLabel = !date.choosed;
+      }
+      const todo = todoLabels[idx] || {};
+      if (date.showTodoLabel && todo.todoText) date.todoText = todo.todoText;
+    }
+    return date;
+  }
+  __setSolarLunar(dateInfo) {
+    const date = { ...dateInfo };
+    date.lunar = convertSolarLunar.solar2lunar(
+      +date.year,
+      +date.month,
+      +date.day
+    );
+    return date;
+  }
+  __highlightToday(dateInfo) {
+    const date = { dateInfo };
+    const today = getDate.todayDate();
+    const isToday =
+      +today.year === +date.year &&
+      +today.month === +date.month &&
+      +date.day === +today.date;
+    date.isToday = isToday;
+    return date;
   }
   __calculateDatesWhenInFirstWeek(firstWeekDays, firstDayOfWeekIsMon) {
     const dates = [...firstWeekDays];
