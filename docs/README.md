@@ -191,7 +191,7 @@ Page({
 
 在初始化日历后，调用日历暴露的方法可采用 **_两种_** 方式，以 `jump` 函数为例
 
-> 方法在日历渲染完成后，即 `afterCalendarRender()` 后才绑定到页面实例上，故请勿在页面初次onShow及之前调用方法。
+> 方法在日历渲染完成后，即 `afterCalendarRender()` 后才绑定到页面实例上，故请勿在页面初次 onShow 及之前调用方法。
 
 > 注意页面 **多日历组件** 时方法调用需要的参数 [componentId]，参考 **多日历组件一节** 文档说明，以下示例均以单日历组件为例
 
@@ -355,7 +355,7 @@ this.calendar.setSelectedDays(toSet);
 #### 13. 获取当前日历面板日期
 
 ```js
-const dates = calendar.getCalendarDates();
+const dates = this.calendar.getCalendarDates();
 ```
 
 #### 14. 周月视图切换
@@ -378,7 +378,7 @@ this.calendar.switchView('month').then(() => {});
 
 #### 15. 设置指定日期样式
 
-[`experimental` 分支](https://github.com/treadpit/wx_calendar/tree/experimental) 增加了实验性方法: ` setDateStyle()`。
+[`experimental` 分支](https://github.com/treadpit/wx_calendar/tree/experimental) 增加了实验性方法: `setDateStyle()`。
 
 > 该方法只会对日期生效。
 
@@ -387,12 +387,12 @@ this.calendar.switchView('month').then(() => {});
 ```js
 // 页面 js 文件
 const toSet = [
-   {
-        year: 2019,
-        month: 11,
-        day: 19,
-        class: 'orange-date other-class' // 页面定义的 class，多个 class 由空格隔开
-    }
+  {
+    year: 2019,
+    month: 11,
+    day: 19,
+    class: 'orange-date other-class' // 页面定义的 class，多个 class 由空格隔开
+  }
 ];
 this.calendar.setDateStyle(toSet);
 ```
@@ -400,7 +400,7 @@ this.calendar.setDateStyle(toSet);
 ```css
 /* 页面 css 文件 */
 .orange-date {
-   color: #f40
+  color: #f40;
 }
 ```
 
