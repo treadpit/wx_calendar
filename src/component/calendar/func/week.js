@@ -416,7 +416,7 @@ class WeekMode extends WxData {
     return date;
   }
   __highlightToday(dateInfo) {
-    const date = { dateInfo };
+    const date = { ...dateInfo };
     const today = getDate.todayDate();
     const isToday =
       +today.year === +date.year &&
