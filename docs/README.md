@@ -365,18 +365,11 @@ const dates = this.calendar.getCalendarDates();
 
 > `switchView()` 返回 `Promise`
 
-> 切换视图时可传入指定日期，如: {year: 2019, month: 1, day: 3}
-
 > 因周视图模式特殊性，该模式下会隐藏年月切换操作栏
 
 ```js
 // 切换为周视图
 this.calendar.switchView('week').then(() => {});
-this.calendar.switchView('week', {
-  year: 2019,
-  month: 11,
-  day: 13
-}).then(() => {});
 
 // 切换为月视图
 this.calendar.switchView().then(() => {});
