@@ -113,7 +113,8 @@ const conf = {
       theme: 'elegant', // 日历主题，目前共两款可选择，默认 default 及 elegant，自定义主题在 theme 文件夹扩展
       showLunar: true, // 是否显示农历，此配置会导致 setTodoLabels 中 showLabelAlways 配置失效
       inverse: true, // 单选模式下是否支持取消选中,
-      defaultDay: '2018-3-6', // string|boolean，string: 默认选中某天/boolean: 不自动选中任何日期
+      markToday: '今', // 当天日期展示不使用默认数字，用特殊文字标记
+      defaultDay: '2018-3-6', // 默认选中指定某天；当为 boolean 值 true 时则默认选中当天，非真值则在初始化时不自动选中日期，
       highlightToday: true, // 是否高亮显示当天，区别于选中样式（初始化时当天高亮并不代表已选中当天）
       takeoverTap: true, // 是否完全接管日期点击事件（日期不会选中），配合 onTapDay() 使用
       disablePastDay: true, // 是否禁选当天之前的日期
@@ -364,14 +365,21 @@ const dates = this.calendar.getCalendarDates();
 
 > `switchView()` 返回 `Promise`
 
+> 切换视图时可传入指定日期，如: {year: 2019, month: 1, day: 3}
+
 > 因周视图模式特殊性，该模式下会隐藏年月切换操作栏
 
 ```js
 // 切换为周视图
 this.calendar.switchView('week').then(() => {});
+this.calendar.switchView('week', {
+  year: 2019,
+  month: 11,
+  day: 13
+}).then(() => {});
 
 // 切换为月视图
-this.calendar.switchView.then(() => {});
+this.calendar.switchView().then(() => {});
 // 或者
 this.calendar.switchView('month').then(() => {});
 ```

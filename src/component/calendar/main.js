@@ -60,7 +60,8 @@ const conf = {
     return new Promise((resolve, reject) => {
       Calendar(Component)
         .renderCalendar(curYear, curMonth, curDate)
-        .then(() => {
+        .then((info = {}) => {
+          if (!info.firstRender) return;
           mountEventsOnPage(getCurrentPage());
           Component.triggerEvent('afterCalendarRender', Component);
           Component.firstRender = true;
@@ -511,10 +512,10 @@ function autoSelectDay(defaultDay) {
       return logger.warn('配置 jumpTo 格式应为: 2018-4-2 或 2018-04-02');
     }
     jump(+day[0], +day[1], +day[2]);
-  } else if (!defaultDay) {
-    Component.config.noDefault = true;
-    jump();
   } else {
+    if (!defaultDay) {
+      Component.config.noDefault = true;
+    }
     jump();
   }
 }

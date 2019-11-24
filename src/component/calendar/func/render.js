@@ -37,7 +37,13 @@ class Calendar extends WxData {
       }
 
       if (!this.Component.firstRender) {
-        resolve();
+        resolve({
+          firstRender: true
+        });
+      } else {
+        resolve({
+          firstRender: false
+        });
       }
     });
   }
@@ -116,7 +122,7 @@ class Calendar extends WxData {
           extDate += 7;
         }
       } else {
-        if (firstDayofMonth < 6) {
+        if (firstDayofMonth < 5) {
           extDate += 7;
         }
       }

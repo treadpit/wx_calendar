@@ -1345,7 +1345,9 @@
             r instanceof Array &&
             r.find(e => +e.month == +t) &&
             (0, n.default)(this.Component).setTodoLabels(),
-            this.Component.firstRender || s();
+            this.Component.firstRender
+              ? s({ firstRender: !1 })
+              : s({ firstRender: !0 });
         });
       }
       calculateEmptyGrids(e, t) {
@@ -1384,7 +1386,7 @@
           let s = l.dayOfWeek(e, t, 1);
           'Mon' === a.firstDayOfWeek
             ? 0 !== s && s < 6 && (n += 7)
-            : s < 6 && (n += 7);
+            : s < 5 && (n += 7);
         }
         return n;
       }
@@ -1649,10 +1651,14 @@
       methods: {
         initComp() {
           const e = this.properties.calendarConfig || {};
-          this.setTheme(e.theme), (0, o.default)(this, e);
+          this.setConfig(e), (0, o.default)(this, e);
         },
-        setTheme(e) {
-          this.setData({ 'calendarConfig.theme': e || 'default' });
+        setConfig(e) {
+          e.markToday &&
+            'string' == typeof e.markToday &&
+            (e.highlightToday = !0),
+            (e.theme = e.theme || 'default'),
+            this.setData({ calendarConfig: e });
         },
         chooseDate(e) {
           const { type: t } = e.currentTarget.dataset;
@@ -1834,33 +1840,34 @@
             new Promise((n, s) => {
               (0, c.default)(i)
                 .renderCalendar(e, t, a)
-                .then(() => {
-                  !(function(e) {
-                    e.calendar = {
-                      jump: S,
-                      switchView: F,
-                      disableDay: A,
-                      enableArea: E,
-                      enableDays: I,
-                      getCurrentYM: L,
-                      getSelectedDay: v,
-                      cancelAllSelectedDay: W,
-                      setTodoLabels: $,
-                      getTodoLabels: x,
-                      deleteTodoLabels: Y,
-                      clearTodoLabels: O,
-                      setSelectedDays: P,
-                      getCalendarConfig: j,
-                      setCalendarConfig: G,
-                      getCalendarDates: U
-                    };
-                  })((0, b.getCurrentPage)()),
+                .then((e = {}) => {
+                  e.firstRender &&
+                    (!(function(e) {
+                      e.calendar = {
+                        jump: S,
+                        switchView: F,
+                        disableDay: A,
+                        enableArea: E,
+                        enableDays: I,
+                        getCurrentYM: L,
+                        getSelectedDay: v,
+                        cancelAllSelectedDay: W,
+                        setTodoLabels: $,
+                        getTodoLabels: x,
+                        deleteTodoLabels: Y,
+                        clearTodoLabels: O,
+                        setSelectedDays: P,
+                        getCalendarConfig: j,
+                        setCalendarConfig: G,
+                        getCalendarDates: U
+                      };
+                    })((0, b.getCurrentPage)()),
                     i.triggerEvent('afterCalendarRender', i),
                     (i.firstRender = !0),
                     (b.initialTasks.flag = 'finished'),
                     b.initialTasks.tasks.length &&
                       b.initialTasks.tasks.shift()(),
-                    n();
+                    n());
                 });
             })
           );
@@ -2073,7 +2080,7 @@
               .catch(a));
       });
     }
-    function N(e, t) {
+    function R(e, t) {
       (b.initialTasks.flag = 'process'),
         ((i = e).config = t),
         (function(e) {
@@ -2087,7 +2094,7 @@
             if (t.length < 3)
               return h.warn('配置 jumpTo 格式应为: 2018-4-2 或 2018-04-02');
             S(+t[0], +t[1], +t[2]);
-          } else e ? S() : ((i.config.noDefault = !0), S());
+          } else e || (i.config.noDefault = !0), S();
         })(t.defaultDay),
         h.tips(
           '使用中若遇问题请反馈至 https://github.com/treadpit/wx_calendar/issues ✍️'
@@ -2097,9 +2104,9 @@
     t.default = (e, t = {}) => {
       if ('process' === b.initialTasks.flag)
         return b.initialTasks.tasks.push(function() {
-          N(e, t);
+          R(e, t);
         });
-      N(e, t);
+      R(e, t);
     };
   },
   function(e, t, a) {

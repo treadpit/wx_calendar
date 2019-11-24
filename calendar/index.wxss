@@ -98,7 +98,7 @@
 }
 
 .date-wrap {
-    height: 72rpx;
+    height: 80rpx;
     position: relative;
     left: 0;
     top: 0;
@@ -197,6 +197,10 @@
 
 .date-desc.date-desc-bottom {
     bottom: -14rpx;
+}
+
+.todo-circle .date-desc.date-desc-bottom {
+    bottom: -30rpx;
 }
 
 .date-desc.date-desc-bottom-always {

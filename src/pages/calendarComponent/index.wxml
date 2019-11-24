@@ -1,4 +1,4 @@
-<view style="width: 90%;height:580rpx;overflow:hidden;margin: 0 auto 40rpx;">
+<view style="width: 90%;height:640rpx;overflow:hidden;margin: 0 auto 40rpx;">
   <calendar
     calendarConfig="{{calendarConfig}}"
     bind:onSwipe="onSwipe"
