@@ -42,12 +42,16 @@ Component({
   methods: {
     initComp() {
       const calendarConfig = this.properties.calendarConfig || {};
-      this.setTheme(calendarConfig.theme);
+      this.setConfig(calendarConfig);
       initCalendar(this, calendarConfig);
     },
-    setTheme(theme) {
+    setConfig(config) {
+      if (config.markToday && typeof config.markToday === 'string') {
+        config.highlightToday = true;
+      }
+      config.theme = config.theme || 'default';
       this.setData({
-        'calendarConfig.theme': theme || 'default'
+        calendarConfig: config
       });
     },
     chooseDate(e) {
