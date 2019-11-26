@@ -98,7 +98,7 @@ Page({
 
 #### 3. 自定义配置
 
-在页面 `data` 中自定义配置，`@/component/calendar/main.js` 文件中提供了一些 `API` 供调用，`API` 列表参考文末文档
+自定义配置在页面 `data` 中设置，并传给组件
 
 ```js
 const conf = {
