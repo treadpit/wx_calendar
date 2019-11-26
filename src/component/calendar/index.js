@@ -162,7 +162,8 @@ Component({
      */
     calendarTouchmove(e) {
       const { gesture } = this.data;
-      if (!this.slideLock) return;
+      const { preventSwipe } = this.properties.calendarConfig;
+      if (!this.slideLock || preventSwipe) return;
       if (slide.isLeft(gesture, e.touches[0])) {
         this.setData({
           'calendar.leftSwipe': 1
