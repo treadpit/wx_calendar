@@ -1724,8 +1724,9 @@
             this.setData({ 'gesture.startX': a, 'gesture.startY': n });
         },
         calendarTouchmove(e) {
-          const { gesture: t } = this.data;
-          if (this.slideLock) {
+          const { gesture: t } = this.data,
+            { preventSwipe: a } = this.properties.calendarConfig;
+          if (this.slideLock && !a) {
             if (c.isLeft(t, e.touches[0])) {
               if (
                 (this.setData({ 'calendar.leftSwipe': 1 }),

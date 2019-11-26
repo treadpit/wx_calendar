@@ -117,6 +117,7 @@ const conf = {
       defaultDay: '2018-3-6', // 默认选中指定某天；当为 boolean 值 true 时则默认选中当天，非真值则在初始化时不自动选中日期，
       highlightToday: true, // 是否高亮显示当天，区别于选中样式（初始化时当天高亮并不代表已选中当天）
       takeoverTap: true, // 是否完全接管日期点击事件（日期不会选中），配合 onTapDay() 使用
+      preventSwipe: true, // 是否禁用日历滑动切换月份
       disablePastDay: true, // 是否禁选当天之前的日期
       disableLaterDay: true, // 是否禁选当天之后的日期
       firstDayOfWeek: 'Mon', // 每周第一天为周一还是周日，默认按周日开始
