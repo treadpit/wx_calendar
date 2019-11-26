@@ -111,7 +111,9 @@ class WeekMode extends WxData {
    */
   firstWeekInMonth(year, month, firstDayOfWeekIsMon) {
     let firstDay = getDate.dayOfWeek(year, month, 1);
-    // if (+firstDay === 0) firstDay = 7;
+    if (firstDayOfWeekIsMon && firstDay === 0) {
+      firstDay = 7;
+    }
     const [, end] = [0, 7 - firstDay];
     let days = this.getData('calendar.days') || [];
     if (this.Component.weekMode) {
@@ -335,7 +337,7 @@ class WeekMode extends WxData {
         firstDayOfWeekIsMon
       );
     } else {
-      dates = this.__calculateDates({ year, month, day });
+      dates = this.__calculateDates({ year, month, day }, firstDayOfWeekIsMon);
     }
     return dates;
   }
