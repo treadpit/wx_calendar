@@ -19,18 +19,18 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
+      "pre-commit": "lint-staged && yarn build && yarn build:example && git add .",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "lint-staged": {
     "*.js": [
-      "npm run fix:js",
+      "yarn fix:js",
       "prettier --write",
       "git add ."
     ],
     "*.wxss": [
-      "npm run fix:wxss",
+      "yarn fix:wxss",
       "git add ."
     ]
   },
