@@ -149,7 +149,7 @@ const conf = {
     let shouldMarkerTodoDay = [];
     const currentDay = days[dateIdx];
     if (!currentDay) return;
-    const selectedDay = selectedDays[0] || {};
+    let selectedDay = selectedDays[0] || {};
     const date = selectedDay.day;
     const preSelectedDate = (date && days[date - 1]) || {};
     const { month: dMonth, year: dYear } = days[0] || {};
@@ -414,18 +414,29 @@ export function setSelectedDays(selected, componentId) {
  */
 export function getCalendarConfig(componentId) {
   bindCurrentComponent(componentId);
-  CalendarConfig(Component).getCalendarConfig();
+  return CalendarConfig(Component).getCalendarConfig();
 }
 
 /**
  * 设置日历配置
- * @param {string} key
- * @param {string|boolean} value
+ * @param {object} config
  * @param {string} componentId 要操作的日历组件ID
  */
-export function setCalendarConfig(key, value, componentId) {
+export function setCalendarConfig(config, componentId) {
   bindCurrentComponent(componentId);
-  CalendarConfig(Component).setCalendarConfig(key, value);
+  if (!config || Object.keys(config).length === 0) {
+    return logger.warn('setCalendarConfig 参数必须为非空对象');
+  }
+  return new Promise((resolve, reject) => {
+    CalendarConfig(Component)
+      .setCalendarConfig(config)
+      .then(conf => {
+        resolve(conf);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
 }
 
 /**

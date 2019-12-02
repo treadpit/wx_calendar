@@ -378,7 +378,24 @@ this.calendar.switchView().then(() => {});
 this.calendar.switchView('month').then(() => {});
 ```
 
-#### 15. 设置指定日期样式
+#### 15. 设置日历配置
+
+`setCalendarConfig` 返回 `Promise`
+
+```js
+this.calendar.setCalendarConfig({
+  theme: 'elegant',
+  ...
+});
+```
+
+#### 16. 获取日历配置
+
+```js
+const conf = this.calendar.getCalendarConfig();
+```
+
+#### 17. 设置指定日期样式
 
 [`experimental` 分支](https://github.com/treadpit/wx_calendar/tree/experimental) 增加了实验性方法: `setDateStyle()`。
 

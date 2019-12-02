@@ -68,8 +68,12 @@ const conf = {
       {
         text: '自定义配置',
         action: 'config',
-        color: 'grey',
-        disable: true
+        color: 'pink'
+      },
+      {
+        text: '获取自定义配置',
+        action: 'getConfig',
+        color: 'olive'
       },
       {
         text: '获取日历面板日期',
@@ -133,6 +137,19 @@ const conf = {
     const { year, month } = calendar.getCurrentYM();
     switch (action) {
       case 'config':
+        calendar
+          .setCalendarConfig({
+            showLunar: false,
+            theme: 'elegant'
+          })
+          .then(conf => {
+            console.log('设置成功：', conf);
+          });
+        break;
+      case 'getConfig':
+        const config = calendar.getCalendarConfig();
+        this.showToast('请在控制台查看结果');
+        console.log('自定义配置: ', config);
         break;
       case 'jump': {
         const year = this.generateRandomDate('year');
@@ -145,6 +162,7 @@ const conf = {
         const selected = calendar[action]();
         if (!selected || !selected.length)
           return this.showToast('当前未选择任何日期');
+        this.showToast('请在控制台查看结果');
         console.log('get selected days: ', selected);
         const rst = selected.map(item => JSON.stringify(item));
         this.setData({
