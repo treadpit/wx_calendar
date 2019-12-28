@@ -135,11 +135,9 @@ class Day extends WxData {
     let _disableDays = [];
     if (data.length) {
       _disableDays = uniqueArrayByDate(data.concat(disableDays));
-      const disableDaysCol = _disableDays.map(
-        d => `${d.year}-${d.month}-${d.day}`
-      );
+      const disableDaysCol = _disableDays.map(d => getDate.toTimeStr(d));
       days.forEach(item => {
-        const cur = `${item.year}-${item.month}-${item.day}`;
+        const cur = getDate.toTimeStr(item);
         if (disableDaysCol.includes(cur)) item.disable = true;
       });
     } else {
@@ -200,9 +198,7 @@ class Day extends WxData {
         if (item.choosed) {
           item.choosed = false;
           selectedDay = selectedDay.filter(
-            d =>
-              `${item.year}-${item.month}-${item.day}` !==
-              `${d.year}-${d.month}-${d.day}`
+            d => getDate.toTimeStr(item) !== getDate.toTimeStr(d)
           );
         }
       } else if (item.disable) {
@@ -239,9 +235,7 @@ class Day extends WxData {
         if (item.choosed) {
           item.choosed = false;
           selectedDay = selectedDay.filter(
-            d =>
-              `${item.year}-${item.month}-${item.day}` !==
-              `${d.year}-${d.month}-${d.day}`
+            d => getDate.toTimeStr(item) !== getDate.toTimeStr(d)
           );
         }
       } else {
@@ -264,13 +258,11 @@ class Day extends WxData {
     const currentSelectedDays = [];
     newSelectedDay.forEach(item => {
       if (+item.year === +curYear && +item.month === +curMonth) {
-        currentSelectedDays.push(`${item.year}-${item.month}-${item.day}`);
+        currentSelectedDays.push(getDate.toTimeStr(item));
       }
     });
     [...days].map(item => {
-      if (
-        currentSelectedDays.includes(`${item.year}-${item.month}-${item.day}`)
-      ) {
+      if (currentSelectedDays.includes(getDate.toTimeStr(item))) {
         item.choosed = true;
         if (showLabelAlways && item.showTodoLabel) {
           item.showTodoLabel = true;

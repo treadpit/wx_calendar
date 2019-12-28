@@ -233,14 +233,10 @@ class Calendar extends WxData {
     const { todayTimestamp, disableDays = [] } = this.getData('calendar');
     days = this.buildDate(year, month);
     const selectedDay = this.setSelectedDay(year, month, curDate);
-    const selectedDayCol = selectedDay.map(
-      d => `${+d.year}-${+d.month}-${+d.day}`
-    );
-    const disableDaysCol = disableDays.map(
-      d => `${+d.year}-${+d.month}-${+d.day}`
-    );
+    const selectedDayCol = selectedDay.map(d => getDate.toTimeStr(d));
+    const disableDaysCol = disableDays.map(d => getDate.toTimeStr(d));
     days.forEach(item => {
-      const cur = `${+item.year}-${+item.month}-${+item.day}`;
+      const cur = getDate.toTimeStr(item);
       if (selectedDayCol.includes(cur)) item.choosed = true;
       if (disableDaysCol.includes(cur)) item.disable = true;
       const timestamp = getDate

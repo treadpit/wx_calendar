@@ -2,7 +2,8 @@ const conf = {
   data: {
     calendarConfig: {
       showLunar: true,
-      multi: true
+      multi: true,
+      chooseArea: true // boolean|array
     },
     actionBtn: [
       {

@@ -157,6 +157,9 @@ export class GetDate {
     const timestamp = this.newDate(year, month, date).getTime();
     return timestamp;
   }
+  toTimeStr(dateInfo) {
+    return `${dateInfo.year}-${dateInfo.month}-${dateInfo.day}`;
+  }
 }
 
 export function isIos() {

@@ -104,15 +104,13 @@ const conf = {
     currentDay.choosed = !currentDay.choosed;
     if (!currentDay.choosed) {
       currentDay.cancel = true; // 该次点击是否为取消日期操作
-      const currentDayStr = `${currentDay.year}-${currentDay.month}-${
-        currentDay.day
-      }`;
+      const currentDayStr = getDate.toTimeStr(currentDay);
       selectedDays = selectedDays.filter(
-        item => currentDayStr !== `${item.year}-${item.month}-${item.day}`
+        item => currentDayStr !== getDate.toTimeStr(item)
       );
       if (todoLabels) {
         todoLabels.forEach(item => {
-          if (currentDayStr === `${item.year}-${item.month}-${item.day}`) {
+          if (currentDayStr === getDate.toTimeStr(item)) {
             currentDay.showTodoLabel = true;
           }
         });

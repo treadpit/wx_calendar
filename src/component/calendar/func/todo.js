@@ -1,7 +1,8 @@
 import WxData from './wxData';
-import { Logger, uniqueArrayByDate } from './utils';
+import { Logger, uniqueArrayByDate, GetDate } from './utils';
 
 const logger = new Logger();
+const getDate = new GetDate();
 
 class Todo extends WxData {
   constructor(component) {
@@ -134,11 +135,9 @@ class Todo extends WxData {
    */
   filterTodos(todos) {
     const todoLabels = this.getData('calendar.todoLabels') || [];
-    const deleteTodo = todos.map(
-      item => `${item.year}-${item.month}-${item.day}`
-    );
+    const deleteTodo = todos.map(item => getDate.toTimeStr(item));
     return todoLabels.filter(
-      item => !deleteTodo.includes(`${item.year}-${item.month}-${item.day}`)
+      item => !deleteTodo.includes(getDate.toTimeStr(item))
     );
   }
   /**
