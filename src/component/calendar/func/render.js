@@ -24,9 +24,13 @@ class Calendar extends WxData {
    * @param {number} curDate
    */
   renderCalendar(curYear, curMonth, curDate) {
-    return new Promise(resolve => {
-      this.calculateEmptyGrids(curYear, curMonth);
-      this.calculateDays(curYear, curMonth, curDate);
+    return new Promise((resolve, reject) => {
+      try {
+        this.calculateEmptyGrids(curYear, curMonth);
+        this.calculateDays(curYear, curMonth, curDate);
+      } catch (err) {
+        reject(err);
+      }
       const { todoLabels } = this.getData('calendar') || {};
       if (
         todoLabels &&

@@ -388,7 +388,9 @@ class WeekMode extends WxData {
           'calendar.lastEmptyGrids': [],
           'calendar.selectedDay': dates.filter(item => item.choosed)
         },
-        resolve
+        () => {
+          resolve({ year, month, date: day });
+        }
       );
     });
   }

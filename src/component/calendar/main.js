@@ -61,7 +61,13 @@ const conf = {
       Calendar(Component)
         .renderCalendar(curYear, curMonth, curDate)
         .then((info = {}) => {
-          if (!info.firstRender) return;
+          if (!info.firstRender) {
+            return resolve({
+              year: curYear,
+              month: curMonth,
+              date: curDate
+            });
+          }
           mountEventsOnPage(getCurrentPage());
           Component.triggerEvent('afterCalendarRender', Component);
           Component.firstRender = true;
@@ -69,7 +75,14 @@ const conf = {
           if (initialTasks.tasks.length) {
             initialTasks.tasks.shift()();
           }
-          resolve();
+          resolve({
+            year: curYear,
+            month: curMonth,
+            date: curDate
+          });
+        })
+        .catch(err => {
+          reject(err);
         });
     });
   },
@@ -213,26 +226,35 @@ const conf = {
    * 跳转至今天
    */
   jumpToToday() {
-    const { year, month, date } = getDate.todayDate();
-    const timestamp = getDate.todayTimestamp();
-    const config = CalendarConfig(Component).getCalendarConfig();
-    setData({
-      'calendar.curYear': year,
-      'calendar.curMonth': month,
-      'calendar.selectedDay': [
-        {
-          year: year,
-          day: date,
-          month: month,
-          choosed: true,
-          lunar: config.showLunar
-            ? convertSolarLunar.solar2lunar(year, month, date)
-            : null
-        }
-      ],
-      'calendar.todayTimestamp': timestamp
+    return new Promise((resolve, reject) => {
+      const { year, month, date } = getDate.todayDate();
+      const timestamp = getDate.todayTimestamp();
+      const config = CalendarConfig(Component).getCalendarConfig();
+      setData({
+        'calendar.curYear': year,
+        'calendar.curMonth': month,
+        'calendar.selectedDay': [
+          {
+            year: year,
+            day: date,
+            month: month,
+            choosed: true,
+            lunar: config.showLunar
+              ? convertSolarLunar.solar2lunar(year, month, date)
+              : null
+          }
+        ],
+        'calendar.todayTimestamp': timestamp
+      });
+      conf
+        .renderCalendar(year, month, date)
+        .then(() => {
+          resolve({ year, month, date });
+        })
+        .catch(() => {
+          reject('jump failed');
+        });
     });
-    conf.renderCalendar(year, month, date);
   }
 };
 
@@ -288,38 +310,58 @@ export function cancelAllSelectedDay(componentId) {
  * @param {string} componentId 要操作的日历组件ID
  */
 export function jump(year, month, day, componentId) {
-  bindCurrentComponent(componentId);
-  const { selectedDay = [], weekMode } = getData('calendar') || {};
-  const { year: y, month: m, day: d } = selectedDay[0] || {};
-  if (+y === +year && +m === +month && +d === +day) {
-    return;
-  }
-  if (weekMode) {
-    return Week(Component).jump({
-      year,
-      month,
-      day
-    });
-  }
-  if (year && month) {
-    if (typeof +year !== 'number' || typeof +month !== 'number') {
-      return logger.warn('jump 函数年月日参数必须为数字');
+  return new Promise((resolve, reject) => {
+    bindCurrentComponent(componentId);
+    const { selectedDay = [], weekMode } = getData('calendar') || {};
+    const { year: y, month: m, day: d } = selectedDay[0] || {};
+    if (+y === +year && +m === +month && +d === +day) {
+      return;
     }
-    const timestamp = getDate.todayTimestamp();
-    let tmp = {
-      'calendar.curYear': year,
-      'calendar.curMonth': month,
-      'calendar.todayTimestamp': timestamp
-    };
-    setData(tmp, () => {
-      if (typeof +day === 'number') {
-        return conf.renderCalendar(year, month, day);
+    if (weekMode) {
+      return Week(Component)
+        .jump({
+          year,
+          month,
+          day
+        })
+        .then(date => {
+          resolve(date);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    }
+    if (year && month) {
+      if (typeof +year !== 'number' || typeof +month !== 'number') {
+        return logger.warn('jump 函数年月日参数必须为数字');
       }
-      conf.renderCalendar(year, month);
-    });
-  } else {
-    conf.jumpToToday();
-  }
+      const timestamp = getDate.todayTimestamp();
+      let tmp = {
+        'calendar.curYear': year,
+        'calendar.curMonth': month,
+        'calendar.todayTimestamp': timestamp
+      };
+      setData(tmp, () => {
+        conf
+          .renderCalendar(year, month, day)
+          .then(date => {
+            resolve(date);
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    } else {
+      conf
+        .jumpToToday()
+        .then(date => {
+          resolve(date);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    }
+  });
 }
 
 /**
