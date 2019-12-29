@@ -227,7 +227,7 @@ import { jump } from '../../component/calendar/main.js';
 this.calendar.jump();
 // 入参为 number
 this.calendar.jump(2019, 10); // 跳转至某月
-this.calendar.jump(2019, 10, 6); // 跳转至某日
+this.calendar.jump(2019, 10, 6).then(date => {}); // 跳转至某日
 ```
 
 #### 6. 获取当前选择的日期
@@ -399,6 +399,7 @@ const conf = this.calendar.getCalendarConfig();
 #### 17. 日期范围选择
 
 > 调用此方法默认打开 `chooseAreaMode`，非连续性日期选择请调用 `setSelectedDays()`
+
 > 目前只支持单个连续时间段
 
 ```js
