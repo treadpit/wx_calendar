@@ -160,16 +160,42 @@ export class GetDate {
   toTimeStr(dateInfo) {
     return `${dateInfo.year}-${dateInfo.month}-${dateInfo.day}`;
   }
-  sortDates(dates) {
+  sortDates(dates, sortType) {
     return dates.sort(function(a, b) {
       const at = getDateTimeStamp(a);
       const bt = getDateTimeStamp(b);
-      if (at < bt) {
+      if (at < bt && sortType !== 'desc') {
         return -1;
       } else {
         return 1;
       }
     });
+  }
+  prevMonth(dataInfo) {
+    const prevMonthInfo =
+      +dataInfo.month > 1
+        ? {
+            year: dataInfo.year,
+            month: dataInfo.month - 1
+          }
+        : {
+            year: dataInfo.year - 1,
+            month: 12
+          };
+    return prevMonthInfo;
+  }
+  nextMonth(dataInfo) {
+    const nextMonthInfo =
+      +dataInfo.month < 12
+        ? {
+            year: dataInfo.year,
+            month: dataInfo.month + 1
+          }
+        : {
+            year: dataInfo.year + 1,
+            month: 1
+          };
+    return nextMonthInfo;
   }
 }
 

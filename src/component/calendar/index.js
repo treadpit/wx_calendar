@@ -16,6 +16,7 @@ const logger = new Logger();
 
 Component({
   options: {
+    styleIsolation: 'apply-shared',
     multipleSlots: true // 在组件定义时的选项中启用多slot支持
   },
   properties: {
@@ -117,7 +118,7 @@ Component({
     tapDayItem(e) {
       const { idx, disable } = e.currentTarget.dataset;
       if (disable) return;
-      const config = this.config || {};
+      const config = this.data.calendarConfig || this.config || {};
       const { multi, chooseAreaMode } = config;
       if (multi) {
         whenMulitSelect.call(this, idx);

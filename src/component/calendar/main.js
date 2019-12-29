@@ -256,16 +256,12 @@ const conf = {
       let selectedLen = selectedDay.length;
       if (selectedLen / 2 > currentDateIdxInChoosedDateArea) {
         range = [currentDate, endDate];
-        // return conf.gotoSetContinuousDates(currentDate, endDate);
       } else {
-        // return conf.gotoSetContinuousDates(startDate, currentDate);
         range = [startDate, currentDate];
       }
     } else if (currentDateTimestamp < startTimestamp) {
-      // return conf.gotoSetContinuousDates(currentDate, endDate);
       range = [currentDate, endDate];
     } else if (currentDateTimestamp > startTimestamp) {
-      // return conf.gotoSetContinuousDates(startDate, currentDate);
       range = [startDate, currentDate];
     }
     return range;
@@ -626,6 +622,17 @@ export function chooseDateArea(dateArea, componentId) {
 }
 
 /**
+ * 设置指定日期样式
+ * @param {array} dates 待设置特殊样式的日期
+ * @param {string} componentId 要操作的日历组件ID
+ */
+export function setDateStyle(dates, componentId) {
+  if (!dates) return;
+  bindCurrentComponent(componentId);
+  Day(Component).setDateStyle(dates);
+}
+
+/**
  * 切换周月视图
  * 切换视图时可传入指定日期，如: {year: 2019, month: 1, day: 3}
  * args[0] view 视图模式[week, month]
@@ -673,6 +680,7 @@ function mountEventsOnPage(page) {
     getCurrentYM,
     getSelectedDay,
     cancelAllSelectedDay,
+    setDateStyle,
     setTodoLabels,
     getTodoLabels,
     deleteTodoLabels,

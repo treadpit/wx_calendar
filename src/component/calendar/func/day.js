@@ -1,5 +1,6 @@
 import WxData from './wxData';
 import CalendarConfig from './config';
+import convertSolarLunar from './convertSolarLunar';
 import {
   Logger,
   GetDate,
@@ -12,11 +13,48 @@ import {
 
 const logger = new Logger();
 const getDate = new GetDate();
+const toString = Object.prototype.toString;
 
 class Day extends WxData {
   constructor(component) {
     super(component);
     this.Component = component;
+  }
+  getCalendarConfig() {
+    return this.Component.config;
+  }
+  /**
+   *
+   * @param {number} year
+   * @param {number} month
+   */
+  buildDate(year, month) {
+    const today = getDate.todayDate();
+    const thisMonthDays = getDate.thisMonthDays(year, month);
+    const dates = [];
+    const { showLunar } = this.getCalendarConfig();
+    for (let i = 1; i <= thisMonthDays; i++) {
+      const isToday =
+        +today.year === +year && +today.month === +month && i === +today.date;
+      const config = this.getCalendarConfig();
+      const date = {
+        year,
+        month,
+        day: i,
+        choosed: false,
+        week: getDate.dayOfWeek(year, month, i),
+        isToday: isToday && config.highlightToday
+      };
+      if (showLunar) {
+        date.lunar = convertSolarLunar.solar2lunar(
+          +date.year,
+          +date.month,
+          +date.day
+        );
+      }
+      dates.push(date);
+    }
+    return dates;
   }
   /**
    * 指定可选日期范围
@@ -170,6 +208,82 @@ class Day extends WxData {
       }
     });
   }
+  __pusheNextMonthDateArea(item, endTimestamp, selectedDates) {
+    const days = this.buildDate(item.year, item.month);
+    let daysLen = days.length;
+    for (let i = 0; i < daysLen; i++) {
+      const item = days[i];
+      const timeStamp = getDateTimeStamp(item);
+      if (timeStamp <= endTimestamp) {
+        selectedDates.push({
+          ...item,
+          choosed: true
+        });
+      }
+      if (i === daysLen - 1 && timeStamp < endTimestamp) {
+        this.__pusheNextMonthDateArea(
+          getDate.nextMonth(item),
+          endTimestamp,
+          selectedDates
+        );
+      }
+    }
+  }
+  __pushPrevMonthDateArea(item, startTimestamp, selectedDates) {
+    const days = getDate.sortDates(
+      this.buildDate(item.year, item.month),
+      'desc'
+    );
+    let daysLen = days.length;
+    for (let i = 0; i < daysLen; i++) {
+      const item = days[i];
+      const timeStamp = getDateTimeStamp(item);
+      if (timeStamp >= startTimestamp) {
+        selectedDates.push({
+          ...item,
+          choosed: true
+        });
+      } else {
+        return;
+      }
+      if (i === daysLen - 1 && timeStamp > startTimestamp) {
+        this.__pushPrevMonthDateArea(
+          getDate.prevMonth(item),
+          startTimestamp,
+          selectedDates
+        );
+      }
+    }
+  }
+  /**
+   * 当设置日期区域跨月份时保存其他月份的日期至已选日期数组
+   * @param {object} info
+   */
+  __calcDateWhenNotInOneMonth(info) {
+    const {
+      firstDate,
+      lastDate,
+      startTimestamp,
+      endTimestamp,
+      filterSelectedDate
+    } = info;
+    if (getDateTimeStamp(firstDate) > startTimestamp) {
+      this.__pushPrevMonthDateArea(
+        getDate.prevMonth(firstDate),
+        endTimestamp,
+        filterSelectedDate
+      );
+    }
+    if (getDateTimeStamp(lastDate) < endTimestamp) {
+      this.__pusheNextMonthDateArea(
+        getDate.nextMonth(lastDate),
+        endTimestamp,
+        filterSelectedDate
+      );
+    }
+    const newSelectedDates = [...getDate.sortDates(filterSelectedDate)];
+    return newSelectedDates;
+  }
   /**
    * 设置连续日期段
    * @param {number} startTimestamp 连续日期段开始日期时间戳
@@ -179,7 +293,7 @@ class Day extends WxData {
     return new Promise((resolve, reject) => {
       const { days, selectedDay = [] } = this.getData('calendar');
       const selectedDateStr = [];
-      const filterSelectedDate = [];
+      let filterSelectedDate = [];
       selectedDay.forEach(item => {
         const timeStamp = getDateTimeStamp(item);
         if (timeStamp >= startTimestamp && timeStamp <= endTimestamp) {
@@ -211,7 +325,15 @@ class Day extends WxData {
           }
         }
       });
-      const newSelectedDates = [...getDate.sortDates(filterSelectedDate)];
+      const firstDate = days[0];
+      const lastDate = days[days.length - 1];
+      const newSelectedDates = this.__calcDateWhenNotInOneMonth({
+        firstDate,
+        lastDate,
+        startTimestamp,
+        endTimestamp,
+        filterSelectedDate
+      });
       try {
         this.setData(
           {
@@ -225,6 +347,37 @@ class Day extends WxData {
       } catch (err) {
         reject(err);
       }
+    });
+  }
+  /**
+   * 设置指定日期样式
+   * @param {array} dates 待设置特殊样式的日期
+   */
+  setDateStyle(dates) {
+    if (toString.call(dates) !== '[object Array]') return;
+    const { days, specialStyleDates } = this.getData('calendar');
+    if (toString.call(specialStyleDates) === '[object Array]') {
+      dates = uniqueArrayByDate([...specialStyleDates, ...dates]);
+    }
+    const _specialStyleDates = dates.map(
+      item => `${item.year}_${item.month}_${item.day}`
+    );
+    const _days = days.map(item => {
+      const idx = _specialStyleDates.indexOf(
+        `${item.year}_${item.month}_${item.day}`
+      );
+      if (idx > -1) {
+        return {
+          ...item,
+          class: dates[idx].class
+        };
+      } else {
+        return { ...item };
+      }
+    });
+    this.setData({
+      'calendar.days': _days,
+      'calendar.specialStyleDates': dates
     });
   }
   __judgeParam(dateArea) {
