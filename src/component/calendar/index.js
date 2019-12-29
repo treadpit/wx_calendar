@@ -7,6 +7,7 @@ import initCalendar, {
   renderCalendar,
   whenMulitSelect,
   whenSingleSelect,
+  whenChooseArea,
   getCalendarDates
 } from './main.js';
 
@@ -15,6 +16,7 @@ const logger = new Logger();
 
 Component({
   options: {
+    styleIsolation: 'apply-shared',
     multipleSlots: true // 在组件定义时的选项中启用多slot支持
   },
   properties: {
@@ -116,10 +118,12 @@ Component({
     tapDayItem(e) {
       const { idx, disable } = e.currentTarget.dataset;
       if (disable) return;
-      const config = this.config || {};
-      const { multi } = config;
+      const config = this.data.calendarConfig || this.config || {};
+      const { multi, chooseAreaMode } = config;
       if (multi) {
         whenMulitSelect.call(this, idx);
+      } else if (chooseAreaMode) {
+        whenChooseArea.call(this, idx);
       } else {
         whenSingleSelect.call(this, idx);
       }
@@ -156,6 +160,30 @@ Component({
         'gesture.startY': startY
       });
     },
+    handleSwipe(direction) {
+      let swipeKey = 'calendar.leftSwipe';
+      let swipeCalendarType = 'next_week';
+      let weekChangeType = 'next_month';
+      if (direction === 'right') {
+        swipeKey = 'calendar.rightSwipe';
+        swipeCalendarType = 'prev_week';
+        weekChangeType = 'prev_month';
+      }
+      this.setData({
+        [swipeKey]: 1
+      });
+      this.currentYM = getCurrentYM();
+      if (this.weekMode) {
+        this.slideLock = false;
+        this.currentDates = getCalendarDates();
+        Week(this).calculatePrevWeekDays();
+        this.onSwipeCalendar(swipeCalendarType);
+        this.onWeekChange(swipeCalendarType);
+        return;
+      }
+      this.chooseMonth(weekChangeType);
+      this.onSwipeCalendar(weekChangeType);
+    },
     /**
      * 日历滑动中
      * @param {object} e
@@ -165,37 +193,11 @@ Component({
       const { preventSwipe } = this.properties.calendarConfig;
       if (!this.slideLock || preventSwipe) return;
       if (slide.isLeft(gesture, e.touches[0])) {
-        this.setData({
-          'calendar.leftSwipe': 1
-        });
-        this.currentYM = getCurrentYM();
-        if (this.weekMode) {
-          this.slideLock = false;
-          this.currentDates = getCalendarDates();
-          Week(this).calculateNextWeekDays();
-          this.onSwipeCalendar('next_week');
-          this.onWeekChange('next_week');
-          return;
-        }
-        this.chooseMonth('next_month');
-        this.onSwipeCalendar('next_month');
+        this.handleSwipe('left');
         this.slideLock = false;
       }
       if (slide.isRight(gesture, e.touches[0])) {
-        this.setData({
-          'calendar.rightSwipe': 1
-        });
-        this.currentYM = getCurrentYM();
-        if (this.weekMode) {
-          this.slideLock = false;
-          this.currentDates = getCalendarDates();
-          Week(this).calculatePrevWeekDays();
-          this.onSwipeCalendar('prev_week');
-          this.onWeekChange('prev_week');
-          return;
-        }
-        this.chooseMonth('prev_month');
-        this.onSwipeCalendar('prev_month');
+        this.handleSwipe('right');
         this.slideLock = false;
       }
     },

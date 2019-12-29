@@ -21,6 +21,6 @@
 </view>
 
 <view class="show-rst-wrap">
-  <view wx:if="{{rst}}" wx:for="{{rst}}" wx:key="*this" class="show-rst">{{item}}</view>
-  <view wx:if="{{rstStr}}" wx:key="*this" class="show-rst">{{rstStr}}</view>
+  <view wx:if="{{rst}}" wx:for="{{rst}}" wx:key="index" class="show-rst">{{item}}</view>
+  <view wx:if="{{rstStr}}" wx:key="index" class="show-rst">{{rstStr}}</view>
 </view>

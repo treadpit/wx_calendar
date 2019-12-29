@@ -113,6 +113,7 @@ const conf = {
       theme: 'elegant', // 日历主题，目前共两款可选择，默认 default 及 elegant，自定义主题在 theme 文件夹扩展
       showLunar: true, // 是否显示农历，此配置会导致 setTodoLabels 中 showLabelAlways 配置失效
       inverse: true, // 单选模式下是否支持取消选中,
+      chooseAreaMode: true, // 开启日期范围选择模式，该模式下只可选择时间段
       markToday: '今', // 当天日期展示不使用默认数字，用特殊文字标记
       defaultDay: '2018-3-6', // 默认选中指定某天；当为 boolean 值 true 时则默认选中当天，非真值则在初始化时不自动选中日期，
       highlightToday: true, // 是否高亮显示当天，区别于选中样式（初始化时当天高亮并不代表已选中当天）
@@ -395,9 +396,18 @@ this.calendar.setCalendarConfig({
 const conf = this.calendar.getCalendarConfig();
 ```
 
-#### 17. 设置指定日期样式
+#### 17. 日期范围选择
 
-[`experimental` 分支](https://github.com/treadpit/wx_calendar/tree/experimental) 增加了实验性方法: `setDateStyle()`。
+> 调用此方法默认打开 `chooseAreaMode`，非连续性日期选择请调用 `setSelectedDays()`
+> 目前只支持单个连续时间段
+
+```js
+this.calendar.chooseDateArea(['2019-12-28', '2020-1-10']).then(dates => {
+  console.log('choosed dates: ', dates);
+});
+```
+
+#### 18. 设置指定日期样式
 
 > 该方法只会对日期生效。
 

@@ -1,3 +1,4 @@
+import Day from './day';
 import WxData from './wxData';
 import Render from './render';
 import CalendarConfig from './config';
@@ -253,11 +254,16 @@ class WeekMode extends WxData {
     }
     days = this.initSelectedDay(days);
     this.setEnableAreaOnWeekMode(days);
-    this.setData({
-      'calendar.curYear': curYear,
-      'calendar.curMonth': curMonth,
-      'calendar.days': days
-    });
+    this.setData(
+      {
+        'calendar.curYear': curYear,
+        'calendar.curMonth': curMonth,
+        'calendar.days': days
+      },
+      () => {
+        Day(this.Component).setDateStyle();
+      }
+    );
   }
   /**
    * 计算上一周的日期
@@ -309,11 +315,16 @@ class WeekMode extends WxData {
     }
     days = this.initSelectedDay(days);
     this.setEnableAreaOnWeekMode(days);
-    this.setData({
-      'calendar.curYear': curYear,
-      'calendar.curMonth': curMonth,
-      'calendar.days': days
-    });
+    this.setData(
+      {
+        'calendar.curYear': curYear,
+        'calendar.curMonth': curMonth,
+        'calendar.days': days
+      },
+      () => {
+        Day(this.Component).setDateStyle();
+      }
+    );
   }
   calculateDatesWhenJump(
     { year, month, day },
@@ -388,7 +399,10 @@ class WeekMode extends WxData {
           'calendar.lastEmptyGrids': [],
           'calendar.selectedDay': dates.filter(item => item.choosed)
         },
-        resolve
+        () => {
+          Day(this.Component).setDateStyle();
+          resolve({ year, month, date: day });
+        }
       );
     });
   }

@@ -1,9 +1,11 @@
+import Day from './day';
 import Todo from './todo';
 import WxData from './wxData';
 import convertSolarLunar from './convertSolarLunar';
 import {
   GetDate,
   delRepeatedEnableDay,
+  getDateTimeStamp,
   converEnableDaysToTimestamp
 } from './utils';
 
@@ -26,25 +28,37 @@ class Calendar extends WxData {
   renderCalendar(curYear, curMonth, curDate) {
     return new Promise(resolve => {
       this.calculateEmptyGrids(curYear, curMonth);
-      this.calculateDays(curYear, curMonth, curDate);
-      const { todoLabels } = this.getData('calendar') || {};
-      if (
-        todoLabels &&
-        todoLabels instanceof Array &&
-        todoLabels.find(item => +item.month === +curMonth)
-      ) {
-        Todo(this.Component).setTodoLabels();
-      }
+      this.calculateDays(curYear, curMonth, curDate).then(() => {
+        const { todoLabels, specialStyleDates } =
+          this.getData('calendar') || {};
+        if (
+          todoLabels &&
+          todoLabels.find(
+            item => +item.month === +curMonth && +item.year === +curYear
+          )
+        ) {
+          Todo(this.Component).setTodoLabels();
+        }
+        if (
+          specialStyleDates &&
+          specialStyleDates.length &&
+          specialStyleDates.find(
+            item => +item.month === +curMonth && +item.year === +curYear
+          )
+        ) {
+          Day(this.Component).setDateStyle(specialStyleDates);
+        }
 
-      if (!this.Component.firstRender) {
-        resolve({
-          firstRender: true
-        });
-      } else {
-        resolve({
-          firstRender: false
-        });
-      }
+        if (!this.Component.firstRender) {
+          resolve({
+            firstRender: true
+          });
+        } else {
+          resolve({
+            firstRender: false
+          });
+        }
+      });
     });
   }
   /**
@@ -200,81 +214,69 @@ class Calendar extends WxData {
     return selectedDay;
   }
   /**
-   *
-   * @param {number} year
-   * @param {number} month
-   */
-  buildDate(year, month) {
-    const today = getDate.todayDate();
-    const thisMonthDays = getDate.thisMonthDays(year, month);
-    const dates = [];
-    for (let i = 1; i <= thisMonthDays; i++) {
-      const isToday =
-        +today.year === +year && +today.month === +month && i === +today.date;
-      const config = this.getCalendarConfig();
-      dates.push({
-        year,
-        month,
-        day: i,
-        choosed: false,
-        week: getDate.dayOfWeek(year, month, i),
-        isToday: isToday && config.highlightToday
-      });
-    }
-    return dates;
-  }
-  /**
    * 设置日历面板数据
    * @param {number} year 年份
    * @param {number} month  月份
    */
   calculateDays(year, month, curDate) {
-    let days = [];
-    const { todayTimestamp, disableDays = [] } = this.getData('calendar');
-    days = this.buildDate(year, month);
-    const selectedDay = this.setSelectedDay(year, month, curDate);
-    const selectedDayCol = selectedDay.map(
-      d => `${+d.year}-${+d.month}-${+d.day}`
-    );
-    const disableDaysCol = disableDays.map(
-      d => `${+d.year}-${+d.month}-${+d.day}`
-    );
-    days.forEach(item => {
-      const cur = `${+item.year}-${+item.month}-${+item.day}`;
-      if (selectedDayCol.includes(cur)) item.choosed = true;
-      if (disableDaysCol.includes(cur)) item.disable = true;
-      const timestamp = getDate
-        .newDate(item.year, item.month, item.day)
-        .getTime();
+    return new Promise(resolve => {
+      let days = [];
       const {
-        showLunar,
-        disablePastDay,
-        disableLaterDay
-      } = this.getCalendarConfig();
-      if (showLunar) {
-        item.lunar = convertSolarLunar.solar2lunar(
-          +item.year,
-          +item.month,
-          +item.day
-        );
-      }
-      let disabelByConfig = false;
-      if (disablePastDay) {
-        disabelByConfig =
-          disablePastDay && timestamp - todayTimestamp < 0 && !item.disable;
-      } else if (disableLaterDay) {
-        disabelByConfig =
-          disableLaterDay && timestamp - todayTimestamp > 0 && !item.disable;
-      }
-      const isDisable = disabelByConfig || this.__isDisable(timestamp);
-      if (isDisable) {
-        item.disable = true;
-        item.choosed = false;
-      }
-    });
-    this.setData({
-      'calendar.days': days,
-      'calendar.selectedDay': selectedDay || []
+        todayTimestamp,
+        disableDays = [],
+        chooseAreaTimestamp = []
+      } = this.getData('calendar');
+      days = Day(this.Component).buildDate(year, month);
+      const selectedDay = this.setSelectedDay(year, month, curDate);
+      const selectedDayStr = selectedDay.map(d => getDate.toTimeStr(d));
+      const disableDaysStr = disableDays.map(d => getDate.toTimeStr(d));
+      const [areaStart, areaEnd] = chooseAreaTimestamp;
+      days.forEach(item => {
+        const cur = getDate.toTimeStr(item);
+        const timestamp = getDateTimeStamp(item);
+        if (selectedDayStr.includes(cur)) {
+          item.choosed = true;
+          if (timestamp > areaEnd || timestamp < areaStart) {
+            const idx = selectedDay.findIndex(
+              selectedDate =>
+                getDate.toTimeStr(selectedDate) === getDate.toTimeStr(item)
+            );
+            selectedDay.splice(idx, 1);
+          }
+        } else if (
+          areaStart &&
+          areaEnd &&
+          timestamp >= areaStart &&
+          timestamp <= areaEnd
+        ) {
+          item.choosed = true;
+          selectedDay.push(item);
+        }
+        if (disableDaysStr.includes(cur)) item.disable = true;
+        const { disablePastDay, disableLaterDay } = this.getCalendarConfig();
+        let disabelByConfig = false;
+        if (disablePastDay) {
+          disabelByConfig =
+            disablePastDay && timestamp - todayTimestamp < 0 && !item.disable;
+        } else if (disableLaterDay) {
+          disabelByConfig =
+            disableLaterDay && timestamp - todayTimestamp > 0 && !item.disable;
+        }
+        const isDisable = disabelByConfig || this.__isDisable(timestamp);
+        if (isDisable) {
+          item.disable = true;
+          item.choosed = false;
+        }
+      });
+      this.setData(
+        {
+          'calendar.days': days,
+          'calendar.selectedDay': [...selectedDay] || []
+        },
+        () => {
+          resolve();
+        }
+      );
     });
   }
   __isDisable(timestamp) {

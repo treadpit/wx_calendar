@@ -147,3 +147,11 @@
     margin-bottom: 15rpx;
     word-wrap: break-word;
 }
+
+.blue-date {
+    color: blue;
+}
+
+.orange-date {
+    color: #f40;
+}
