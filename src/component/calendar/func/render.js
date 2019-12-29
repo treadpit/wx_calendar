@@ -4,6 +4,7 @@ import convertSolarLunar from './convertSolarLunar';
 import {
   GetDate,
   delRepeatedEnableDay,
+  getDateTimeStamp,
   converEnableDaysToTimestamp
 } from './utils';
 
@@ -234,18 +235,38 @@ class Calendar extends WxData {
    */
   calculateDays(year, month, curDate) {
     let days = [];
-    const { todayTimestamp, disableDays = [] } = this.getData('calendar');
+    const {
+      todayTimestamp,
+      disableDays = [],
+      chooseAreaTimestamp = []
+    } = this.getData('calendar');
     days = this.buildDate(year, month);
     const selectedDay = this.setSelectedDay(year, month, curDate);
-    const selectedDayCol = selectedDay.map(d => getDate.toTimeStr(d));
-    const disableDaysCol = disableDays.map(d => getDate.toTimeStr(d));
+    const selectedDayStr = selectedDay.map(d => getDate.toTimeStr(d));
+    const disableDaysStr = disableDays.map(d => getDate.toTimeStr(d));
+    const [areaStart, areaEnd] = chooseAreaTimestamp;
     days.forEach(item => {
       const cur = getDate.toTimeStr(item);
-      if (selectedDayCol.includes(cur)) item.choosed = true;
-      if (disableDaysCol.includes(cur)) item.disable = true;
-      const timestamp = getDate
-        .newDate(item.year, item.month, item.day)
-        .getTime();
+      const timestamp = getDateTimeStamp(item);
+      if (selectedDayStr.includes(cur)) {
+        item.choosed = true;
+        if (timestamp > areaEnd || timestamp < areaStart) {
+          const idx = selectedDay.findIndex(
+            selectedDate =>
+              getDate.toTimeStr(selectedDate) === getDate.toTimeStr(item)
+          );
+          selectedDay.splice(idx, 1);
+        }
+      } else if (
+        areaStart &&
+        areaEnd &&
+        timestamp >= areaStart &&
+        timestamp <= areaEnd
+      ) {
+        item.choosed = true;
+        selectedDay.push(item);
+      }
+      if (disableDaysStr.includes(cur)) item.disable = true;
       const {
         showLunar,
         disablePastDay,
@@ -274,7 +295,7 @@ class Calendar extends WxData {
     });
     this.setData({
       'calendar.days': days,
-      'calendar.selectedDay': selectedDay || []
+      'calendar.selectedDay': [...selectedDay] || []
     });
   }
   __isDisable(timestamp) {

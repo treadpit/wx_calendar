@@ -11,7 +11,8 @@ import {
   isComponent,
   initialTasks,
   getCurrentPage,
-  getComponent
+  getComponent,
+  getDateTimeStamp
 } from './func/utils';
 
 let Component = {};
@@ -205,12 +206,138 @@ const conf = {
     }
     setData(tmp);
   },
+  gotoSetContinuousDates(start, end) {
+    return chooseDateArea([
+      `${getDate.toTimeStr(start)}`,
+      `${getDate.toTimeStr(end)}`
+    ]);
+  },
+  timeRangeHelper(currentDate, selectedDay) {
+    const currentDateTimestamp = getDateTimeStamp(currentDate);
+    const startDate = selectedDay[0];
+    let endDate;
+    let endDateTimestamp;
+    let selectedLen = selectedDay.length;
+    if (selectedLen > 1) {
+      endDate = selectedDay[selectedLen - 1];
+      endDateTimestamp = getDateTimeStamp(endDate);
+    }
+    const startTimestamp = getDateTimeStamp(startDate);
+    return {
+      endDate,
+      startDate,
+      currentDateTimestamp,
+      endDateTimestamp,
+      startTimestamp
+    };
+  },
+  /**
+   * 计算连续日期选择的开始及结束日期
+   * @param {object} currentDate 当前选择日期
+   * @param {array} selectedDay 已选择的的日期
+   */
+  calculateDateRange(currentDate, selectedDay) {
+    const {
+      endDate,
+      startDate,
+      currentDateTimestamp,
+      endDateTimestamp,
+      startTimestamp
+    } = this.timeRangeHelper(currentDate, selectedDay);
+    let range = [];
+    if (
+      currentDateTimestamp >= startTimestamp &&
+      endDateTimestamp &&
+      currentDateTimestamp <= endDateTimestamp
+    ) {
+      const currentDateIdxInChoosedDateArea = selectedDay.findIndex(
+        item => getDate.toTimeStr(item) === getDate.toTimeStr(currentDate)
+      );
+      let selectedLen = selectedDay.length;
+      if (selectedLen / 2 > currentDateIdxInChoosedDateArea) {
+        range = [currentDate, endDate];
+        // return conf.gotoSetContinuousDates(currentDate, endDate);
+      } else {
+        // return conf.gotoSetContinuousDates(startDate, currentDate);
+        range = [startDate, currentDate];
+      }
+    } else if (currentDateTimestamp < startTimestamp) {
+      // return conf.gotoSetContinuousDates(currentDate, endDate);
+      range = [currentDate, endDate];
+    } else if (currentDateTimestamp > startTimestamp) {
+      // return conf.gotoSetContinuousDates(startDate, currentDate);
+      range = [startDate, currentDate];
+    }
+    return range;
+  },
+  /**
+   * 日期范围选择模式
+   * @param {number} dateIdx 当前选中日期索引值
+   */
+  whenChooseArea(dateIdx) {
+    return new Promise((resolve, reject) => {
+      if (isComponent(this)) Component = this;
+      if (Component.weekMode) return;
+      const { days = [], selectedDay, lastChoosedDate } = getData('calendar');
+      const currentDate = days[dateIdx];
+      if (currentDate.disable) return;
+      const config = CalendarConfig(Component).getCalendarConfig();
+      if (config.takeoverTap) {
+        return Component.triggerEvent('onTapDay', currentDate);
+      }
+      if (selectedDay && selectedDay.length) {
+        const range = conf.calculateDateRange(
+          currentDate,
+          getDate.sortDates(selectedDay)
+        );
+        return conf
+          .gotoSetContinuousDates(...range)
+          .then(data => {
+            resolve(data);
+            conf.afterTapDay(currentDate);
+          })
+          .catch(err => {
+            reject(err);
+            conf.afterTapDay(currentDate);
+          });
+      } else if (lastChoosedDate) {
+        let range = [lastChoosedDate, currentDate];
+        const currentDateTimestamp = getDateTimeStamp(currentDate);
+        const lastChoosedDateTimestamp = getDateTimeStamp(lastChoosedDate);
+        if (lastChoosedDateTimestamp > currentDateTimestamp) {
+          range = [currentDate, lastChoosedDate];
+        }
+        return conf
+          .gotoSetContinuousDates(...range)
+          .then(data => {
+            resolve(data);
+            conf.afterTapDay(currentDate);
+          })
+          .catch(err => {
+            reject(err);
+            conf.afterTapDay(currentDate);
+          });
+      } else {
+        days.forEach(date => {
+          if (+date.day === +currentDate.day) {
+            date.choosed = true;
+          } else {
+            date.choosed = false;
+          }
+        });
+        this.setData({
+          'calendar.days': [...days],
+          'calendar.lastChoosedDate': currentDate
+        });
+      }
+    });
+  },
   /**
    * 点击日期后触发事件
    * @param {object} currentSelected 当前选择的日期
-   * @param {array} selectedDays  多选状态下选中的日期
+   * @param {array} selectedDates  多选状态下选中的日期
    */
-  afterTapDay(currentSelected, selectedDays) {
+  afterTapDay(currentSelected, selectedDates) {
     const config = CalendarConfig(Component).getCalendarConfig();
     const { multi } = config;
     if (!multi) {
@@ -218,7 +345,7 @@ const conf = {
     } else {
       Component.triggerEvent('afterTapDay', {
         currentSelected,
-        selectedDays
+        selectedDates
       });
     }
   },
@@ -261,6 +388,7 @@ const conf = {
 export const whenChangeDate = conf.whenChangeDate;
 export const renderCalendar = conf.renderCalendar;
 export const whenSingleSelect = conf.whenSingleSelect;
+export const whenChooseArea = conf.whenChooseArea;
 export const whenMulitSelect = conf.whenMulitSelect;
 export const calculatePrevWeekDays = conf.calculatePrevWeekDays;
 export const calculateNextWeekDays = conf.calculateNextWeekDays;
@@ -489,6 +617,15 @@ export function getCalendarDates(componentId) {
 }
 
 /**
+ * 选择连续日期范围
+ * @param {string} componentId 要操作的日历组件ID
+ */
+export function chooseDateArea(dateArea, componentId) {
+  bindCurrentComponent(componentId);
+  return Day(Component).chooseArea(dateArea);
+}
+
+/**
  * 切换周月视图
  * 切换视图时可传入指定日期，如: {year: 2019, month: 1, day: 3}
  * args[0] view 视图模式[week, month]
@@ -532,6 +669,7 @@ function mountEventsOnPage(page) {
     disableDay,
     enableArea,
     enableDays,
+    chooseDateArea,
     getCurrentYM,
     getSelectedDay,
     cancelAllSelectedDay,

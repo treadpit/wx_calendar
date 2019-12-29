@@ -46,7 +46,7 @@
           bindtap="tapDayItem">
             <view
               class="date-wrap b cc">
-              <view class="date b ac pc {{item.class ? item.class  : ''}} {{(item.week === 0 || item.week === 6) ? calendarConfig.theme + '_weekend-color' : ''}} {{calendar.todoLabelCircle && item.showTodoLabel && !item.choosed ? calendarConfig.theme + '_todo-circle todo-circle' : '' }} {{item.isToday ? calendarConfig.theme + '_today' : ''}} {{item.choosed ? calendarConfig.theme + '_choosed' : ''}} {{item.disable ? calendarConfig.theme + '_date-disable' : ''}}">
+              <view class="date b ac pc {{item.class ? item.class  : ''}} {{calendarConfig.chooseAreaMode ? 'date-area-mode' : ''}} {{(item.week === 0 || item.week === 6) ? calendarConfig.theme + '_weekend-color' : ''}} {{calendar.todoLabelCircle && item.showTodoLabel && !item.choosed ? calendarConfig.theme + '_todo-circle todo-circle' : '' }} {{item.isToday ? calendarConfig.theme + '_today' : ''}} {{item.choosed ? calendarConfig.theme + '_choosed' : ''}} {{item.disable ? calendarConfig.theme + '_date-disable' : ''}}">
                 {{calendarConfig.markToday && item.isToday ? calendarConfig.markToday : item.day}}
                 <view
                   wx:if="{{(calendarConfig.showLunar && item.lunar && !item.showTodoLabel) || (item.showTodoLabel && calendar.todoLabelPos !== 'bottom')}}"

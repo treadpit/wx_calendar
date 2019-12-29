@@ -160,6 +160,17 @@ export class GetDate {
   toTimeStr(dateInfo) {
     return `${dateInfo.year}-${dateInfo.month}-${dateInfo.day}`;
   }
+  sortDates(dates) {
+    return dates.sort(function(a, b) {
+      const at = getDateTimeStamp(a);
+      const bt = getDateTimeStamp(b);
+      if (at < bt) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
+  }
 }
 
 export function isIos() {
@@ -251,6 +262,16 @@ export function convertEnableAreaToTimestamp(timearea = []) {
     startTimestamp,
     endTimestamp
   };
+}
+
+/**
+ * 计算指定日期时间戳
+ * @param {object} dateInfo
+ */
+export function getDateTimeStamp(dateInfo) {
+  if (Object.prototype.toString.call(dateInfo) !== '[object Object]') return;
+  const getDate = new GetDate();
+  return getDate.newDate(dateInfo.year, dateInfo.month, dateInfo.day).getTime();
 }
 
 /**

@@ -1,9 +1,7 @@
 const conf = {
   data: {
     calendarConfig: {
-      showLunar: true,
-      multi: true,
-      chooseArea: true // boolean|array
+      showLunar: true
     },
     actionBtn: [
       {
@@ -97,6 +95,9 @@ const conf = {
   },
   afterCalendarRender(e) {
     console.log('afterCalendarRender', e);
+    this.calendar.chooseDateArea(['2019-12-2', '2019-12-5']).then(data => {
+      console.log('TCL: afterCalendarRender -> data', data);
+    });
   },
   onSwipe(e) {
     console.log('onSwipe', e);

@@ -3,6 +3,7 @@ import CalendarConfig from './config';
 import {
   Logger,
   GetDate,
+  getDateTimeStamp,
   uniqueArrayByDate,
   delRepeatedEnableDay,
   convertEnableAreaToTimestamp,
@@ -21,30 +22,17 @@ class Day extends WxData {
    * 指定可选日期范围
    * @param {array} area 日期访问数组
    */
-  enableArea(area = []) {
-    if (area.length === 2) {
-      const {
-        start,
-        end,
-        startTimestamp,
-        endTimestamp
-      } = convertEnableAreaToTimestamp(area);
-      if (!start || !end) return;
-      const startMonthDays = getDate.thisMonthDays(start[0], start[1]);
-      const endMonthDays = getDate.thisMonthDays(end[0], end[1]);
-      const isRight = this.__judgeParam({
-        start,
-        end,
-        startMonthDays,
-        endMonthDays,
-        startTimestamp,
-        endTimestamp
-      });
+  enableArea(dateArea = []) {
+    if (dateArea.length === 2) {
+      const isRight = this.__judgeParam(dateArea);
       if (isRight) {
         let { days = [], selectedDay = [] } = this.getData('calendar');
+        const { startTimestamp, endTimestamp } = convertEnableAreaToTimestamp(
+          dateArea
+        );
         const dataAfterHandle = this.__handleEnableArea(
           {
-            area,
+            dateArea,
             days,
             startTimestamp,
             endTimestamp
@@ -52,7 +40,7 @@ class Day extends WxData {
           selectedDay
         );
         this.setData({
-          'calendar.enableArea': area,
+          'calendar.enableArea': dateArea,
           'calendar.days': dataAfterHandle.dates,
           'calendar.selectedDay': dataAfterHandle.selectedDay,
           'calendar.enableAreaTimestamp': [startTimestamp, endTimestamp]
@@ -125,16 +113,16 @@ class Day extends WxData {
   }
   /**
    * 禁用指定日期
-   * @param {array} days  禁用
+   * @param {array} dates  禁用
    */
-  disableDays(data) {
+  disableDays(dates) {
     const { disableDays = [], days } = this.getData('calendar');
-    if (Object.prototype.toString.call(data) !== '[object Array]') {
+    if (Object.prototype.toString.call(dates) !== '[object Array]') {
       return logger.warn('disableDays 参数为数组');
     }
     let _disableDays = [];
-    if (data.length) {
-      _disableDays = uniqueArrayByDate(data.concat(disableDays));
+    if (dates.length) {
+      _disableDays = uniqueArrayByDate(dates.concat(disableDays));
       const disableDaysCol = _disableDays.map(d => getDate.toTimeStr(d));
       days.forEach(item => {
         const cur = getDate.toTimeStr(item);
@@ -150,15 +138,105 @@ class Day extends WxData {
       'calendar.disableDays': _disableDays
     });
   }
-  __judgeParam(params) {
+  /**
+   * 设置连续日期选择区域
+   * @param {array} dateArea 区域开始结束日期数组
+   */
+  chooseArea(dateArea = []) {
+    return new Promise((resolve, reject) => {
+      if (dateArea.length === 2) {
+        const isRight = this.__judgeParam(dateArea);
+        if (isRight) {
+          const config = CalendarConfig(this.Component).getCalendarConfig();
+          const { startTimestamp, endTimestamp } = convertEnableAreaToTimestamp(
+            dateArea
+          );
+          this.setData(
+            {
+              calendarConfig: {
+                ...config,
+                chooseAreaMode: true,
+                mulit: true
+              },
+              'calendar.chooseAreaTimestamp': [startTimestamp, endTimestamp]
+            },
+            () => {
+              this.__chooseContinuousDates(startTimestamp, endTimestamp)
+                .then(resolve)
+                .catch(reject);
+            }
+          );
+        }
+      }
+    });
+  }
+  /**
+   * 设置连续日期段
+   * @param {number} startTimestamp 连续日期段开始日期时间戳
+   * @param {number} endTimestamp 连续日期段结束日期时间戳
+   */
+  __chooseContinuousDates(startTimestamp, endTimestamp) {
+    return new Promise((resolve, reject) => {
+      const { days, selectedDay = [] } = this.getData('calendar');
+      const selectedDateStr = [];
+      const filterSelectedDate = [];
+      selectedDay.forEach(item => {
+        const timeStamp = getDateTimeStamp(item);
+        if (timeStamp >= startTimestamp && timeStamp <= endTimestamp) {
+          filterSelectedDate.push(item);
+          selectedDateStr.push(getDate.toTimeStr(item));
+        }
+      });
+      days.forEach(item => {
+        const timeStamp = getDateTimeStamp(item);
+        const dateInSelecedArray = selectedDateStr.includes(
+          getDate.toTimeStr(item)
+        );
+        if (timeStamp >= startTimestamp && timeStamp <= endTimestamp) {
+          if (dateInSelecedArray) {
+            return;
+          }
+          item.choosed = true;
+          filterSelectedDate.push(item);
+        } else {
+          item.choosed = false;
+          if (dateInSelecedArray) {
+            const idx = filterSelectedDate.findIndex(
+              selectedDate =>
+                getDate.toTimeStr(selectedDate) === getDate.toTimeStr(item)
+            );
+            if (idx > -1) {
+              filterSelectedDate.splice(idx, 1);
+            }
+          }
+        }
+      });
+      const newSelectedDates = [...getDate.sortDates(filterSelectedDate)];
+      try {
+        this.setData(
+          {
+            'calendar.days': [...days],
+            'calendar.selectedDay': newSelectedDates
+          },
+          () => {
+            resolve(newSelectedDates);
+          }
+        );
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
+  __judgeParam(dateArea) {
     const {
       start,
       end,
-      startMonthDays,
-      endMonthDays,
       startTimestamp,
       endTimestamp
-    } = params;
+    } = convertEnableAreaToTimestamp(dateArea);
+    if (!start || !end) return;
+    const startMonthDays = getDate.thisMonthDays(start[0], start[1]);
+    const endMonthDays = getDate.thisMonthDays(end[0], end[1]);
     if (start[2] > startMonthDays || start[2] < 1) {
       logger.warn('enableArea() 开始日期错误，指定日期不在当前月份天数范围内');
       return false;

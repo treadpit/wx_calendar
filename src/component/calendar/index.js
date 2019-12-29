@@ -7,6 +7,7 @@ import initCalendar, {
   renderCalendar,
   whenMulitSelect,
   whenSingleSelect,
+  whenChooseArea,
   getCalendarDates
 } from './main.js';
 
@@ -117,9 +118,11 @@ Component({
       const { idx, disable } = e.currentTarget.dataset;
       if (disable) return;
       const config = this.config || {};
-      const { multi } = config;
+      const { multi, chooseAreaMode } = config;
       if (multi) {
         whenMulitSelect.call(this, idx);
+      } else if (chooseAreaMode) {
+        whenChooseArea.call(this, idx);
       } else {
         whenSingleSelect.call(this, idx);
       }
