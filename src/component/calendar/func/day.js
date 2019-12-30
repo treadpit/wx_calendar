@@ -182,6 +182,9 @@ class Day extends WxData {
    */
   chooseArea(dateArea = []) {
     return new Promise((resolve, reject) => {
+      if (dateArea.length === 1) {
+        dateArea = dateArea.concat(dateArea);
+      }
       if (dateArea.length === 2) {
         const isRight = this.__judgeParam(dateArea);
         if (isRight) {
