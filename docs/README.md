@@ -403,6 +403,10 @@ const conf = this.calendar.getCalendarConfig();
 > 目前只支持单个连续时间段
 
 ```js
+// 当连续时间为单天时
+this.calendar.chooseDateArea(['2019-12-12']);
+
+// 连续时间段
 this.calendar.chooseDateArea(['2019-12-28', '2020-1-10']).then(dates => {
   console.log('choosed dates: ', dates);
 });

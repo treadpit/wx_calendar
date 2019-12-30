@@ -246,11 +246,13 @@ const conf = {
     } = this.timeRangeHelper(currentDate, selectedDay);
     let range = [];
     let selectedLen = selectedDay.length;
-    // TODO:
-    // if (selectedLen === 2) {
-    //   range = [currentDate];
-    //   return range;
-    // }
+    const isWantToChooseOneDate = selectedDay.filter(
+      item => getDate.toTimeStr(item) === getDate.toTimeStr(currentDate)
+    );
+    if (selectedLen === 2 && isWantToChooseOneDate.length) {
+      range = [currentDate, currentDate];
+      return range;
+    }
     if (
       currentDateTimestamp >= startTimestamp &&
       endDateTimestamp &&
