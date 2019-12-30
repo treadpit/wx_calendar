@@ -245,6 +245,12 @@ const conf = {
       startTimestamp
     } = this.timeRangeHelper(currentDate, selectedDay);
     let range = [];
+    let selectedLen = selectedDay.length;
+    // TODO:
+    // if (selectedLen === 2) {
+    //   range = [currentDate];
+    //   return range;
+    // }
     if (
       currentDateTimestamp >= startTimestamp &&
       endDateTimestamp &&
@@ -253,7 +259,6 @@ const conf = {
       const currentDateIdxInChoosedDateArea = selectedDay.findIndex(
         item => getDate.toTimeStr(item) === getDate.toTimeStr(currentDate)
       );
-      let selectedLen = selectedDay.length;
       if (selectedLen / 2 > currentDateIdxInChoosedDateArea) {
         range = [currentDate, endDate];
       } else {
@@ -281,7 +286,7 @@ const conf = {
       if (config.takeoverTap) {
         return Component.triggerEvent('onTapDay', currentDate);
       }
-      if (selectedDay && selectedDay.length) {
+      if (selectedDay && selectedDay.length > 1) {
         const range = conf.calculateDateRange(
           currentDate,
           getDate.sortDates(selectedDay)
@@ -296,12 +301,13 @@ const conf = {
             reject(err);
             conf.afterTapDay(currentDate);
           });
-      } else if (lastChoosedDate) {
-        let range = [lastChoosedDate, currentDate];
+      } else if (lastChoosedDate || (selectedDay && selectedDay.length === 1)) {
+        const startDate = lastChoosedDate || selectedDay[0];
+        let range = [startDate, currentDate];
         const currentDateTimestamp = getDateTimeStamp(currentDate);
-        const lastChoosedDateTimestamp = getDateTimeStamp(lastChoosedDate);
+        const lastChoosedDateTimestamp = getDateTimeStamp(startDate);
         if (lastChoosedDateTimestamp > currentDateTimestamp) {
-          range = [currentDate, lastChoosedDate];
+          range = [currentDate, startDate];
         }
         return conf
           .gotoSetContinuousDates(...range)
