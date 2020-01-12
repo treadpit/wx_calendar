@@ -28,6 +28,7 @@ function bindCurrentComponent(componentId) {
   if (componentId) {
     Component = getComponent(componentId);
   }
+  return Component;
 }
 /**
  * 获取日历内部数据
@@ -599,11 +600,23 @@ export function setCalendarConfig(config, componentId) {
   if (!config || Object.keys(config).length === 0) {
     return logger.warn('setCalendarConfig 参数必须为非空对象');
   }
+  const existConfig = getCalendarConfig();
   return new Promise((resolve, reject) => {
     CalendarConfig(Component)
       .setCalendarConfig(config)
       .then(conf => {
         resolve(conf);
+        const configDisableLaterDay =
+          'disableLaterDay' in config &&
+          existConfig.disableLaterDay !== config.disableLaterDay;
+        const configDisablePastDay =
+          'disablePastDay' in config &&
+          existConfig.disablePastDay !== config.disablePastDay;
+        if (configDisableLaterDay || configDisablePastDay) {
+          const { year, month } = getCurrentYM();
+          jump(year, month);
+        }
+        console.log('TCL: setCalendarConfig -> existConfig', existConfig);
       })
       .catch(err => {
         reject(err);
