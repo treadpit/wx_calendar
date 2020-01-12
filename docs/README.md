@@ -105,10 +105,6 @@ const conf = {
   data: {
     // 此处为日历自定义配置字段
     calendarConfig: {
-      /**
-       * 初始化日历时指定默认选中日期，如：'2018-3-6' 或 '2018-03-06'
-       * 初始化时不默认选中当天，则将该值配置为false。
-       */
       multi: true, // 是否开启多选,
       theme: 'elegant', // 日历主题，目前共两款可选择，默认 default 及 elegant，自定义主题在 theme 文件夹扩展
       showLunar: true, // 是否显示农历，此配置会导致 setTodoLabels 中 showLabelAlways 配置失效
