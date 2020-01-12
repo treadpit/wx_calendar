@@ -616,7 +616,6 @@ export function setCalendarConfig(config, componentId) {
           const { year, month } = getCurrentYM();
           jump(year, month);
         }
-        console.log('TCL: setCalendarConfig -> existConfig', existConfig);
       })
       .catch(err => {
         reject(err);
