@@ -118,7 +118,7 @@ class WeekMode extends WxData {
     const [, end] = [0, 7 - firstDay];
     let days = this.getData('calendar.days') || [];
     if (this.Component.weekMode) {
-      days = Render(this.Component).buildDate(year, month);
+      days = Day(this.Component).buildDate(year, month);
     }
     const daysCut = days.slice(0, firstDayOfWeekIsMon ? end + 1 : end);
     return daysCut;
@@ -135,7 +135,7 @@ class WeekMode extends WxData {
     const [start, end] = [lastDay - lastDayWeek, lastDay];
     let days = this.getData('calendar.days') || [];
     if (this.Component.weekMode) {
-      days = Render(this.Component).buildDate(year, month);
+      days = Day(this.Component).buildDate(year, month);
     }
     const daysCut = days.slice(firstDayOfWeekIsMon ? start : start - 1, end);
     return daysCut;
@@ -501,7 +501,7 @@ class WeekMode extends WxData {
     if (firstDayOfWeekIsMon) {
       range = [day + 1 - week, day + (7 - week)];
     }
-    const dates = Render(this.Component).buildDate(year, month);
+    const dates = Day(this.Component).buildDate(year, month);
     const weekDates = dates.slice(range[0] - 1, range[1]);
     return weekDates;
   }
