@@ -61,6 +61,7 @@ class Todo extends WxData {
       if (target.showTodoLabel && todo.todoText) {
         target.todoText = todo.todoText;
       }
+      if (todo.todoLabelColor) target.todoLabelColor = todo.todoLabelColor
     }
     const o = {
       'calendar.days': dates,
