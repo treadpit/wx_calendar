@@ -162,12 +162,12 @@ Component({
     },
     handleSwipe(direction) {
       let swipeKey = 'calendar.leftSwipe';
-      let swipeCalendarType = 'next_week';
-      let weekChangeType = 'next_month';
+      let swipeCalendarType = 'next_month';
+      let weekChangeType = 'next_week';
       if (direction === 'right') {
         swipeKey = 'calendar.rightSwipe';
-        swipeCalendarType = 'prev_week';
-        weekChangeType = 'prev_month';
+        swipeCalendarType = 'prev_month';
+        weekChangeType = 'prev_week';
       }
       this.setData({
         [swipeKey]: 1
@@ -176,13 +176,17 @@ Component({
       if (this.weekMode) {
         this.slideLock = false;
         this.currentDates = getCalendarDates();
-        Week(this).calculatePrevWeekDays();
-        this.onSwipeCalendar(swipeCalendarType);
-        this.onWeekChange(swipeCalendarType);
+        if (weekChangeType === 'prev_week') {
+          Week(this).calculatePrevWeekDays();
+        } else if (weekChangeType === 'next_week') {
+          Week(this).calculateNextWeekDays();
+        }
+        this.onSwipeCalendar(weekChangeType);
+        this.onWeekChange(weekChangeType);
         return;
       }
-      this.chooseMonth(weekChangeType);
-      this.onSwipeCalendar(weekChangeType);
+      this.chooseMonth(swipeCalendarType);
+      this.onSwipeCalendar(swipeCalendarType);
     },
     /**
      * 日历滑动中
