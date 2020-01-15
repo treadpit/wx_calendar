@@ -419,14 +419,20 @@ class Day extends WxData {
     if (enableDays.length) {
       expectEnableDaysTimestamp = delRepeatedEnableDay(enableDays, area);
     }
+    const { disablePastDay, disableLaterDay } = this.getCalendarConfig();
+    let todayTimestamp = getDate.todayTimestamp();
     const dates = [...days];
     dates.forEach(item => {
-      const timestamp = getDate
+      const timestamp = +getDate
         .newDate(item.year, item.month, item.day)
         .getTime();
+      const ifOutofArea =
+        (+startTimestamp > timestamp || timestamp > +endTimestamp) &&
+        !expectEnableDaysTimestamp.includes(timestamp);
       if (
-        (+startTimestamp > +timestamp || +timestamp > +endTimestamp) &&
-        !expectEnableDaysTimestamp.includes(+timestamp)
+        ifOutofArea ||
+        (disablePastDay && timestamp < todayTimestamp) ||
+        (disableLaterDay && timestamp > todayTimestamp)
       ) {
         item.disable = true;
         if (item.choosed) {
