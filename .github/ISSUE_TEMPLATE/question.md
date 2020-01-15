@@ -2,7 +2,7 @@
 name: 使用疑问
 about: 组件使用过程中有疑问
 title: ''
-labels: help wanted
+labels: question
 assignees: treadpit
 
 ---
