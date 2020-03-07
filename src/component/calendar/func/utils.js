@@ -158,7 +158,7 @@ export class GetDate {
     return timestamp;
   }
   toTimeStr(dateInfo) {
-    return `${dateInfo.year}-${dateInfo.month}-${dateInfo.day}`;
+    return `${+dateInfo.year}-${+dateInfo.month}-${+dateInfo.day}`;
   }
   sortDates(dates, sortType) {
     return dates.sort(function(a, b) {

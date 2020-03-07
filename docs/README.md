@@ -129,7 +129,7 @@ Page(conf);
 
 #### 4. 多日历组件
 
-同一页面如果有多个不同配置的日历组件，可分别定义配置。
+如果有多个不同配置的日历组件，可分别定义配置。
 
 组件必须有 ID 属性，在调用提供的各个日历 API 时需注意，最后一个参数为要操作的组件 ID（多个组件模式下必传），表示当前要操作的是哪一个日历组件数据。
 
@@ -177,12 +177,12 @@ Page({
   bind:afterCalendarRender="afterCalendarRender"
 ></calendar>
 <calendar
-    id="calendar2"
-    calendarConfig="{{calendarConfig2}}"
-    bind:afterTapDay="afterTapDay"
-    bind:whenChangeMonth="whenChangeMonth"
-    bind:onTapDay="onTapDay"
-    bind:afterCalendarRender="afterCalendarRender"
+  id="calendar2"
+  calendarConfig="{{calendarConfig2}}"
+  bind:afterTapDay="afterTapDay"
+  bind:whenChangeMonth="whenChangeMonth"
+  bind:onTapDay="onTapDay"
+  bind:afterCalendarRender="afterCalendarRender"
   ></calendar>
 ```
 
@@ -194,7 +194,7 @@ Page({
 
 > 注意页面 **多日历组件** 时方法调用需要的参数 [componentId]，参考 **多日历组件一节** 文档说明，以下示例均以单日历组件为例
 
-- (1) 调用当前页面实例上的方法（暴露的方法均已绑定至小程序页面实例的 `calendar` 对象上）
+- (1) 调用当前页面实例上的方法（方法均已挂载至小程序页面实例的 `calendar` 对象上）
 
 ```js
 Page({
@@ -242,10 +242,21 @@ const ym = this.calendar.getCurrentYM();
 // => { year: 2019, month: 12}
 ```
 
-#### 8. 取消所有选中日期
+#### 8. 取消选中日期
 
 ```js
-this.calendar.cancelAllSelectedDay();
+// 取消指定选中日期
+const dates = [
+  {
+    year: 2020,
+    month: 3,
+    day: 2
+  }
+];
+this.calendar.cancelSelectedDates(dates);
+
+// 取消所有选中
+this.calendar.cancelSelectedDates();
 ```
 
 #### 9. 待办事项
