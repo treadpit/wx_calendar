@@ -1,7 +1,10 @@
 const conf = {
   data: {
     calendarConfig: {
-      showLunar: true
+      showLunar: true,
+      firstDayOfWeek: 'Mon',
+      defaultDay: '2020-3-6',
+      multi: true
     },
     actionBtn: [
       {
@@ -15,8 +18,8 @@ const conf = {
         color: 'red'
       },
       {
-        text: '取消所有选中',
-        action: 'cancelAllSelectedDay',
+        text: '取消选中日期',
+        action: 'cancelSelectedDates',
         color: 'mauve'
       },
       {
@@ -95,6 +98,9 @@ const conf = {
   },
   afterCalendarRender(e) {
     console.log('afterCalendarRender', e);
+    // this.calendar.switchView('week').then(() => {
+    //   this.calendar.jump(2020, 3, 1).then(date => {}); // 跳转至某日
+    // });
   },
   onSwipe(e) {
     console.log('onSwipe', e);
@@ -169,8 +175,14 @@ const conf = {
         });
         break;
       }
-      case 'cancelAllSelectedDay':
-        calendar[action]();
+      case 'cancelSelectedDates':
+        calendar[action]([
+          {
+            year: 2020,
+            month: 3,
+            day: 3
+          }
+        ]);
         break;
       case 'setTodoLabels': {
         const days = [

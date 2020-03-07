@@ -420,19 +420,41 @@ export function getSelectedDay(componentId) {
 }
 
 /**
- * 取消所有选中日期
+ * 取消选中日期
+ * @param {array} dates 需要取消的日期，不传则取消所有已选择的日期
  * @param {string} componentId 要操作的日历组件ID
  */
-export function cancelAllSelectedDay(componentId) {
+export function cancelSelectedDates(dates, componentId) {
   bindCurrentComponent(componentId);
-  const days = [...getData('calendar.days')];
-  days.map(item => {
-    item.choosed = false;
-  });
-  setData({
-    'calendar.days': days,
-    'calendar.selectedDay': []
-  });
+  const { days = [], selectedDay = [] } = getData('calendar') || {};
+  if (!dates) {
+    days.forEach(item => {
+      item.choosed = false;
+    });
+    setData({
+      'calendar.days': days,
+      'calendar.selectedDay': []
+    });
+  } else {
+    const cancelDatesStr = dates.map(
+      date => `${+date.year}-${+date.month}-${+date.day}`
+    );
+    const filterSelectedDates = selectedDay.filter(
+      date =>
+        !cancelDatesStr.includes(`${+date.year}-${+date.month}-${+date.day}`)
+    );
+    days.forEach(date => {
+      if (
+        cancelDatesStr.includes(`${+date.year}-${+date.month}-${+date.day}`)
+      ) {
+        date.choosed = false;
+      }
+    });
+    setData({
+      'calendar.days': days,
+      'calendar.selectedDay': filterSelectedDates
+    });
+  }
 }
 
 /**
@@ -699,7 +721,7 @@ function mountEventsOnPage(page) {
     chooseDateArea,
     getCurrentYM,
     getSelectedDay,
-    cancelAllSelectedDay,
+    cancelSelectedDates,
     setDateStyle,
     setTodoLabels,
     getTodoLabels,

@@ -152,6 +152,7 @@ class WeekMode extends WxData {
     );
     const config = this.getCalendarConfig();
     datesCopy = datesCopy.map(item => {
+      if (!item) return {};
       let date = { ...item };
       if (
         selectedDayStr.includes(`${+date.year}-${+date.month}-${+date.day}`)
@@ -441,7 +442,7 @@ class WeekMode extends WxData {
     date.isToday = isToday;
     return date;
   }
-  __calculateDatesWhenInFirstWeek(firstWeekDays, firstDayOfWeekIsMon) {
+  __calculateDatesWhenInFirstWeek(firstWeekDays) {
     const dates = [...firstWeekDays];
     if (dates.length < 7) {
       let { year, month } = dates[0];
@@ -468,29 +469,27 @@ class WeekMode extends WxData {
     }
     return dates;
   }
-  __calculateDatesWhenInLastWeek(lastWeekDays, firstDayOfWeekIsMon) {
+  __calculateDatesWhenInLastWeek(lastWeekDays) {
     const dates = [...lastWeekDays];
-    if (firstDayOfWeekIsMon) {
-      if (dates.length < 7) {
-        let { year, month } = dates[0];
-        let len = 7 - dates.length;
-        let firstDate = 1;
-        if (month > 11) {
-          month = 1;
-          year += 1;
-        } else {
-          month += 1;
-        }
-        while (len) {
-          dates.push({
-            year,
-            month,
-            day: firstDate,
-            week: getDate.dayOfWeek(year, month, firstDate)
-          });
-          firstDate += 1;
-          len -= 1;
-        }
+    if (dates.length < 7) {
+      let { year, month } = dates[0];
+      let len = 7 - dates.length;
+      let firstDate = 1;
+      if (month > 11) {
+        month = 1;
+        year += 1;
+      } else {
+        month += 1;
+      }
+      while (len) {
+        dates.push({
+          year,
+          month,
+          day: firstDate,
+          week: getDate.dayOfWeek(year, month, firstDate)
+        });
+        firstDate += 1;
+        len -= 1;
       }
     }
     return dates;

@@ -41,8 +41,8 @@
         <view
           wx:for="{{calendar.days}}"
           wx:key="index"
-          data-disable="{{item.disable}}"
           data-idx="{{index}}"
+          data-date="{{item}}"
           bindtap="tapDayItem"
           class="grid {{calendarConfig.theme}}_normal-date b ac pc">
             <view

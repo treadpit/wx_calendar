@@ -116,8 +116,9 @@ Component({
      * @param {!object} e 事件对象
      */
     tapDayItem(e) {
-      const { idx, disable } = e.currentTarget.dataset;
-      if (disable) return;
+      const { idx, date = {} } = e.currentTarget.dataset;
+      const { day, disable } = date;
+      if (disable || !day) return;
       const config = this.data.calendarConfig || this.config || {};
       const { multi, chooseAreaMode } = config;
       if (multi) {
