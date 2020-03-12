@@ -1204,8 +1204,8 @@ function convertEnableAreaToTimestamp(timearea) {
   if (!timearea || !timearea.length) return;
   const start = timearea[0].split('-');
   const end = timearea[1].split('-');
-  const startTimestamp = newDate(start[0], start[1], start[2]).getTime();
-  const endTimestamp = newDate(end[0], end[1], end[2]).getTime();
+  const startTimestamp = newDate(+start[0], +start[1], +start[2]).getTime();
+  const endTimestamp = newDate(+end[0], +end[1], +end[2]).getTime();
   return {
     start,
     end,
