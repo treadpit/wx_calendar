@@ -475,9 +475,9 @@ export function jump(year, month, day, componentId) {
     if (weekMode) {
       return Week(Component)
         .jump({
-          year,
-          month,
-          day
+          year: +year,
+          month: +month,
+          day: +day
         })
         .then(date => {
           resolve(date);
@@ -492,13 +492,13 @@ export function jump(year, month, day, componentId) {
       }
       const timestamp = getDate.todayTimestamp();
       let tmp = {
-        'calendar.curYear': year,
-        'calendar.curMonth': month,
+        'calendar.curYear': +year,
+        'calendar.curMonth': +month,
         'calendar.todayTimestamp': timestamp
       };
       setData(tmp, () => {
         conf
-          .renderCalendar(year, month, day)
+          .renderCalendar(+year, +month, +day)
           .then(date => {
             resolve(date);
           })
