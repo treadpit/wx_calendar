@@ -5,13 +5,11 @@ const conf = {
       // inverse: 1, // 单选模式下是否可以取消选择
       // defaultDay: '2019-5-19'
       onlyShowCurrentMonth: 1
-      // disablePastDay: 1
     },
     calendarConfig2: {
       // multi: true,
       inverse: 1, // 单选模式下是否可以取消选择
       defaultDay: '2019-5-20'
-      // disablePastDay: 1
     }
   },
   setTodo() {

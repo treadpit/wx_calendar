@@ -3,6 +3,7 @@ import Todo from './todo';
 import WxData from './wxData';
 import convertSolarLunar from './convertSolarLunar';
 import {
+  Logger,
   GetDate,
   delRepeatedEnableDay,
   getDateTimeStamp,
@@ -10,6 +11,7 @@ import {
 } from './utils';
 
 const getDate = new GetDate();
+const logger = new Logger();
 
 class Calendar extends WxData {
   constructor(component) {
@@ -234,6 +236,26 @@ class Calendar extends WxData {
     }
     return selectedDay;
   }
+  __getDisableDateTimestamp() {
+    let disableDateTimestamp;
+    const { date, type } = this.getCalendarConfig().disableMode || {};
+    if (date) {
+      const t = date.split('-');
+      if (t.length < 3) {
+        logger.warn('配置 disableMode.date 格式错误');
+        return {};
+      }
+      disableDateTimestamp = getDateTimeStamp({
+        year: +t[0],
+        month: +t[1],
+        day: +t[2]
+      });
+    }
+    return {
+      disableDateTimestamp,
+      disableType: type
+    };
+  }
   /**
    * 设置日历面板数据
    * @param {number} year 年份
@@ -242,11 +264,9 @@ class Calendar extends WxData {
   calculateDays(year, month, curDate) {
     return new Promise(resolve => {
       let days = [];
-      const {
-        todayTimestamp,
-        disableDays = [],
-        chooseAreaTimestamp = []
-      } = this.getData('calendar');
+      const { disableDays = [], chooseAreaTimestamp = [] } = this.getData(
+        'calendar'
+      );
       days = Day(this.Component).buildDate(year, month);
       const selectedDay = this.setSelectedDay(year, month, curDate);
       const selectedDayStr = selectedDay.map(d => getDate.toTimeStr(d));
@@ -274,14 +294,19 @@ class Calendar extends WxData {
           selectedDay.push(item);
         }
         if (disableDaysStr.includes(cur)) item.disable = true;
-        const { disablePastDay, disableLaterDay } = this.getCalendarConfig();
+
+        const {
+          disableDateTimestamp,
+          disableType
+        } = this.__getDisableDateTimestamp();
         let disabelByConfig = false;
-        if (disablePastDay) {
-          disabelByConfig =
-            disablePastDay && timestamp - todayTimestamp < 0 && !item.disable;
-        } else if (disableLaterDay) {
-          disabelByConfig =
-            disableLaterDay && timestamp - todayTimestamp > 0 && !item.disable;
+        if (disableDateTimestamp) {
+          if (
+            (disableType === 'before' && timestamp < disableDateTimestamp) ||
+            (disableType === 'after' && timestamp > disableDateTimestamp)
+          ) {
+            disabelByConfig = true;
+          }
         }
         const isDisable = disabelByConfig || this.__isDisable(timestamp);
         if (isDisable) {

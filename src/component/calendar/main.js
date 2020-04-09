@@ -628,13 +628,9 @@ export function setCalendarConfig(config, componentId) {
       .setCalendarConfig(config)
       .then(conf => {
         resolve(conf);
-        const configDisableLaterDay =
-          'disableLaterDay' in config &&
-          existConfig.disableLaterDay !== config.disableLaterDay;
-        const configDisablePastDay =
-          'disablePastDay' in config &&
-          existConfig.disablePastDay !== config.disablePastDay;
-        if (configDisableLaterDay || configDisablePastDay) {
+        const { date, type } = existConfig.disableMode || {};
+        const { _date, _type } = config.disableMode || {};
+        if (type !== _type || date !== _date) {
           const { year, month } = getCurrentYM();
           jump(year, month);
         }

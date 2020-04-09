@@ -7,7 +7,6 @@ const conf = {
   onShow: function() {
     initCalendar({
       // multi: true, // 是否开启多选,
-      // disablePastDay: true, // 是否禁选过去日期
       // defaultDay: '2018-8-8', // 初始化日历时指定默认选中日期，如：'2018-3-6' 或 '2018-03-06'
       /**
        * 选择日期后执行的事件

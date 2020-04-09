@@ -415,6 +415,26 @@ class Day extends WxData {
       return true;
     }
   }
+  __getDisableDateTimestamp() {
+    let disableDateTimestamp;
+    const { date, type } = this.getCalendarConfig().disableMode || {};
+    if (date) {
+      const t = date.split('-');
+      if (t.length < 3) {
+        logger.warn('配置 disableMode.date 格式错误');
+        return {};
+      }
+      disableDateTimestamp = getDateTimeStamp({
+        year: +t[0],
+        month: +t[1],
+        day: +t[2]
+      });
+    }
+    return {
+      disableDateTimestamp,
+      disableType: type
+    };
+  }
   __handleEnableArea(data = {}, selectedDay = []) {
     const { area, days, startTimestamp, endTimestamp } = data;
     const enableDays = this.getData('calendar.enableDays') || [];
@@ -422,8 +442,10 @@ class Day extends WxData {
     if (enableDays.length) {
       expectEnableDaysTimestamp = delRepeatedEnableDay(enableDays, area);
     }
-    const { disablePastDay, disableLaterDay } = this.getCalendarConfig();
-    let todayTimestamp = getDate.todayTimestamp();
+    const {
+      disableDateTimestamp,
+      disableType
+    } = this.__getDisableDateTimestamp();
     const dates = [...days];
     dates.forEach(item => {
       const timestamp = +getDate
@@ -434,8 +456,12 @@ class Day extends WxData {
         !expectEnableDaysTimestamp.includes(timestamp);
       if (
         ifOutofArea ||
-        (disablePastDay && timestamp < todayTimestamp) ||
-        (disableLaterDay && timestamp > todayTimestamp)
+        (disableType === 'before' &&
+          disableDateTimestamp &&
+          timestamp < disableDateTimestamp) ||
+        (disableType === 'after' &&
+          disableDateTimestamp &&
+          timestamp > disableDateTimestamp)
       ) {
         item.disable = true;
         if (item.choosed) {
