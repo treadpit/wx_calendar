@@ -3,8 +3,12 @@ const conf = {
     calendarConfig: {
       showLunar: true,
       firstDayOfWeek: 'Mon',
-      defaultDay: '2020-3-6',
-      multi: true
+      disableMode: {
+        type: 'after',
+        date: '2020-03-4'
+      },
+      defaultDay: '2020-3-6'
+      // multi: true
     },
     actionBtn: [
       {

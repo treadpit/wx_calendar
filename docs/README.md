@@ -115,17 +115,25 @@ const conf = {
       highlightToday: true, // 是否高亮显示当天，区别于选中样式（初始化时当天高亮并不代表已选中当天）
       takeoverTap: true, // 是否完全接管日期点击事件（日期不会选中），配合 onTapDay() 使用
       preventSwipe: true, // 是否禁用日历滑动切换月份
-      disablePastDay: true, // 是否禁选当天之前的日期
-      disableLaterDay: true, // 是否禁选当天之后的日期
       firstDayOfWeek: 'Mon', // 每周第一天为周一还是周日，默认按周日开始
       onlyShowCurrentMonth: true, // 日历面板是否只显示本月日期
       hideHeadOnWeekMode: true, // 周视图模式是否隐藏日历头部
-      showHandlerOnWeekMode: true // 周视图模式是否显示日历头部操作栏，hideHeadOnWeekMode 优先级高于此配置
+      showHandlerOnWeekMode: true, // 周视图模式是否显示日历头部操作栏，hideHeadOnWeekMode 优先级高于此配置
+      disableMode: {  // 禁用某一天之前/之后的所有日期
+        type: 'after',  // [‘before’, 'after']
+        date: '2020-03-24'
+      },
     }
   }
 };
 Page(conf);
 ```
+
+日历组件以下两项配置不再使用，请使用 `disableMode`
+
+~~disablePastDay: true, // 是否禁选当天之前的日期~~
+
+~~disableLaterDay: true, // 是否禁选当天之后的日期~~
 
 #### 4. 多日历组件
 
