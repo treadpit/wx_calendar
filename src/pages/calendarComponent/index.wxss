@@ -55,6 +55,10 @@
     margin-bottom: 20rpx;
 }
 
+.btn:active {
+    filter: grayscale(100%);
+}
+
 .btn-red {
     color: #e54d42;
 }
