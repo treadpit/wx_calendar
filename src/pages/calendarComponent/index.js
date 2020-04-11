@@ -5,7 +5,7 @@ const conf = {
       firstDayOfWeek: 'Mon',
       disableMode: {
         type: 'after',
-        date: '2020-03-4'
+        date: '2020-03-9'
       },
       defaultDay: '2020-3-6'
       // multi: true
@@ -149,7 +149,8 @@ const conf = {
         calendar
           .setCalendarConfig({
             showLunar: false,
-            theme: 'elegant'
+            theme: 'elegant',
+            multi: true
           })
           .then(conf => {
             console.log('设置成功：', conf);

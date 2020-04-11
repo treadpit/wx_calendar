@@ -12,7 +12,7 @@
 
 <view class='b cc wrap btn-wrap'>
     <button
-      class='b cc btn btn-{{item.color}}'
+      class='b cc btn btn-{{item.color}} btn-action-{{item.action}}'
       wx:for="{{actionBtn}}"
       wx:key="action"
       data-action="{{item.action}}"
