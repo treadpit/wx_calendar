@@ -158,7 +158,10 @@ export class GetDate {
     return timestamp;
   }
   toTimeStr(dateInfo) {
-    return `${+dateInfo.year}-${+dateInfo.month}-${+dateInfo.day}`;
+    if (dateInfo.day) {
+      dateInfo.date = dateInfo.day;
+    }
+    return `${+dateInfo.year}-${+dateInfo.month}-${+dateInfo.date}`;
   }
   sortDates(dates, sortType) {
     return dates.sort(function(a, b) {

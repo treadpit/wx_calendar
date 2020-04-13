@@ -1,5 +1,5 @@
 import Week from './func/week';
-import { Logger, Slide } from './func/utils';
+import { Logger, Slide, GetDate } from './func/utils';
 import initCalendar, {
   jump,
   getCurrentYM,
@@ -13,6 +13,7 @@ import initCalendar, {
 
 const slide = new Slide();
 const logger = new Logger();
+const getDate = new GetDate();
 
 Component({
   options: {
@@ -43,9 +44,18 @@ Component({
   },
   methods: {
     initComp() {
-      const calendarConfig = this.properties.calendarConfig || {};
+      const calendarConfig = this.setDefaultDisableDate();
       this.setConfig(calendarConfig);
       initCalendar(this, calendarConfig);
+    },
+    setDefaultDisableDate() {
+      const calendarConfig = this.properties.calendarConfig || {};
+      if (calendarConfig.disableMode && !calendarConfig.disableMode.date) {
+        calendarConfig.disableMode.date = getDate.toTimeStr(
+          getDate.todayDate()
+        );
+      }
+      return calendarConfig;
     },
     setConfig(config) {
       if (config.markToday && typeof config.markToday === 'string') {
