@@ -121,7 +121,7 @@ const conf = {
       showHandlerOnWeekMode: true, // 周视图模式是否显示日历头部操作栏，hideHeadOnWeekMode 优先级高于此配置
       disableMode: {  // 禁用某一天之前/之后的所有日期
         type: 'after',  // [‘before’, 'after']
-        date: '2020-03-24'
+        date: '2020-03-24', // 无该属性或该属性值为假，则默认为当天
       },
     }
   }
