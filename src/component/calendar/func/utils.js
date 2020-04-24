@@ -1,3 +1,5 @@
+import convertSolarLunar from './convertSolarLunar';
+
 let systemInfo;
 export function getSystemInfo() {
   if (systemInfo) return systemInfo;
@@ -199,6 +201,19 @@ export class GetDate {
             month: 1
           };
     return nextMonthInfo;
+  }
+  convertLunar(dates = []) {
+    const datesWithLunar = dates.map(date => {
+      if (date) {
+        date.lunar = convertSolarLunar.solar2lunar(
+          +date.year,
+          +date.month,
+          +date.day
+        );
+      }
+      return date;
+    });
+    return datesWithLunar;
   }
 }
 

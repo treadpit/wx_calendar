@@ -412,11 +412,19 @@ export function getCurrentYM(componentId) {
 
 /**
  * 获取已选择的日期
+ * @param {object } options 日期配置选项 {lunar} 是否返回农历信息
  * @param {string} componentId 要操作的日历组件ID
  */
-export function getSelectedDay(componentId) {
+export function getSelectedDay(options = {}, componentId) {
   bindCurrentComponent(componentId);
-  return getData('calendar.selectedDay');
+  const config = getCalendarConfig();
+  const dates = getData('calendar.selectedDay') || [];
+  if (options.lunar && !config.showLunar) {
+    const datesWithLunar = getDate.convertLunar(dates);
+    return datesWithLunar;
+  } else {
+    return dates;
+  }
 }
 
 /**
@@ -553,11 +561,19 @@ export function clearTodoLabels(componentId) {
 
 /**
  * 获取所有待办事项
+ * @param {object } options 日期配置选项 {lunar} 是否返回农历信息
  * @param {string} componentId 要操作的日历组件ID
  */
-export function getTodoLabels(componentId) {
+export function getTodoLabels(options = {}, componentId) {
   bindCurrentComponent(componentId);
-  return Todo(Component).getTodoLabels();
+  const config = getCalendarConfig();
+  const todoDates = Todo(Component).getTodoLabels() || [];
+  if (options.lunar && !config.showLunar) {
+    const todoDatesWithLunar = getDate.convertLunar(todoDates);
+    return todoDatesWithLunar;
+  } else {
+    return todoDates;
+  }
 }
 
 /**
@@ -643,11 +659,19 @@ export function setCalendarConfig(config, componentId) {
 
 /**
  * 获取当前日历面板日期
+ * @param {object } options 日期配置选项 {lunar} 是否返回农历信息
  * @param {string} componentId 要操作的日历组件ID
  */
-export function getCalendarDates(componentId) {
+export function getCalendarDates(options = {}, componentId) {
   bindCurrentComponent(componentId);
-  return getData('calendar.days', componentId);
+  const config = getCalendarConfig();
+  const dates = getData('calendar.days', componentId) || [];
+  if (options.lunar && !config.showLunar) {
+    const datesWithLunar = getDate.convertLunar(dates);
+    return datesWithLunar;
+  } else {
+    return dates;
+  }
 }
 
 /**

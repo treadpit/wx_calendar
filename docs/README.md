@@ -237,7 +237,10 @@ this.calendar.jump(2019, 10, 6).then(date => {}); // 跳转至某日
 #### 6. 获取当前选择的日期
 
 ```js
-const selectedDay = this.calendar.getSelectedDay();
+const options = {
+  lunar: true // 在配置showLunar为false, 但需返回农历信息时使用该选项
+}
+const selectedDay = this.calendar.getSelectedDay(options);
 
 // => { year: 2019, month: 12, day: 1}
 ```
@@ -285,7 +288,8 @@ this.calendar.setTodoLabels({
       year: 2018,
       month: 1,
       day: 1,
-      todoText: '待办'
+      todoText: '待办',
+      todoLabelColor: '#f40' // 单独定义标记颜色
     },
     {
       year: 2018,
@@ -322,7 +326,10 @@ this.calendar.clearTodoLabels();
 ##### 9.4 获取所有代办日期
 
 ```js
-this.calendar.getTodoLabels();
+const options = {
+  lunar: true // 在配置showLunar为false, 但需返回农历信息时使用该选项
+}
+this.calendar.getTodoLabels(options);
 ```
 
 #### 10. 禁选指定日期
@@ -373,7 +380,10 @@ this.calendar.setSelectedDays(toSet);
 #### 13. 获取当前日历面板日期
 
 ```js
-const dates = this.calendar.getCalendarDates();
+const options = {
+  lunar: true // 在配置showLunar为false, 但需返回农历信息时使用该选项
+}
+const dates = this.calendar.getCalendarDates(options);
 ```
 
 #### 14. 周月视图切换
