@@ -57,7 +57,7 @@
                 <view
                   wx:if="{{item.showTodoLabel && !calendar.todoLabelCircle}}"
                   class="{{item.todoText ? 'date-desc' : calendarConfig.theme + '_todo-dot todo-dot'}} {{calendarConfig.showLunar ? calendarConfig.theme + '_date-desc-lunar' : ''}} {{calendar.todoLabelPos === 'bottom' ? 'date-desc-bottom todo-dot-bottom' : 'date-desc-top todo-dot-top'}} {{calendar.showLabelAlways && item.choosed && calendar.todoLabelPos === 'bottom' ? 'date-desc-bottom-always todo-dot-bottom-always' : ''}} {{calendar.showLabelAlways && item.choosed && calendar.todoLabelPos === 'top' ? 'date-desc-top-always todo-dot-top-always' : ''}}"
-                  style="background-color: {{item.todoLabelColor || calendar.todoLabelColor}};">
+                  style="background-color: {{item.todoText ? '' : item.color || calendar.todoLabelColor}}; color: {{item.color}}">
                     {{item.todoText}}
                 </view>
               </view>
