@@ -289,7 +289,7 @@ this.calendar.setTodoLabels({
       month: 1,
       day: 1,
       todoText: '待办',
-      todoLabelColor: '#f40' // 单独定义标记颜色
+      color: '#f40' // 单独定义代办颜色 (标记点、文字)
     },
     {
       year: 2018,
