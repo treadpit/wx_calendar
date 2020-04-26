@@ -280,7 +280,7 @@ this.calendar.cancelSelectedDates();
 this.calendar.setTodoLabels({
   // 待办点标记设置
   pos: 'bottom', // 待办点标记位置 ['top', 'bottom']
-  dotColor: '#40', // 待办点标记颜色
+  dotColor: 'purple', // 待办点标记颜色
   circle: true, // 待办圆圈标记设置（如圆圈标记已签到日期），该设置与点标记设置互斥
   showLabelAlways: true, // 点击时是否显示待办事项（圆点/文字），在 circle 为 true 及当日历配置 showLunar 为 true 时，此配置失效
   days: [
