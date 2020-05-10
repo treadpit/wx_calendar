@@ -162,9 +162,7 @@ const conf = {
     let shouldMarkerTodoDay = [];
     const currentDay = days[dateIdx];
     if (!currentDay) return;
-    let selectedDay = selectedDays[0] || {};
-    const date = selectedDay.day;
-    const preSelectedDate = (date && days[date - 1]) || {};
+    const preSelectedDate = [...selectedDays].pop() || {};
     const { month: dMonth, year: dYear } = days[0] || {};
     const config = CalendarConfig(Component).getCalendarConfig();
     if (config.takeoverTap) {
@@ -172,11 +170,9 @@ const conf = {
     }
     conf.afterTapDay(currentDay);
     if (!config.inverse && preSelectedDate.day === currentDay.day) return;
-    if (Component.weekMode) {
-      days.forEach((item, idx) => {
-        if (item.day === date) days[idx].choosed = false;
-      });
-    }
+    days.forEach((item, idx) => {
+      if (+item.day === +preSelectedDate.day) days[idx].choosed = false;
+    });
     if (todoLabels) {
       // 筛选当月待办事项的日期
       shouldMarkerTodoDay = todoLabels.filter(
@@ -274,6 +270,45 @@ const conf = {
     }
     return range;
   },
+  chooseAreaWhenExistArea(currentDate, selectedDay) {
+    return new Promise((resolve, reject) => {
+      const range = conf.calculateDateRange(
+        currentDate,
+        getDate.sortDates(selectedDay)
+      );
+      conf
+        .gotoSetContinuousDates(...range)
+        .then(data => {
+          resolve(data);
+          conf.afterTapDay(currentDate);
+        })
+        .catch(err => {
+          reject(err);
+          conf.afterTapDay(currentDate);
+        });
+    });
+  },
+  chooseAreaWhenHasOneDate(currentDate, selectedDay, lastChoosedDate) {
+    return new Promise((resolve, reject) => {
+      const startDate = lastChoosedDate || selectedDay[0];
+      let range = [startDate, currentDate];
+      const currentDateTimestamp = getDateTimeStamp(currentDate);
+      const lastChoosedDateTimestamp = getDateTimeStamp(startDate);
+      if (lastChoosedDateTimestamp > currentDateTimestamp) {
+        range = [currentDate, startDate];
+      }
+      conf
+        .gotoSetContinuousDates(...range)
+        .then(data => {
+          resolve(data);
+          conf.afterTapDay(currentDate);
+        })
+        .catch(err => {
+          reject(err);
+          conf.afterTapDay(currentDate);
+        });
+    });
+  },
   /**
    * 日期范围选择模式
    * @param {number} dateIdx 当前选中日期索引值
@@ -290,37 +325,22 @@ const conf = {
         return Component.triggerEvent('onTapDay', currentDate);
       }
       if (selectedDay && selectedDay.length > 1) {
-        const range = conf.calculateDateRange(
-          currentDate,
-          getDate.sortDates(selectedDay)
-        );
-        return conf
-          .gotoSetContinuousDates(...range)
-          .then(data => {
-            resolve(data);
-            conf.afterTapDay(currentDate);
+        conf
+          .chooseAreaWhenExistArea(currentDate, selectedDay)
+          .then(dates => {
+            resolve(dates);
           })
           .catch(err => {
             reject(err);
-            conf.afterTapDay(currentDate);
           });
       } else if (lastChoosedDate || (selectedDay && selectedDay.length === 1)) {
-        const startDate = lastChoosedDate || selectedDay[0];
-        let range = [startDate, currentDate];
-        const currentDateTimestamp = getDateTimeStamp(currentDate);
-        const lastChoosedDateTimestamp = getDateTimeStamp(startDate);
-        if (lastChoosedDateTimestamp > currentDateTimestamp) {
-          range = [currentDate, startDate];
-        }
-        return conf
-          .gotoSetContinuousDates(...range)
-          .then(data => {
-            resolve(data);
-            conf.afterTapDay(currentDate);
+        conf
+          .chooseAreaWhenHasOneDate(currentDate, selectedDay, lastChoosedDate)
+          .then(dates => {
+            resolve(dates);
           })
           .catch(err => {
             reject(err);
-            conf.afterTapDay(currentDate);
           });
       } else {
         days.forEach(date => {
@@ -330,7 +350,9 @@ const conf = {
             date.choosed = false;
           }
         });
-        this.setData({
+
+        const dataInstance = new WxData(Component);
+        dataInstance.setData({
           'calendar.days': [...days],
           'calendar.lastChoosedDate': currentDate
         });
@@ -435,7 +457,7 @@ export function getSelectedDay(options = {}, componentId) {
 export function cancelSelectedDates(dates, componentId) {
   bindCurrentComponent(componentId);
   const { days = [], selectedDay = [] } = getData('calendar') || {};
-  if (!dates) {
+  if (!dates || !dates.length) {
     days.forEach(item => {
       item.choosed = false;
     });
@@ -464,6 +486,54 @@ export function cancelSelectedDates(dates, componentId) {
     });
   }
 }
+/**
+ * 周视图跳转
+ * @param {object} date info
+ */
+function jumpWhenWeekMode({ year, month, day }) {
+  return new Promise((resolve, reject) => {
+    Week(Component)
+      .jump({
+        year: +year,
+        month: +month,
+        day: +day
+      })
+      .then(date => {
+        resolve(date);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
+}
+
+/**
+ * 月视图跳转
+ * @param {object} date info
+ */
+function jumpWhenNormalMode({ year, month, day }) {
+  return new Promise((resolve, reject) => {
+    if (typeof +year !== 'number' || typeof +month !== 'number') {
+      return logger.warn('jump 函数年月日参数必须为数字');
+    }
+    const timestamp = getDate.todayTimestamp();
+    let tmp = {
+      'calendar.curYear': +year,
+      'calendar.curMonth': +month,
+      'calendar.todayTimestamp': timestamp
+    };
+    setData(tmp, () => {
+      conf
+        .renderCalendar(+year, +month, +day)
+        .then(date => {
+          resolve(date);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  });
+}
 
 /**
  * 跳转至指定日期
@@ -481,39 +551,23 @@ export function jump(year, month, day, componentId) {
       return;
     }
     if (weekMode) {
-      return Week(Component)
-        .jump({
-          year: +year,
-          month: +month,
-          day: +day
-        })
+      jumpWhenWeekMode({ year, month, day })
         .then(date => {
           resolve(date);
         })
         .catch(err => {
           reject(err);
         });
+      return;
     }
     if (year && month) {
-      if (typeof +year !== 'number' || typeof +month !== 'number') {
-        return logger.warn('jump 函数年月日参数必须为数字');
-      }
-      const timestamp = getDate.todayTimestamp();
-      let tmp = {
-        'calendar.curYear': +year,
-        'calendar.curMonth': +month,
-        'calendar.todayTimestamp': timestamp
-      };
-      setData(tmp, () => {
-        conf
-          .renderCalendar(+year, +month, +day)
-          .then(date => {
-            resolve(date);
-          })
-          .catch(err => {
-            reject(err);
-          });
-      });
+      jumpWhenNormalMode({ year, month, day })
+        .then(date => {
+          resolve(date);
+        })
+        .catch(err => {
+          reject(err);
+        });
     } else {
       conf
         .jumpToToday()

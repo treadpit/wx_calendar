@@ -19,8 +19,8 @@
     <!-- 日历面板主体 -->
     <view class="b lr wrap"
         bindtouchstart="calendarTouchstart"
-        bindtouchmove="calendarTouchmove"
-        bindtouchend="calendarTouchend">
+        catchtouchmove="calendarTouchmove"
+        catchtouchend="calendarTouchend">
         <!-- 上月日期格子 -->
         <view
           class="grid b ac pc {{calendarConfig.theme}}_prev-month-date"
