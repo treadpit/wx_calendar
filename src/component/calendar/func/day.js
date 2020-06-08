@@ -32,7 +32,6 @@ class Day extends WxData {
     const today = getDate.todayDate();
     const thisMonthDays = getDate.thisMonthDays(year, month);
     const dates = [];
-    const { showLunar } = this.getCalendarConfig();
     for (let i = 1; i <= thisMonthDays; i++) {
       const isToday =
         +today.year === +year && +today.month === +month && i === +today.date;
@@ -43,15 +42,9 @@ class Day extends WxData {
         day: i,
         choosed: false,
         week: getDate.dayOfWeek(year, month, i),
-        isToday: isToday && config.highlightToday
+        isToday: isToday && config.highlightToday,
+        lunar: convertSolarLunar.solar2lunar(+year, +month, +i)
       };
-      if (showLunar) {
-        date.lunar = convertSolarLunar.solar2lunar(
-          +date.year,
-          +date.month,
-          +date.day
-        );
-      }
       dates.push(date);
     }
     return dates;
