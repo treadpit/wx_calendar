@@ -191,7 +191,6 @@ const conf = {
       }
       tmp['calendar.selectedDay'] = [currentDay];
     } else if (config.inverse) {
-      currentDay.choosed = !currentDay.choosed;
       if (currentDay.choosed) {
         if (currentDay.showTodoLabel && calendar.showLabelAlways) {
           currentDay.showTodoLabel = true;
