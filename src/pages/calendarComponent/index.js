@@ -1,14 +1,14 @@
 const conf = {
   data: {
     calendarConfig: {
-      showLunar: true,
-      chooseAreaMode: true,
+      showLunar: true
+      // chooseAreaMode: true,
       // firstDayOfWeek: 'Mon',
       // disableMode: {
       //   type: 'after',
       //   date: '2020-03-9'
       // },
-      defaultDay: '2020-3-6'
+      // defaultDay: '2020-3-6'
       // multi: true
     },
     actionBtn: [

@@ -29,7 +29,6 @@ class Calendar extends WxData {
    */
   renderCalendar(curYear, curMonth, curDate) {
     return new Promise(resolve => {
-      this.calculateEmptyGrids(curYear, curMonth);
       this.calculateDays(curYear, curMonth, curDate).then(() => {
         const { todoLabels, specialStyleDates } =
           this.getData('calendar') || {};
@@ -138,7 +137,7 @@ class Calendar extends WxData {
           extDate += 7;
         }
       } else {
-        if (firstDayofMonth < 5) {
+        if (firstDayofMonth <= 5) {
           extDate += 7;
         }
       }
@@ -235,6 +234,11 @@ class Calendar extends WxData {
       disableType: type
     };
   }
+  resetDates() {
+    this.setData({
+      'calendar.days': []
+    });
+  }
   /**
    * 设置日历面板数据
    * @param {number} year 年份
@@ -242,6 +246,8 @@ class Calendar extends WxData {
    */
   calculateDays(year, month, curDate) {
     return new Promise(resolve => {
+      // 避免切换日期时样式残影
+      this.resetDates();
       let days = [];
       const { disableDays = [], chooseAreaTimestamp = [] } = this.getData(
         'calendar'
@@ -299,6 +305,7 @@ class Calendar extends WxData {
           'calendar.selectedDay': [...selectedDay] || []
         },
         () => {
+          this.calculateEmptyGrids(year, month);
           resolve();
         }
       );
