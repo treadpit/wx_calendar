@@ -28,12 +28,14 @@
           wx:for="{{calendar.empytGrids}}"
           wx:key="index"
           data-idx="{{index}}">
-            <view class="date">
-              {{item.day}}
-              <view
-                wx:if="{{calendarConfig.showLunar && item.lunar}}"
-                class="date-desc date-desc-bottom">
-                  {{item.lunar.Term || item.lunar.IDayCn}}
+            <view class="date-wrap b cc">
+              <view class="date">
+                {{item.day}}
+                <view
+                  wx:if="{{calendarConfig.showLunar && item.lunar}}"
+                  class="date-desc date-desc-bottom">
+                    {{item.lunar.Term || item.lunar.IDayCn}}
+                </view>
               </view>
             </view>
         </view>
@@ -44,7 +46,7 @@
           data-idx="{{index}}"
           data-date="{{item}}"
           bindtap="tapDayItem"
-          class="grid {{calendarConfig.theme}}_normal-date b ac pc">
+          class="grid {{item.class ? item.class  : ''}} {{calendarConfig.theme}}_normal-date b ac pc">
             <view
               class="date-wrap b cc {{(item.week === 0 || item.week === 6) ? calendarConfig.theme + '_weekend-color' : ''}}">
               <view class="date b ac pc {{item.class ? item.class  : ''}} {{calendarConfig.chooseAreaMode ? 'date-area-mode' : ''}} {{calendar.todoLabelCircle && item.showTodoLabel && !item.choosed ? calendarConfig.theme + '_todo-circle todo-circle' : '' }} {{item.isToday ? calendarConfig.theme + '_today' : ''}} {{item.choosed ? calendarConfig.theme + '_choosed' : ''}} {{item.disable ? calendarConfig.theme + '_date-disable' : ''}}">
@@ -69,6 +71,7 @@
           wx:for="{{calendar.lastEmptyGrids}}"
           wx:key="index"
           data-idx="{{index}}">
+          <view class="date-wrap b cc">
             <view class="date">
               {{item.day}}
               <view
@@ -77,6 +80,7 @@
                   {{item.lunar.Term || item.lunar.IDayCn}}
               </view>
             </view>
+          </view>
         </view>
       </view>
   </view>

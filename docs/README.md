@@ -441,7 +441,7 @@ this.calendar.chooseDateArea(['2019-12-28', '2020-1-10']).then(dates => {
 
 > 该方法只会对日期生效。
 
-因使用 `style` 注入的方式过于繁重，组件样式隔离采用了 `apply-shared` 方案，此模式下页面样式会影响组件样式，使用时需注意页面样式对日历组件样式的覆盖。
+组件样式隔离采用了 `apply-shared` 方案，此模式下页面样式会影响组件样式，使用时需注意页面样式对日历组件样式的覆盖。
 
 ```js
 // 页面 js 文件
@@ -457,9 +457,12 @@ this.calendar.setDateStyle(toSet);
 ```
 
 ```css
-/* 页面 css 文件 */
 .orange-date {
-  color: #f40;
+  background-color: #e8e8e8;
+}
+
+.orange-data .default_normal-date {
+  color: #333;
 }
 ```
 
