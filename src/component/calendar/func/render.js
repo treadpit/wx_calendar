@@ -30,7 +30,7 @@ class Calendar extends WxData {
   renderCalendar(curYear, curMonth, curDate) {
     return new Promise(resolve => {
       this.calculateDays(curYear, curMonth, curDate).then(() => {
-        const { todoLabels, specialStyleDates } =
+        const { todoLabels, specialStyleDates, enableDays, selectedDay } =
           this.getData('calendar') || {};
         if (
           todoLabels &&
@@ -48,6 +48,27 @@ class Calendar extends WxData {
           )
         ) {
           Day(this.Component).setDateStyle(specialStyleDates);
+        }
+
+        if (
+          enableDays &&
+          enableDays.length &&
+          enableDays.find(item => {
+            let ymd = item.split('-');
+            return +ymd[1] === +curMonth && +ymd[0] === +curYear;
+          })
+        ) {
+          Day(this.Component).enableDays(enableDays);
+        }
+
+        if (
+          selectedDay &&
+          selectedDay.length &&
+          selectedDay.find(
+            item => +item.month === +curMonth && +item.year === +curYear
+          )
+        ) {
+          Day(this.Component).setSelectedDays(selectedDay);
         }
 
         if (!this.Component.firstRender) {
