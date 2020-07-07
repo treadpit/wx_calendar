@@ -46,7 +46,6 @@ Component({
     initComp() {
       const calendarConfig = this.setDefaultDisableDate();
       this.setConfig(calendarConfig);
-      initCalendar(this, calendarConfig);
     },
     setDefaultDisableDate() {
       const calendarConfig = this.properties.calendarConfig || {};
@@ -62,9 +61,15 @@ Component({
         config.highlightToday = true;
       }
       config.theme = config.theme || 'default';
-      this.setData({
-        calendarConfig: config
-      });
+      this.weekMode = config.weekMode;
+      this.setData(
+        {
+          calendarConfig: config
+        },
+        () => {
+          initCalendar(this, config);
+        }
+      );
     },
     chooseDate(e) {
       const { type } = e.currentTarget.dataset;
@@ -138,6 +143,9 @@ Component({
       } else {
         whenSingleSelect.call(this, idx);
       }
+      this.setData({
+        'calendar.noDefault': false
+      });
     },
     doubleClickToToday() {
       if (this.config.multi || this.weekMode) return;
