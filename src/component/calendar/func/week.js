@@ -17,35 +17,53 @@ class WeekMode extends WxData {
   /**
    * 周、月视图切换
    * @param {string} view  视图 [week, month]
-   * @param {object} day  {year: 2017, month: 11, day: 1}
+   * @param {object} date  {year: 2017, month: 11, day: 1}
    */
-  switchWeek(view, day) {
+  switchWeek(view, date) {
     return new Promise((resolve, reject) => {
       const config = CalendarConfig(this.Component).getCalendarConfig();
       if (config.multi) return logger.warn('多选模式不能切换周月视图');
       const { selectedDay = [], curYear, curMonth } = this.getData('calendar');
-      if (!selectedDay.length) return this.__tipsWhenCanNotSwtich();
-      const currentDay = selectedDay[0];
+      let currentDate = [];
+      let disableSelected = false;
+      if (!selectedDay.length) {
+        currentDate = getDate.todayDate();
+        currentDate.day = currentDate.date;
+        disableSelected = true;
+        // return this.__tipsWhenCanNotSwtich();
+      } else {
+        currentDate = selectedDay[0];
+      }
+      let selectedDate = date || currentDate;
+      const { year, month } = selectedDate;
+      const notInCurrentMonth = curYear !== year || curMonth !== month;
       if (view === 'week') {
         if (this.Component.weekMode) return;
-        const selectedDate = day || currentDay;
-        const { year, month } = selectedDate;
-        if (curYear !== year || curMonth !== month)
-          return this.__tipsWhenCanNotSwtich();
+        if ((selectedDay.length && notInCurrentMonth) || !selectedDay.length) {
+          // return this.__tipsWhenCanNotSwtich();
+          disableSelected = true;
+          selectedDate = {
+            year: curYear,
+            month: curMonth,
+            day: selectedDate.day
+          };
+        }
         this.Component.weekMode = true;
         this.setData({
-          'calendar.weekMode': true
+          'calendarConfig.weekMode': true
         });
-        this.jump(selectedDate)
+        this.jump(selectedDate, disableSelected)
           .then(resolve)
           .catch(reject);
       } else {
         this.Component.weekMode = false;
         this.setData({
-          'calendar.weekMode': false
+          'calendarConfig.weekMode': false
         });
+        const disableSelected =
+          (selectedDay.length && notInCurrentMonth) || !selectedDay.length;
         Render(this.Component)
-          .renderCalendar(curYear, curMonth, day)
+          .renderCalendar(curYear, curMonth, selectedDate.day, disableSelected)
           .then(resolve)
           .catch(reject);
       }
@@ -388,7 +406,7 @@ class WeekMode extends WxData {
     }
     return dates;
   }
-  jump({ year, month, day }) {
+  jump({ year, month, day }, disableSelected) {
     return new Promise(resolve => {
       if (!day) return;
       const config = this.getCalendarConfig();
@@ -412,7 +430,8 @@ class WeekMode extends WxData {
         if (
           +date.year === +year &&
           +date.month === +month &&
-          +date.day === +day
+          +date.day === +day &&
+          !disableSelected
         ) {
           date.choosed = true;
         }
@@ -426,20 +445,20 @@ class WeekMode extends WxData {
         return date;
       });
       this.setEnableAreaOnWeekMode(dates);
-      this.setData(
-        {
-          'calendar.days': dates,
-          'calendar.curYear': year,
-          'calendar.curMonth': month,
-          'calendar.empytGrids': [],
-          'calendar.lastEmptyGrids': [],
-          'calendar.selectedDay': dates.filter(item => item.choosed)
-        },
-        () => {
-          Day(this.Component).setDateStyle();
-          resolve({ year, month, date: day });
-        }
-      );
+      const tmpData = {
+        'calendar.days': dates,
+        'calendar.curYear': year,
+        'calendar.curMonth': month,
+        'calendar.empytGrids': [],
+        'calendar.lastEmptyGrids': []
+      };
+      if (!disableSelected) {
+        tmpData['calendar.selectedDay'] = dates.filter(item => item.choosed);
+      }
+      this.setData(tmpData, () => {
+        Day(this.Component).setDateStyle();
+        resolve({ year, month, date: day });
+      });
     });
   }
   __setTodoWhenJump(dateInfo) {

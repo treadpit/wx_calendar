@@ -23,13 +23,16 @@ class Calendar extends WxData {
   }
   /**
    * 渲染日历
-   * @param {number} curYear
-   * @param {number} curMonth
-   * @param {number} curDate
+   * @param {number} curYear 年份
+   * @param {number} curMonth  月份
+   * @param {number} curDate  日期
+   * @param {boolean} disableSelect 是否禁用选中
    */
-  renderCalendar(curYear, curMonth, curDate) {
+  renderCalendar(curYear, curMonth, curDate, disableSelect) {
     return new Promise(resolve => {
-      this.calculateDays(curYear, curMonth, curDate).then(() => {
+      const config = this.getCalendarConfig();
+      this.calculateEmptyGrids(curYear, curMonth);
+      this.calculateDays(curYear, curMonth, curDate, disableSelect).then(() => {
         const { todoLabels, specialStyleDates, enableDays, selectedDay } =
           this.getData('calendar') || {};
         if (
@@ -66,7 +69,8 @@ class Calendar extends WxData {
           selectedDay.length &&
           selectedDay.find(
             item => +item.month === +curMonth && +item.year === +curYear
-          )
+          ) &&
+          config.mulit
         ) {
           Day(this.Component).setSelectedDays(selectedDay);
         }
@@ -264,24 +268,31 @@ class Calendar extends WxData {
    * 设置日历面板数据
    * @param {number} year 年份
    * @param {number} month  月份
+   * @param {number} curDate  日期
+   * @param {boolean} disableSelect 是否禁用选中
    */
-  calculateDays(year, month, curDate) {
+  calculateDays(year, month, curDate, disableSelect) {
     return new Promise(resolve => {
       // 避免切换日期时样式残影
       this.resetDates();
       let days = [];
-      const { disableDays = [], chooseAreaTimestamp = [] } = this.getData(
-        'calendar'
-      );
+      const {
+        disableDays = [],
+        chooseAreaTimestamp = [],
+        selectedDay: selectedDates = []
+      } = this.getData('calendar');
       days = Day(this.Component).buildDate(year, month);
-      const selectedDay = this.setSelectedDay(year, month, curDate);
+      let selectedDay = selectedDates;
+      if (!disableSelect) {
+        selectedDay = this.setSelectedDay(year, month, curDate);
+      }
       const selectedDayStr = selectedDay.map(d => getDate.toTimeStr(d));
       const disableDaysStr = disableDays.map(d => getDate.toTimeStr(d));
       const [areaStart, areaEnd] = chooseAreaTimestamp;
       days.forEach(item => {
         const cur = getDate.toTimeStr(item);
         const timestamp = getDateTimeStamp(item);
-        if (selectedDayStr.includes(cur)) {
+        if (selectedDayStr.includes(cur) && !disableSelect) {
           item.choosed = true;
           if (timestamp > areaEnd || timestamp < areaStart) {
             const idx = selectedDay.findIndex(
@@ -294,7 +305,8 @@ class Calendar extends WxData {
           areaStart &&
           areaEnd &&
           timestamp >= areaStart &&
-          timestamp <= areaEnd
+          timestamp <= areaEnd &&
+          !disableSelect
         ) {
           item.choosed = true;
           selectedDay.push(item);
@@ -326,7 +338,6 @@ class Calendar extends WxData {
           'calendar.selectedDay': [...selectedDay] || []
         },
         () => {
-          this.calculateEmptyGrids(year, month);
           resolve();
         }
       );

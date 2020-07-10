@@ -47,7 +47,7 @@
 
 .btn {
     box-sizing: border-box;
-    padding: 0 30rpx;
+    padding: 0 20rpx;
     font-size: 28rpx;
     height: 60rpx;
     line-height: 1;

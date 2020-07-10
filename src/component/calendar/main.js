@@ -488,15 +488,19 @@ export function cancelSelectedDates(dates, componentId) {
 /**
  * 周视图跳转
  * @param {object} date info
+ * @param {boolean} disableSelected 跳转时是否需要选中，周视图切换调用该方法，如未选择日期时不选中日期
  */
-function jumpWhenWeekMode({ year, month, day }) {
+function jumpWhenWeekMode({ year, month, day }, disableSelected) {
   return new Promise((resolve, reject) => {
     Week(Component)
-      .jump({
-        year: +year,
-        month: +month,
-        day: +day
-      })
+      .jump(
+        {
+          year: +year,
+          month: +month,
+          day: +day
+        },
+        disableSelected
+      )
       .then(date => {
         resolve(date);
       })
@@ -544,19 +548,29 @@ function jumpWhenNormalMode({ year, month, day }) {
 export function jump(year, month, day, componentId) {
   return new Promise((resolve, reject) => {
     bindCurrentComponent(componentId);
-    const { selectedDay = [], weekMode } = getData('calendar') || {};
+    const { selectedDay = [] } = getData('calendar') || {};
+    const { weekMode } = getData('calendarConfig') || {};
     const { year: y, month: m, day: d } = selectedDay[0] || {};
     if (+y === +year && +m === +month && +d === +day) {
       return;
     }
     if (weekMode) {
-      jumpWhenWeekMode({ year, month, day })
+      let disableSelected = false;
+      if (!year || !month || !day) {
+        const today = getDate.todayDate();
+        year = today.year;
+        month = today.month;
+        day = today.date;
+        disableSelected = true;
+      }
+      jumpWhenWeekMode({ year, month, day }, disableSelected)
         .then(date => {
           resolve(date);
         })
         .catch(err => {
           reject(err);
         });
+      mountEventsOnPage(getCurrentPage());
       return;
     }
     if (year && month) {
@@ -818,6 +832,7 @@ function setWeekHeader(firstDayOfWeek) {
 }
 
 function autoSelectDay(defaultDay) {
+  Component.firstRenderWeekMode = true;
   if (defaultDay && typeof defaultDay === 'string') {
     const day = defaultDay.split('-');
     if (day.length < 3) {
@@ -826,7 +841,10 @@ function autoSelectDay(defaultDay) {
     jump(+day[0], +day[1], +day[2]);
   } else {
     if (!defaultDay) {
-      Component.config.noDefault = true;
+      // Component.config.noDefault = true;
+      setData({
+        'config.noDefault': true
+      });
     }
     jump();
   }
