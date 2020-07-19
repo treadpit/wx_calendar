@@ -1,5 +1,5 @@
 import Week from './func/week';
-import { Logger, Slide, GetDate } from './func/utils';
+import { Logger, Slide, GetDate, initialTasks } from './func/utils';
 import initCalendar, {
   jump,
   getCurrentYM,
@@ -37,10 +37,11 @@ Component({
   lifetimes: {
     attached: function() {
       this.initComp();
+    },
+    detached: function() {
+      initialTasks.flag = 'finished';
+      initialTasks.tasks.length = 0;
     }
-  },
-  attached: function() {
-    this.initComp();
   },
   methods: {
     initComp() {
