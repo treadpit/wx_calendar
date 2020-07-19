@@ -453,9 +453,7 @@ const conf = {
       selectedDays = selectedDays.filter(
         item =>
           `${item.year}-${item.month}-${item.day}` !==
-          `${currentSelected.year}-${currentSelected.month}-${
-            currentSelected.day
-          }`
+          `${currentSelected.year}-${currentSelected.month}-${currentSelected.day}`
       );
     } else {
       currentSelected = days[idx];
