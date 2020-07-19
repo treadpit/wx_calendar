@@ -223,6 +223,31 @@ export function isIos() {
 }
 
 /**
+ * 浅比较对象是否相等
+ * @param {Object} origin 对比源
+ * @param {Object} target 对比目标
+ * @return {Boolean} true 为相等，false 为不等
+ */
+export function shallowEqual(origin, target) {
+  if (origin === target) {
+    return true;
+  } else if (
+    typeof origin === 'object' &&
+    origin != null &&
+    typeof target === 'object' &&
+    target != null
+  ) {
+    if (Object.keys(origin).length !== Object.keys(target).length) return false;
+    for (var prop in origin) {
+      if (target.hasOwnProperty(prop)) {
+        if (!shallowEqual(origin[prop], target[prop])) return false;
+      } else return false;
+    }
+    return true;
+  } else return false;
+}
+
+/**
  * 获取当前页面实例
  */
 export function getCurrentPage() {

@@ -199,7 +199,7 @@ Page({
 
 在初始化日历后，调用日历暴露的方法可采用 **_两种_** 方式，以 `jump` 函数为例
 
-> 方法在日历渲染完成后，即 `afterCalendarRender()` 后才绑定到页面实例上，故请勿在页面初次 onShow 及之前调用方法。
+> 方法在日历渲染完成后，即 `afterCalendarRender()` 后才绑定到页面实例上，故请勿直接在页面初次 onShow 及之前调用方法。
 
 > 注意页面 **多日历组件** 时方法调用需要的参数 [componentId]，参考 **多日历组件一节** 文档说明，以下示例均以单日历组件为例
 
@@ -207,7 +207,7 @@ Page({
 
 ```js
 Page({
-  onShow() {
+  doSometing() {
     this.calendar.jump(2018, 6, 6);
   }
 })
@@ -219,7 +219,7 @@ Page({
 import { jump } from '../../component/calendar/main.js';
 
 Page({
-  onShow() {
+  doSometing() {
     jump(2018, 6, 6);
   }
 })
@@ -550,7 +550,6 @@ import initDatepicker, {
 const conf = {
   afterTapDay: currentSelect => {
     console.log('当前点击的日期', currentSelect);
-    console.log('getSelectedDay方法', getSelectedDay());
   }
 };
 

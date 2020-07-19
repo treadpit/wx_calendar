@@ -65,7 +65,7 @@ class Todo extends WxData {
     }
     const o = {
       'calendar.days': dates,
-      'calendar.todoLabels': uniqueArrayByDate(todoDays.concat(todoLabels))
+      'calendar.todoLabels': uniqueArrayByDate(todoLabels.concat(todoDays))
     };
     if (!circle) {
       if (pos && pos !== todoLabelPos) o['calendar.todoLabelPos'] = pos;
