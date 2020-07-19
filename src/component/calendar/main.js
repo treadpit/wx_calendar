@@ -200,6 +200,10 @@ const conf = {
       }
       tmp['calendar.selectedDay'] = [];
     }
+    if (config.weekMode) {
+      tmp['calendar.curYear'] = currentDay.year;
+      tmp['calendar.curMonth'] = currentDay.month;
+    }
     setData(tmp);
   },
   gotoSetContinuousDates(start, end) {
