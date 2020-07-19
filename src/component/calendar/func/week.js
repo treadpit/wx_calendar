@@ -266,6 +266,17 @@ class WeekMode extends WxData {
       }
     });
   }
+  updateYMWhenSwipeCalendarHasSelected(dates) {
+    const hasSelectedDate = dates.filter(date => date.choosed);
+    if (hasSelectedDate && hasSelectedDate.length) {
+      const { year, month } = hasSelectedDate[0];
+      return {
+        year,
+        month
+      };
+    }
+    return {};
+  }
   /**
    * 计算下一周的日期
    */
@@ -307,6 +318,14 @@ class WeekMode extends WxData {
       }
     }
     days = this.initSelectedDay(days);
+    const {
+      year: updateYear,
+      month: updateMonth
+    } = this.updateYMWhenSwipeCalendarHasSelected(days);
+    if (updateYear && updateMonth) {
+      curYear = updateYear;
+      curMonth = updateMonth;
+    }
     this.setEnableAreaOnWeekMode(days);
     this.setData(
       {
@@ -368,6 +387,14 @@ class WeekMode extends WxData {
       days = days.concat(temp);
     }
     days = this.initSelectedDay(days);
+    const {
+      year: updateYear,
+      month: updateMonth
+    } = this.updateYMWhenSwipeCalendarHasSelected(days);
+    if (updateYear && updateMonth) {
+      curYear = updateYear;
+      curMonth = updateMonth;
+    }
     this.setEnableAreaOnWeekMode(days);
     this.setData(
       {
