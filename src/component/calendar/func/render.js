@@ -134,41 +134,15 @@ class Calendar extends WxData {
       });
     } else {
       this.setData({
-        'calendar.empytGrids': null
+        'calendar.empytGrids': 0
       });
     }
   }
   /**
    * 计算下一月日期是否需要多展示的日期
    * 某些月份日期为5排，某些月份6排，统一为6排
-   * @param {number} year
-   * @param {number} month
-   * @param {object} config
    */
-  calculateExtraEmptyDate(year, month, config) {
-    let extDate = 0;
-    if (+month === 2) {
-      extDate += 7;
-      let firstDayofMonth = getDate.dayOfWeek(year, month, 1);
-      if (config.firstDayOfWeek === 'Mon') {
-        if (+firstDayofMonth === 1) extDate += 7;
-      } else {
-        if (+firstDayofMonth === 0) extDate += 7;
-      }
-    } else {
-      let firstDayofMonth = getDate.dayOfWeek(year, month, 1);
-      if (config.firstDayOfWeek === 'Mon') {
-        if (firstDayofMonth !== 0 && firstDayofMonth < 6) {
-          extDate += 7;
-        }
-      } else {
-        if (firstDayofMonth <= 5) {
-          extDate += 7;
-        }
-      }
-    }
-    return extDate;
-  }
+
   /**
    * 计算下月应占的格子
    * @param {number} year 年份
@@ -177,20 +151,11 @@ class Calendar extends WxData {
   calculateNextMonthGrids(year, month) {
     let lastEmptyGrids = [];
     const thisMonthDays = getDate.thisMonthDays(year, month);
-    let lastDayWeek = getDate.dayOfWeek(year, month, thisMonthDays);
+    let currentLen = (this.getData('calendar.empytGrids').length || 0) + thisMonthDays;
+    let len = 42 - currentLen;  
+
     const config = this.getCalendarConfig() || {};
-    if (config.firstDayOfWeek === 'Mon') {
-      if (lastDayWeek === 0) {
-        lastDayWeek = 6;
-      } else {
-        lastDayWeek -= 1;
-      }
-    }
-    let len = 7 - (lastDayWeek + 1);
     const { onlyShowCurrentMonth, showLunar } = config;
-    if (!onlyShowCurrentMonth) {
-      len = len + this.calculateExtraEmptyDate(year, month, config);
-    }
     for (let i = 1; i <= len; i++) {
       if (onlyShowCurrentMonth) {
         lastEmptyGrids.push('');
