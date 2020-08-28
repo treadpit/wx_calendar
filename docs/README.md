@@ -33,7 +33,7 @@
   bind:whenChangeWeek="whenChangeWeek"
   bind:whenChangeMonth="whenChangeMonth"
   bind:afterCalendarRender="afterCalendarRender"
-></calendar>
+/>
 ```
 
 其中自定义事件功能对应如下，返回参数的具体格式可运行 `calendarComponent` 页面查看
@@ -206,6 +206,12 @@ Page({
 - (1) 调用当前页面实例上的方法（方法均已挂载至小程序页面实例的 `calendar` 对象上）
 
 ```js
+/**
+ * 获取当前页面实例的方法
+ * 1. 原生小程序开发，Page() 入参对象上的函数，this直接指向当前页面实例
+ * 2. Taro3.0.5及以上版本中可使用 getCurrentInstance() 获取当前页面实例
+ * 3. 通用方法则直接调用小程序函数 getCurrentPages()，取数组最后一个即为当前页面实例
+**/
 Page({
   doSometing() {
     this.calendar.jump(2018, 6, 6);
@@ -213,7 +219,7 @@ Page({
 })
 ```
 
-- (2) 手动引入方法
+- (2) 手动引入
 
 ```js
 import { jump } from '../../component/calendar/main.js';
@@ -390,8 +396,6 @@ const dates = this.calendar.getCalendarDates(options);
 #### 14. 周月视图切换
 
 `switchView('week')`，默认值为'month'；
-
-> `switchView()` 返回 `Promise`
 
 > 因周视图模式特殊性，该模式下会隐藏年月切换操作栏
 

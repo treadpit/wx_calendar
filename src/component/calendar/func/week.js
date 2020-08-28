@@ -501,6 +501,7 @@ class WeekMode extends WxData {
       }
       const todo = todoLabels[idx] || {};
       if (date.showTodoLabel && todo.todoText) date.todoText = todo.todoText;
+      if (todo.color) date.color = todo.color;
     }
     return date;
   }
