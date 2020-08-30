@@ -1,0 +1,161 @@
+
+.b {
+    display: flex;
+}
+
+.lr {
+    flex-direction: row;
+}
+
+.tb {
+    flex-direction: column;
+}
+
+.ps {
+    justify-content: flex-start;
+}
+
+.pb {
+    justify-content: space-between;
+}
+
+.pc {
+    justify-content: center;
+}
+
+.ac {
+    align-items: center;
+}
+
+.cc {
+    align-items: center;
+    justify-content: center;
+}
+
+.wrap {
+    flex-wrap: wrap;
+}
+
+.flex {
+    flex-grow: 1;
+}
+
+.btn-wrap {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.btn {
+    box-sizing: border-box;
+    padding: 0 20rpx;
+    font-size: 28rpx;
+    height: 60rpx;
+    line-height: 1;
+    background: transparent;
+    margin-bottom: 20rpx;
+}
+
+.btn:active {
+    filter: grayscale(100%);
+}
+
+.btn-red {
+    color: #e54d42;
+}
+
+.btn-red::after {
+    border-color: #e54d42;
+    border-radius: 60rpx;
+}
+
+.btn-olive {
+    color: #8dc63f;
+}
+
+.btn-olive::after {
+    border-color: #8dc63f;
+    border-radius: 60rpx;
+}
+
+.btn-orange {
+    color: #f37b1d;
+}
+
+.btn-orange::after {
+    border-color: #f37b1d;
+    border-radius: 60rpx;
+}
+
+.btn-cyan {
+    color: #1cbbb4;
+}
+
+.btn-cyan::after {
+    border-color: #1cbbb4;
+    border-radius: 60rpx;
+}
+
+.btn-mauve {
+    color: #9c26b0;
+}
+
+.btn-mauve::after {
+    border-color: #9c26b0;
+    border-radius: 60rpx;
+}
+
+.btn-pink {
+    color: #e03997;
+}
+
+.btn-pink::after {
+    border-color: #e03997;
+    border-radius: 60rpx;
+}
+
+.btn-purple {
+    color: #6739b6;
+}
+
+.btn-purple::after {
+    border-color: #6739b6;
+    border-radius: 60rpx;
+}
+
+.btn-brown {
+    color: #a5673f;
+}
+
+.btn-brown::after {
+    border-color: #a5673f;
+    border-radius: 60rpx;
+}
+
+.btn-grey {
+    color: #8799a3;
+}
+
+.btn-grey::after {
+    border-color: #8799a3;
+    border-radius: 60rpx;
+}
+
+.show-rst-wrap {
+    padding: 20rpx 30rpx 50rpx;
+}
+
+.show-rst {
+    font-size: 26rpx;
+    color: #a3a3a3;
+    line-height: 26rpx;
+    margin-bottom: 15rpx;
+    word-wrap: break-word;
+}
+
+.blue-date {
+    color: blue;
+}
+
+.orange-date {
+    color: #f40;
+}

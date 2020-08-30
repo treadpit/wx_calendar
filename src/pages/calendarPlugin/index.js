@@ -1,15 +1,22 @@
+import todo from '../../Calendar/plugins/todo'
+import plugin from '../../Calendar/plugins/index'
+
+plugin.use(todo)
+
 const conf = {
   data: {
     calendarConfig: {
-      showLunar: true
+      // showLunar: true,
+      // theme: 'elegant'
       // chooseAreaMode: true,
       // firstDayOfWeek: 'Mon',
       // disableMode: {
       //   type: 'after',
       //   date: '2020-03-9'
       // },
-      // defaultDay: '2020-3-6'
-      // multi: true
+      defaultDate: '2020-8-6',
+      multi: true,
+      autoChoosedWhenJump: true
     },
     actionBtn: [
       {
@@ -89,8 +96,18 @@ const conf = {
       }
     ]
   },
+  onShow() {
+    // setTimeout(() => {
+    //   this.calendar.jump({
+    //     year: 2020,
+    //     month: 9,
+    //     date: 5
+    //   })
+    // }, 5000)
+  },
   afterTapDay(e) {
     console.log('afterTapDay', e.detail)
+    console.log('onShow -> getSelectedDates', this.calendar.getSelectedDates())
   },
   whenChangeMonth(e) {
     console.log('whenChangeMonth', e.detail)

@@ -1,3 +1,3 @@
 App({
   onLaunch: function() {}
-});
+})

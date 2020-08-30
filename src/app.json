@@ -1,5 +1,6 @@
 {
   "pages":[
+    "pages/calendarPlugin/index",
     "pages/index/index",
     "pages/calendar/index",
     "pages/calendarTemplate/index",

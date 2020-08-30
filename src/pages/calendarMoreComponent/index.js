@@ -25,7 +25,7 @@ const conf = {
         day: 18,
         todoText: '待办'
       }
-    ];
+    ]
 
     this.calendar.setTodoLabels(
       {
@@ -34,20 +34,20 @@ const conf = {
         days: data
       },
       '#start'
-    );
+    )
   },
   afterTapDay1(e) {
-    console.log('afterTapDay', e.detail);
+    console.log('afterTapDay', e.detail)
   },
   whenChangeMonth1(e) {
-    console.log('whenChangeMonth', e.detail);
+    console.log('whenChangeMonth', e.detail)
   },
   onTapDay1(e) {
-    console.log('onTapDay', e.detail);
+    console.log('onTapDay', e.detail)
   },
   afterCalendarRender1(e) {
-    console.log('afterCalendarRender', e);
-    this.setTodo();
+    console.log('afterCalendarRender', e)
+    this.setTodo()
     this.calendar.disableDay(
       [
         {
@@ -62,11 +62,11 @@ const conf = {
         }
       ],
       '#start'
-    );
+    )
   },
   afterCalendarRender2(e) {
-    console.log('afterCalendarRender', e);
-    this.setTodo();
+    console.log('afterCalendarRender', e)
+    this.setTodo()
     this.calendar.disableDay(
       [
         {
@@ -81,11 +81,11 @@ const conf = {
         }
       ],
       '#end'
-    );
+    )
     setTimeout(() => {
-      this.calendar.disableDay([], '#end');
-    }, 2000);
+      this.calendar.disableDay([], '#end')
+    }, 2000)
   }
-};
+}
 
-Page(conf);
+Page(conf)
