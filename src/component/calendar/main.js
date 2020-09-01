@@ -507,9 +507,11 @@ function jumpWhenWeekMode({ year, month, day }, disableSelected) {
       )
       .then(date => {
         resolve(date);
+        Component.triggerEvent('afterCalendarRender', Component);
       })
       .catch(err => {
         reject(err);
+        Component.triggerEvent('afterCalendarRender', Component);
       });
   });
 }
