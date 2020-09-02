@@ -22,6 +22,11 @@
     color: #c7c7c7;
 }
 
+.default_choosed.default_date-disable {
+    color: #e2e2e2;
+    background-color: #c2afb6;
+}
+
 .default_prev-month-date,
 .default_next-month-date {
     color: #e2e2e2;

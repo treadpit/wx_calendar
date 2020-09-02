@@ -47,23 +47,27 @@ class Gesture {
   }
 }
 
-/**
- * 计算指定日期时间戳
- * @param {object} date
- */
-export function getTimeStamp(date) {
-  if (Object.prototype.toString.call(date) !== '[object Object]') return
-  const dateUtil = new DateUtil()
-  return dateUtil.newDate(date.year, date.month, date.day).getTime()
-}
-
 class DateUtil {
-  newDate(year, month, day) {
-    let cur = `${+year}-${+month}-${+day}`
+  newDate(year, month, date) {
+    let cur = `${+year}-${+month}-${+date}`
     if (isIos()) {
-      cur = `${+year}/${+month}/${+day}`
+      cur = `${+year}/${+month}/${+date}`
     }
     return new Date(cur)
+  }
+  /**
+   * 计算指定日期时间戳
+   * @param {object} date
+   */
+  getTimeStamp(dateInfo) {
+    if (typeof dateInfo === 'string') {
+      dateInfo = this.transformTimeStr2Dict(dateInfo)
+    }
+    if (Object.prototype.toString.call(dateInfo) !== '[object Object]') return
+    const dateUtil = new DateUtil()
+    return dateUtil
+      .newDate(dateInfo.year, dateInfo.month, dateInfo.date)
+      .getTime()
   }
   /**
    * 计算指定月份共多少天
@@ -109,6 +113,17 @@ class DateUtil {
   toTimeStr(dateInfo = {}) {
     return `${+dateInfo.year}-${+dateInfo.month}-${+dateInfo.date}`
   }
+  transformTimeStr2Dict(dateStr) {
+    if (typeof dateStr === 'string' && dateStr.includes('-')) {
+      const [year, month, date] = dateStr.split('-')
+      return this.tranformStr2NumOfDate({
+        year,
+        month,
+        date
+      })
+    }
+    return {}
+  }
   tranformStr2NumOfDate(date = {}) {
     const target = { ...date }
     // 可能传入字符串
@@ -119,8 +134,8 @@ class DateUtil {
   }
   sortDatesByTime(dates = [], sortType) {
     return dates.sort(function(a, b) {
-      const at = getTimeStamp(a)
-      const bt = getTimeStamp(b)
+      const at = this.getTimeStamp(a)
+      const bt = this.getTimeStamp(b)
       if (at < bt && sortType !== 'desc') {
         return -1
       } else {

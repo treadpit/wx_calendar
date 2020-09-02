@@ -1,20 +1,24 @@
 import todo from '../../component/calendarPlugin/plugins/todo'
+import selectable from '../../component/calendarPlugin/plugins/selectable'
 import solarLunar from '../../component/calendarPlugin/plugins/solarLunar/index'
 import plugin from '../../component/calendarPlugin/plugins/index'
 
-plugin.use(todo).use(solarLunar)
+plugin
+  .use(todo)
+  .use(solarLunar)
+  .use(selectable)
 
 const conf = {
   data: {
     calendarConfig: {
       // showLunar: true,
-      // theme: 'elegant'
+      theme: 'elegant',
       // chooseAreaMode: true,
       // firstDayOfWeek: 'Mon',
-      // disableMode: {
-      //   type: 'after',
-      //   date: '2020-03-9'
-      // },
+      disableMode: {
+        type: 'after',
+        date: '2020-08-15'
+      },
       defaultDate: '2020-8-6',
       multi: true,
       autoChoosedWhenJump: true
@@ -108,8 +112,19 @@ const conf = {
   },
   afterTapDate(e) {
     console.log('afterTapDate', e.detail)
-    const calendar = this.selectComponent('#calendar').calendar
-    console.log('onShow -> getSelectedDates', calendar.getSelectedDates())
+    // const calendar = this.selectComponent('#calendar').calendar
+    // console.log('onShow -> getSelectedDates', calendar.getSelectedDates())
+    // const toSet = [
+    //   {
+    //     year: 2020,
+    //     month: 8,
+    //     date: 19,
+    //     class: 'orange-date other-class' // 页面定义的 class，多个 class 由空格隔开
+    //   }
+    // ]
+    // calendar.setDateStyle(toSet).then(() => {
+    //   console.log('afterTapDate -> toSet', toSet)
+    // })
   },
   whenChangeMonth(e) {
     console.log('whenChangeMonth', e.detail)
@@ -276,7 +291,7 @@ const conf = {
           ;[eDate, sDate] = [sDate, eDate]
         }
         const area = [`${year}-${month}-${sDate}`, `${year}-${month}-${eDate}`]
-        calendar[action](area)
+        calendar[action](['2020-8-12', '2020-8-30'])
         this.setData({
           rstStr: JSON.stringify(area)
         })

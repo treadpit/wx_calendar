@@ -154,6 +154,34 @@ export default () => {
             ...existCalendarData,
             ...updatedRenderData
           })
+        },
+        setDateStyle: toSetDates => {
+          if (!Array.isArray(toSetDates)) return Promise.reject()
+          const existCalendarData = getCalendarData('calendar', component)
+          const { dates = [], specialStyleDates } = existCalendarData || {}
+          if (Array.isArray(specialStyleDates)) {
+            toSetDates = dateUtil.uniqueArrayByDate([
+              ...specialStyleDates,
+              ...toSetDates
+            ])
+          }
+          const toSetDatesStr = toSetDates.map(item => dateUtil.toTimeStr(item))
+          const _dates = dates.map(item => {
+            const idx = toSetDatesStr.indexOf(dateUtil.toTimeStr(item))
+            if (idx > -1) {
+              return {
+                ...item,
+                class: toSetDates[idx].class
+              }
+            } else {
+              return item
+            }
+          })
+          return renderCalendar.call(component, {
+            ...existCalendarData,
+            dates: _dates,
+            specialStyleDates: toSetDates
+          })
         }
       }
     }

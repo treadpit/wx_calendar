@@ -1,8 +1,8 @@
-import { dateUtil, calendarGesture, logger } from './utils/index'
-import { renderCalendar } from './render'
 import plugins from './plugins/index'
 import { calcJumpData } from './core'
+import { renderCalendar } from './render'
 import { calcTargetYMInfo } from './helper'
+import { dateUtil, calendarGesture, logger } from './utils/index'
 
 Component({
   options: {
@@ -102,8 +102,8 @@ Component({
       )
     },
     tapDate(e) {
-      const { info = {} } = e.currentTarget.dataset
-      const { date, disable } = info
+      const { info } = e.currentTarget.dataset
+      const { date, disable } = info || {}
       if (disable || !date) return
       const { calendar, config } = this.data
       let calendarData = calendar
