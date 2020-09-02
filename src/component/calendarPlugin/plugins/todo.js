@@ -1,4 +1,4 @@
-import { logger, getCalendarData, dateUtil } from '../utils/index'
+import { getCalendarData, dateUtil } from '../utils/index'
 import { renderCalendar } from '../render'
 
 function filterTodos({ curYear, curMonth, exsitedTodos, toSetTodos }) {
@@ -45,11 +45,10 @@ export default () => {
     name: 'todo',
     methods(component) {
       return {
-        setTodos: (options, componentId) => {
-          if (options) component.todoConfig = options
+        setTodos: (options = {}) => {
           const calendar = getCalendarData('calendar', component)
           if (!calendar || !calendar.dates) {
-            return logger.warn('请等待日历初始化完成后再调用该方法')
+            return Promise.reject('请等待日历初始化完成后再调用该方法')
           }
           let dates = [...calendar.dates]
           const { curYear, curMonth } = calendar
@@ -59,7 +58,7 @@ export default () => {
             pos = 'bottom',
             showLabelAlways,
             dates: todoDates = []
-          } = component.todoConfig || {}
+          } = options
           const { todos = [] } = calendar
           const allTodosOfThisMonths = filterTodos({
             curYear,
@@ -74,7 +73,11 @@ export default () => {
           )
           const calendarData = {
             dates,
-            todos: dateUtil.uniqueArrayByDate(todos.concat(todoDates))
+            todos: dateUtil.uniqueArrayByDate(
+              todos.concat(
+                todoDates.map(date => dateUtil.tranformStr2NumOfDate(date))
+              )
+            )
           }
           if (!circle) {
             if (pos) calendarData.todoLabelPos = pos
@@ -83,15 +86,16 @@ export default () => {
           calendarData.todoLabelCircle = circle || false
           calendarData.showLabelAlways = showLabelAlways || false
           const existCalendarData = getCalendarData('calendar', component)
-          renderCalendar.call(component, {
+          return renderCalendar.call(component, {
             ...existCalendarData,
             ...calendarData
           })
         },
         deleteTodos(todos = []) {
-          if (!(todos instanceof Array) || !todos.length) return
+          if (!(todos instanceof Array) || !todos.length)
+            return Promise.reject('deleteTodos()应为入参为非空数组')
           const existCalendarData = getCalendarData('calendar', component)
-          const allTodos = existCalendarData.todos
+          const allTodos = existCalendarData.todos || []
           const toDeleteTodos = todos.map(item => dateUtil.toTimeStr(item))
           const remainTodos = allTodos.filter(
             item => !toDeleteTodos.includes(dateUtil.toTimeStr(item))
@@ -111,27 +115,26 @@ export default () => {
           currentMonthTodos.forEach(item => {
             _dates[item.date - 1].showTodoLabel = !_dates[item.date - 1].choosed
           })
-          renderCalendar.call(component, {
+          return renderCalendar.call(component, {
             ...existCalendarData,
             dates: _dates,
             todos: remainTodos
           })
         },
-        clearTodoLabels() {
+        clearTodos() {
           const existCalendarData = getCalendarData('calendar', component)
           const _dates = [...existCalendarData.dates]
           _dates.forEach(item => {
             item.showTodoLabel = false
           })
-          renderCalendar.call(component, {
+          return renderCalendar.call(component, {
             ...existCalendarData,
             dates: _dates,
-            selectedDates: []
+            todos: []
           })
         },
         getTodos() {
-          const existCalendarData = getCalendarData('calendar', component)
-          return existCalendarData.selectedDates || []
+          return getCalendarData('calendar.todos', component)
         }
       }
     }

@@ -1,7 +1,8 @@
-import todo from '../../Calendar/plugins/todo'
-import plugin from '../../Calendar/plugins/index'
+import todo from '../../component/calendarPlugin/plugins/todo'
+import solarLunar from '../../component/calendarPlugin/plugins/solarLunar/index'
+import plugin from '../../component/calendarPlugin/plugins/index'
 
-plugin.use(todo)
+plugin.use(todo).use(solarLunar)
 
 const conf = {
   data: {
@@ -26,7 +27,7 @@ const conf = {
       },
       {
         text: '获取当前已选',
-        action: 'getSelectedDay',
+        action: 'getSelectedDates',
         color: 'red'
       },
       {
@@ -36,27 +37,27 @@ const conf = {
       },
       {
         text: '设置待办事项',
-        action: 'setTodoLabels',
+        action: 'setTodos',
         color: 'cyan'
       },
       {
         text: '删除指定代办',
-        action: 'deleteTodoLabels',
+        action: 'deleteTodos',
         color: 'pink'
       },
       {
         text: '清空待办事项',
-        action: 'clearTodoLabels',
+        action: 'clearTodos',
         color: 'red'
       },
       {
         text: '获取所有代办',
-        action: 'getTodoLabels',
+        action: 'getTodos',
         color: 'purple'
       },
       {
         text: '禁选指定日期',
-        action: 'disableDay',
+        action: 'disableDates',
         color: 'olive'
       },
       {
@@ -66,12 +67,12 @@ const conf = {
       },
       {
         text: '指定特定可选',
-        action: 'enableDays',
+        action: 'enableDates',
         color: 'red'
       },
       {
         text: '选中指定日期',
-        action: 'setSelectedDays',
+        action: 'setSelectedDates',
         color: 'cyan'
       },
       {
@@ -105,9 +106,10 @@ const conf = {
     //   })
     // }, 5000)
   },
-  afterTapDay(e) {
-    console.log('afterTapDay', e.detail)
-    console.log('onShow -> getSelectedDates', this.calendar.getSelectedDates())
+  afterTapDate(e) {
+    console.log('afterTapDate', e.detail)
+    const calendar = this.selectComponent('#calendar').calendar
+    console.log('onShow -> getSelectedDates', calendar.getSelectedDates())
   },
   whenChangeMonth(e) {
     console.log('whenChangeMonth', e.detail)
@@ -115,8 +117,8 @@ const conf = {
   whenChangeWeek(e) {
     console.log('whenChangeWeek', e.detail)
   },
-  onTapDay(e) {
-    console.log('onTapDay', e.detail)
+  onTapDate(e) {
+    console.log('onTapDate', e.detail)
   },
   afterCalendarRender(e) {
     console.log('afterCalendarRender', e)
@@ -160,7 +162,7 @@ const conf = {
     this.setData({
       rst: []
     })
-    const calendar = this.calendar
+    const calendar = this.selectComponent('#calendar').calendar
     const { year, month } = calendar.getCurrentYM()
     switch (action) {
       case 'config':
@@ -183,15 +185,15 @@ const conf = {
         const year = this.generateRandomDate('year')
         const month = this.generateRandomDate('month')
         const date = this.generateRandomDate('date')
-        calendar[action](year, month, date)
+        calendar[action]({ year, month, date })
         break
       }
-      case 'getSelectedDay': {
+      case 'getSelectedDates': {
         const selected = calendar[action]()
         if (!selected || !selected.length)
           return this.showToast('当前未选择任何日期')
         this.showToast('请在控制台查看结果')
-        console.log('get selected days: ', selected)
+        console.log('get selected dates: ', selected)
         const rst = selected.map(item => JSON.stringify(item))
         this.setData({
           rst
@@ -199,60 +201,55 @@ const conf = {
         break
       }
       case 'cancelSelectedDates':
-        calendar[action]([
-          {
-            year: 2020,
-            month: 3,
-            day: 3
-          }
-        ])
+        const selected = calendar.getSelectedDates()
+        calendar[action](selected)
         break
-      case 'setTodoLabels': {
-        const days = [
+      case 'setTodos': {
+        const dates = [
           {
             year,
             month,
-            day: this.generateRandomDate('date'),
+            date: this.generateRandomDate('date'),
             todoText: Math.random() * 10 > 5 ? '领奖日' : ''
           }
         ]
         calendar[action]({
           showLabelAlways: true,
-          days
+          dates
         })
-        console.log('set todo labels: ', days)
+        console.log('set todo: ', dates)
         break
       }
-      case 'deleteTodoLabels': {
-        const todos = [...calendar.getTodoLabels()]
-        if (todos && todos.length) {
-          todos.length = 1
-          calendar[action](todos)
-          const _todos = [...calendar.getTodoLabels()]
-          setTimeout(() => {
-            const rst = _todos.map(item => JSON.stringify(item))
-            this.setData(
-              {
-                rst
-              },
-              () => {
-                console.log('set todo labels: ', todos)
-              }
-            )
+      case 'deleteTodos': {
+        const todos = [...calendar.getTodos()]
+        if (todos.length) {
+          calendar[action]([todos[0]]).then(() => {
+            const _todos = [...calendar.getTodos()]
+            setTimeout(() => {
+              const rst = _todos.map(item => JSON.stringify(item))
+              this.setData(
+                {
+                  rst
+                },
+                () => {
+                  console.log('delete todo: ', todos[0])
+                }
+              )
+            })
           })
         } else {
           this.showToast('没有待办事项')
         }
         break
       }
-      case 'clearTodoLabels':
-        const todos = [...calendar.getTodoLabels()]
+      case 'clearTodos':
+        const todos = [...calendar.getTodos()]
         if (!todos || !todos.length) {
           return this.showToast('没有待办事项')
         }
         calendar[action]()
         break
-      case 'getTodoLabels': {
+      case 'getTodos': {
         const selected = calendar[action]()
         if (!selected || !selected.length)
           return this.showToast('未设置待办事项')
@@ -263,12 +260,12 @@ const conf = {
         })
         break
       }
-      case 'disableDay':
+      case 'disableDates':
         calendar[action]([
           {
             year,
             month,
-            day: this.generateRandomDate('date')
+            date: this.generateRandomDate('date')
           }
         ])
         break
@@ -285,17 +282,17 @@ const conf = {
         })
         break
       }
-      case 'enableDays':
-        const days = [
+      case 'enableDates':
+        const dates = [
           `${year}-${month}-${this.generateRandomDate('date')}`,
           `${year}-${month}-${this.generateRandomDate('date')}`,
           `${year}-${month}-${this.generateRandomDate('date')}`,
           `${year}-${month}-${this.generateRandomDate('date')}`,
           `${year}-${month}-${this.generateRandomDate('date')}`
         ]
-        calendar[action](days)
+        calendar[action](dates)
         this.setData({
-          rstStr: JSON.stringify(days)
+          rstStr: JSON.stringify(dates)
         })
         break
       case 'switchView':
@@ -307,24 +304,28 @@ const conf = {
           this.week = false
         }
         break
-      case 'setSelectedDays':
+      case 'setSelectedDates':
         const toSet = [
           {
             year,
             month,
-            day: this.generateRandomDate('date')
+            date: this.generateRandomDate('date')
           },
           {
             year,
             month,
-            day: this.generateRandomDate('date')
+            date: this.generateRandomDate('date')
           }
         ]
         calendar[action](toSet)
         break
       case 'getCalendarDates':
         this.showToast('请在控制台查看结果')
-        console.log(calendar.getCalendarDates())
+        console.log(
+          calendar.getCalendarDates({
+            lunar: true
+          })
+        )
         break
       default:
         break

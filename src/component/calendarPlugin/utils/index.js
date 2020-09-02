@@ -13,31 +13,6 @@ export function isIos() {
   return /iphone|ios/i.test(sys.platform)
 }
 
-class ComponentData {
-  constructor(component) {
-    this.Component = component
-  }
-  get(key) {
-    const data = this.Component.data
-    if (!key) return data
-    if (key.includes('.')) {
-      let keys = key.split('.')
-      const tmp = keys.reduce((prev, next) => {
-        return prev[next]
-      }, data)
-      return tmp
-    } else {
-      return this.Component.data[key]
-    }
-  }
-  set(data, cb = () => {}) {
-    if (!data) return
-    if (typeof data === 'object') {
-      this.Component.setData(data, cb)
-    }
-  }
-}
-
 class Gesture {
   /**
    * 左滑
@@ -121,9 +96,9 @@ class DateUtil {
     const month = _date.getMonth() + 1
     const date = _date.getDate()
     return {
-      year,
-      month,
-      date
+      year: +year,
+      month: +month,
+      date: +date
     }
   }
   todayTimestamp() {
@@ -131,11 +106,16 @@ class DateUtil {
     const timestamp = this.newDate(year, month, date).getTime()
     return timestamp
   }
-  toTimeStr(date = {}) {
-    if (date.day) {
-      date.date = date.day
-    }
-    return `${+date.year}-${+date.month}-${+date.date}`
+  toTimeStr(dateInfo = {}) {
+    return `${+dateInfo.year}-${+dateInfo.month}-${+dateInfo.date}`
+  }
+  tranformStr2NumOfDate(date = {}) {
+    const target = { ...date }
+    // 可能传入字符串
+    target.year = +target.year
+    target.month = +target.month
+    target.date = +target.date
+    return target
   }
   sortDatesByTime(dates = [], sortType) {
     return dates.sort(function(a, b) {
@@ -150,37 +130,49 @@ class DateUtil {
   }
   getPrevMonthInfo(date = {}) {
     const prevMonthInfo =
-      +date.month > 1
+      Number(date.month) > 1
         ? {
-            year: date.year,
-            month: date.month - 1
+            year: +date.year,
+            month: Number(date.month) - 1
           }
         : {
-            year: date.year - 1,
+            year: Number(date.year) - 1,
             month: 12
           }
     return prevMonthInfo
   }
   getNextMonthInfo(date = {}) {
     const nextMonthInfo =
-      +date.month < 12
+      Number(date.month) < 12
         ? {
-            year: date.year,
-            month: date.month + 1
+            year: +date.year,
+            month: Number(date.month) + 1
           }
         : {
-            year: date.year + 1,
+            year: Number(date.year) + 1,
             month: 1
           }
     return nextMonthInfo
+  }
+  getPrevYearInfo(date = {}) {
+    return {
+      year: Number(date.year) - 1,
+      month: +date.month
+    }
+  }
+  getNextYearInfo(date = {}) {
+    return {
+      year: Number(date.year) + 1,
+      month: +date.month
+    }
   }
   calcDates(year, month) {
     const datesCount = this.getDatesCountOfMonth(year, month)
     const dates = []
     for (let i = 1; i <= datesCount; i++) {
       const date = {
-        year,
-        month,
+        year: +year,
+        month: +month,
         date: i
       }
       dates.push(date)
@@ -195,7 +187,7 @@ class DateUtil {
     let uniqueObject = {}
     let uniqueArray = []
     array.forEach(item => {
-      uniqueObject[`${item.year}-${item.month}-${item.date}`] = item
+      uniqueObject[dateUtil.toTimeStr(item)] = item
     })
     for (let i in uniqueObject) {
       uniqueArray.push(uniqueObject[i])
@@ -205,7 +197,7 @@ class DateUtil {
   /**
    * 筛选指定年月日期
    * @param {object} target 指定年月
-   * @param {array} dates 当前设置的所有todos
+   * @param {array} dates 待筛选日期
    */
   filterDatesByYM(target, dates) {
     if (target) {
@@ -252,8 +244,9 @@ export function getComponentById(componentId) {
 export const logger = new Logger()
 export const calendarGesture = new Gesture()
 export const dateUtil = new DateUtil()
-export const componentDate = new ComponentData()
 export const getCalendarData = (key, component) =>
   new WxData(component).getData(key)
-export const setCalendarData = (key, value, component) =>
-  new WxData(component).setData(key, value)
+export const setCalendarData = (data, component) =>
+  new WxData(component).setData(data)
+export const getCalendarConfig = component =>
+  getCalendarData('config', component)

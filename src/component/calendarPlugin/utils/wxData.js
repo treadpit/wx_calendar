@@ -15,11 +15,15 @@ class WxData {
       return this.Component.data[key]
     }
   }
-  setData(data, cb = () => {}) {
-    if (!data) return
-    if (typeof data === 'object') {
-      this.Component.setData(data, cb)
-    }
+  setData(data) {
+    return new Promise((resolve, reject) => {
+      if (!data) return reject('no data to set')
+      if (typeof data === 'object') {
+        this.Component.setData(data, () => {
+          resolve(data)
+        })
+      }
+    })
   }
 }
 

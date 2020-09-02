@@ -1,13 +1,8 @@
-import {
-  dateUtil,
-  getCurrentPage,
-  calendarGesture,
-  logger
-} from './utils/index'
+import { dateUtil, calendarGesture, logger } from './utils/index'
 import { renderCalendar } from './render'
 import plugins from './plugins/index'
-import { setConfig } from './utils/config'
 import { calcJumpData } from './core'
+import { calcTargetYMInfo } from './helper'
 
 Component({
   options: {
@@ -18,14 +13,6 @@ Component({
     config: {
       type: Object,
       value: {}
-    }
-  },
-  data: {
-    handleMap: {
-      prev_year: 'chooseYear',
-      prev_month: 'chooseMonth',
-      next_month: 'chooseMonth',
-      next_year: 'chooseYear'
     }
   },
   lifetimes: {
@@ -88,27 +75,31 @@ Component({
       }
       config.theme = config.theme || 'default'
       this.weekMode = config.weekMode
-      setConfig(config, this).then(() => {
-        for (let plugin of plugins.installed) {
-          const [, p] = plugin
-          if (typeof p.install === 'function') {
-            p.install(this)
-          }
-          if (typeof p.methods === 'function') {
-            const methods = p.methods(this)
-            for (let fnName in methods) {
-              const fn = methods[fnName]
-              if (typeof fn === 'function') {
-                const page = getCurrentPage()
-                if (!page.calendar) page.calendar = {}
-                page.calendar[fnName] = fn
+      this.setData(
+        {
+          config
+        },
+        () => {
+          for (let plugin of plugins.installed) {
+            const [, p] = plugin
+            if (typeof p.install === 'function') {
+              p.install(this)
+            }
+            if (typeof p.methods === 'function') {
+              const methods = p.methods(this)
+              for (let fnName in methods) {
+                const fn = methods[fnName]
+                if (typeof fn === 'function') {
+                  if (!this.calendar) this.calendar = {}
+                  this.calendar[fnName] = fn
+                }
               }
             }
           }
+          const initData = this.initCalendar(config)
+          renderCalendar.call(this, initData, config)
         }
-        const initData = this.initCalendar(config)
-        renderCalendar.call(this, initData, config)
-      })
+      )
     },
     tapDate(e) {
       const { info = {} } = e.currentTarget.dataset
@@ -123,7 +114,7 @@ Component({
         }
       }
       renderCalendar.call(this, calendarData, config).then(() => {
-        this.triggerEvent('afterTapDay', calendarData.dates[date - 1])
+        this.triggerEvent('afterTapDate', calendarData.dates[date - 1])
       })
     },
     /**
@@ -165,42 +156,35 @@ Component({
     },
     handleSwipe(direction) {
       let swipeKey = 'calendar.leftSwipe'
-      // let swipeCalendarType = 'next_month'
-      // let weekChangeType = 'next_week'
       if (direction === 'right') {
         swipeKey = 'calendar.rightSwipe'
-        // swipeCalendarType = 'prev_month'
-        // weekChangeType = 'prev_week'
       }
       this.setData({
         [swipeKey]: 1
       })
-      // this.currentYM = getCurrentYM()
-      // if (this.weekMode) {
-      //   this.swipeLock = false
-      //   // this.currentDates = getCalendarDates()
-      //   if (weekChangeType === 'prev_week') {
-      //     Week(this).calculatePrevWeekDays()
-      //   } else if (weekChangeType === 'next_week') {
-      //     Week(this).calculateNextWeekDays()
-      //   }
-      //   this.onSwipeCalendar(weekChangeType)
-      //   this.onWeekChange(weekChangeType)
-      //   return
-      // }
-      // this.chooseMonth(swipeCalendarType)
-      // this.onSwipeCalendar(swipeCalendarType)
-      const { calendar, config } = this.data
+      const { calendar } = this.data
       let calendarData = calendar
       const { curYear, curMonth } = calendarData
-      const getMonthInfo =
-        direction === 'left'
-          ? dateUtil.getNextMonthInfo
-          : dateUtil.getPrevMonthInfo
+      const getMonthInfo = calcTargetYMInfo()[direction]
       const target = getMonthInfo({
         year: curYear,
         month: curMonth
       })
+      this.renderCalendar(target)
+    },
+    changeDate(e) {
+      const { type } = e.currentTarget.dataset
+      const { calendar: calendarData } = this.data
+      const { curYear, curMonth } = calendarData
+      const getMonthInfo = calcTargetYMInfo()[type]
+      const target = getMonthInfo({
+        year: curYear,
+        month: curMonth
+      })
+      this.renderCalendar(target)
+    },
+    renderCalendar(target) {
+      let { calendar: calendarData, config, curYear, curMonth } = this.data
       for (let plugin of plugins.installed) {
         const [, p] = plugin
         if (typeof p.onChangeMonth === 'function') {

@@ -1,5 +1,4 @@
-import { dateUtil } from './utils/index'
-import { getConfig } from './utils/config'
+import { dateUtil, getCalendarConfig } from './utils/index'
 
 /**
  * 计算当前月份前后两月应占的格子
@@ -34,11 +33,13 @@ function calculatePrevMonthGrids(year, month, config) {
   if (firstDayOfWeek > 0) {
     const len = prevMonthDays - firstDayOfWeek
     const { onlyShowCurrentMonth } = config
+    const YMInfo = dateUtil.getPrevMonthInfo({ year, month })
     for (let i = prevMonthDays; i > len; i--) {
       if (onlyShowCurrentMonth) {
         empytGrids.push('')
       } else {
         empytGrids.push({
+          ...YMInfo,
           date: i
         })
       }
@@ -99,11 +100,13 @@ function calculateNextMonthGrids(year, month, config) {
   if (!onlyShowCurrentMonth) {
     len = len + calculateExtraEmptyDate(year, month, config)
   }
+  const YMInfo = dateUtil.getNextMonthInfo({ year, month })
   for (let i = 1; i <= len; i++) {
     if (onlyShowCurrentMonth) {
       emptyGrids.push('')
     } else {
       emptyGrids.push({
+        ...YMInfo,
         date: i
       })
     }
@@ -123,7 +126,7 @@ function calculateCurrentMonthDates(year, month) {
 export function calcJumpData({ dateInfo, config, component }) {
   dateInfo = dateInfo || dateUtil.todayFMD()
   const { year, month, date } = dateInfo
-  const calendarConfig = config || getConfig(component)
+  const calendarConfig = config || getCalendarConfig(component)
   const emptyGrids = calculateEmptyGrids(year, month, calendarConfig)
   const calendar = {
     curYear: year,

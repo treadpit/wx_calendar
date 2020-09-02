@@ -1,38 +1,37 @@
 import plugins from './plugins/index'
-import { getConfig } from './utils/config'
-export let initialComponent = null
+import { getCalendarConfig } from './utils/index'
 
 /**
  * 渲染日历
  */
 export function renderCalendar(calendarData, config) {
   return new Promise(resolve => {
-    if (this.firstRender === void 0) {
-      this.firstRender = true
+    const Component = this
+    if (Component.firstRender === void 0) {
+      Component.firstRender = true
     } else {
-      this.firstRender = false
+      Component.firstRender = false
     }
-    initialComponent = this
-    const calendarConfig = config || getConfig()
-    const exitData = this.data.calendar || {}
+    const calendarConfig = config || getCalendarConfig(Component)
+    const exitData = Component.data.calendar || {}
     for (let plugin of plugins.installed) {
       const [, p] = plugin
       if (typeof p.beforeRender === 'function') {
         calendarData = p.beforeRender(
           { ...exitData, ...calendarData },
           calendarConfig,
-          this
+          Component
         )
       }
     }
-    this.setData(
+    Component.setData(
       {
         calendar: calendarData
       },
       () => {
         resolve({
           calendar: calendarData,
-          firstRender: this.firstRender
+          firstRender: Component.firstRender
         })
       }
     )
