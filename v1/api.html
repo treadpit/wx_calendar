@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>功能一览 | 小历同学</title>
+    <meta name="generator" content="VuePress 1.5.4">
+    
+    <meta name="description" content="在2.0中使用了插件系统，按需引入对应功能插件">
+    <link rel="preload" href="/wx_calendar/assets/css/0.styles.15ac53b1.css" as="style"><link rel="preload" href="/wx_calendar/assets/js/app.53bef8c1.js" as="script"><link rel="preload" href="/wx_calendar/assets/js/2.9de5e40c.js" as="script"><link rel="preload" href="/wx_calendar/assets/js/7.41fc7b64.js" as="script"><link rel="prefetch" href="/wx_calendar/assets/js/10.f3f4e614.js"><link rel="prefetch" href="/wx_calendar/assets/js/11.cbec1f11.js"><link rel="prefetch" href="/wx_calendar/assets/js/12.6904931e.js"><link rel="prefetch" href="/wx_calendar/assets/js/13.ee61d88b.js"><link rel="prefetch" href="/wx_calendar/assets/js/14.52129fcf.js"><link rel="prefetch" href="/wx_calendar/assets/js/3.53026b55.js"><link rel="prefetch" href="/wx_calendar/assets/js/4.32b0f5a5.js"><link rel="prefetch" href="/wx_calendar/assets/js/5.3961857e.js"><link rel="prefetch" href="/wx_calendar/assets/js/6.f20dce1d.js"><link rel="prefetch" href="/wx_calendar/assets/js/8.e6f32368.js"><link rel="prefetch" href="/wx_calendar/assets/js/9.29303966.js">
+    <link rel="stylesheet" href="/wx_calendar/assets/css/0.styles.15ac53b1.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/wx_calendar/" class="home-link router-link-active"><!----> <span class="site-name">小历同学</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="文档版本" class="dropdown-title"><span class="title">文档版本</span> <span class="arrow down"></span></button> <button type="button" aria-label="文档版本" class="mobile-dropdown-title"><span class="title">文档版本</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/wx_calendar/v1/guide/" class="nav-link">
+  1.x
+</a></li><li class="dropdown-item"><!----> <a href="/wx_calendar/v2/guide/" class="nav-link">
+  2.0
+</a></li></ul></div></div> <a href="https://github.com/treadpit/wx_calendar" target="_blank" rel="noopener noreferrer" class="repo-link">
+    查看源码
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="文档版本" class="dropdown-title"><span class="title">文档版本</span> <span class="arrow down"></span></button> <button type="button" aria-label="文档版本" class="mobile-dropdown-title"><span class="title">文档版本</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/wx_calendar/v1/guide/" class="nav-link">
+  1.x
+</a></li><li class="dropdown-item"><!----> <a href="/wx_calendar/v2/guide/" class="nav-link">
+  2.0
+</a></li></ul></div></div> <a href="https://github.com/treadpit/wx_calendar" target="_blank" rel="noopener noreferrer" class="repo-link">
+    查看源码
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav>  <ul class="sidebar-links"><li><a href="/wx_calendar/v1/guide.html" class="sidebar-link">快速开始</a></li><li><a href="/wx_calendar/v1/api.html" aria-current="page" class="active sidebar-link">功能一览</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#日历事件使用说明" class="sidebar-link">日历事件使用说明</a></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#跳转至指定日期" class="sidebar-link">跳转至指定日期</a></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#获取当前选择的日期" class="sidebar-link">获取当前选择的日期</a></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#获取日历当前年月" class="sidebar-link">获取日历当前年月</a></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#取消选中日期" class="sidebar-link">取消选中日期</a></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#待办事项" class="sidebar-link">待办事项</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#设置待办事项" class="sidebar-link">设置待办事项</a></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#删除待办事项" class="sidebar-link">删除待办事项</a></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#清空待办事项" class="sidebar-link">清空待办事项</a></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#获取所有代办日期" class="sidebar-link">获取所有代办日期</a></li></ul></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#禁选指定日期" class="sidebar-link">禁选指定日期</a></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#指定可选日期" class="sidebar-link">指定可选日期</a></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#设置选中多个日期" class="sidebar-link">设置选中多个日期</a></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#获取当前日历面板日期" class="sidebar-link">获取当前日历面板日期</a></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#周月视图切换" class="sidebar-link">周月视图切换</a></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#设置日历配置" class="sidebar-link">设置日历配置</a></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#获取日历配置" class="sidebar-link">获取日历配置</a></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#日期范围选择" class="sidebar-link">日期范围选择</a></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/api.html#设置指定日期样式" class="sidebar-link">设置指定日期样式</a></li></ul></li><li><a href="/wx_calendar/v1/multiple.html" class="sidebar-link">多日历组件</a></li><li><a href="/wx_calendar/v1/template.html" class="sidebar-link">日历模板</a></li><li><a href="/wx_calendar/v1/datepicker.html" class="sidebar-link">日期选择器模板</a></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h2 id="日历事件使用说明"><a href="#日历事件使用说明" class="header-anchor">#</a> 日历事件使用说明</h2> <p>在初始化日历后，调用日历暴露的方法可采用 <strong><em>两种</em></strong> 方式，以 <code>jump</code> 函数为例</p> <blockquote><p>方法在日历渲染完成后，即 <code>afterCalendarRender()</code> 后才绑定到页面实例上，故请勿直接在页面初次 onShow 及之前调用方法。</p></blockquote> <blockquote><p>注意页面 <strong>多日历组件</strong> 时方法调用需要的参数 [componentId]，参考 <strong>多日历组件一节</strong> 文档说明，以下示例均以单日历组件为例</p></blockquote> <ul><li>(1) 调用当前页面实例上的方法（方法均已挂载至小程序页面实例的 <code>calendar</code> 对象上）</li></ul> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">/**
+ * 获取当前页面实例的方法
+ * 1. 原生小程序开发，Page() 入参对象上的函数，this直接指向当前页面实例
+ * 2. Taro3.0.5及以上版本中可使用 getCurrentInstance() 获取当前页面实例
+ * 3. 通用方法则直接调用小程序函数 getCurrentPages()，取数组最后一个即为当前页面实例
+**/</span>
+<span class="token function">Page</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token function">doSometing</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">jump</span><span class="token punctuation">(</span><span class="token number">2018</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre></div><ul><li>(2) 手动引入</li></ul> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">import</span> <span class="token punctuation">{</span> jump <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../../component/calendar/main.js'</span><span class="token punctuation">;</span>
+
+<span class="token function">Page</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token function">doSometing</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">jump</span><span class="token punctuation">(</span><span class="token number">2018</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre></div><h2 id="跳转至指定日期"><a href="#跳转至指定日期" class="header-anchor">#</a> 跳转至指定日期</h2> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// 默认跳转至今天</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">jump</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 入参为 number</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">jump</span><span class="token punctuation">(</span><span class="token number">2019</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 跳转至某月</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">jump</span><span class="token punctuation">(</span><span class="token number">2019</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">date</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 跳转至某日</span>
+</code></pre></div><h2 id="获取当前选择的日期"><a href="#获取当前选择的日期" class="header-anchor">#</a> 获取当前选择的日期</h2> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">const</span> options <span class="token operator">=</span> <span class="token punctuation">{</span>
+  lunar<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token comment">// 在配置showLunar为false, 但需返回农历信息时使用该选项</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">const</span> selectedDay <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">getSelectedDay</span><span class="token punctuation">(</span>options<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// =&gt; { year: 2019, month: 12, day: 1}</span>
+</code></pre></div><h2 id="获取日历当前年月"><a href="#获取日历当前年月" class="header-anchor">#</a> 获取日历当前年月</h2> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">const</span> ym <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">getCurrentYM</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// =&gt; { year: 2019, month: 12}</span>
+</code></pre></div><h2 id="取消选中日期"><a href="#取消选中日期" class="header-anchor">#</a> 取消选中日期</h2> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// 取消指定选中日期</span>
+<span class="token keyword">const</span> dates <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">{</span>
+    year<span class="token operator">:</span> <span class="token number">2020</span><span class="token punctuation">,</span>
+    month<span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+    day<span class="token operator">:</span> <span class="token number">2</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">cancelSelectedDates</span><span class="token punctuation">(</span>dates<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 取消所有选中</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">cancelSelectedDates</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h2 id="待办事项"><a href="#待办事项" class="header-anchor">#</a> 待办事项</h2> <h3 id="设置待办事项"><a href="#设置待办事项" class="header-anchor">#</a> 设置待办事项</h3> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// 待办事项中若有 todoText 字段，则会在待办日期下面显示指定文字，如自定义节日等。</span>
+
+<span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">setTodoLabels</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token comment">// 待办点标记设置</span>
+  pos<span class="token operator">:</span> <span class="token string">'bottom'</span><span class="token punctuation">,</span> <span class="token comment">// 待办点标记位置 ['top', 'bottom']</span>
+  dotColor<span class="token operator">:</span> <span class="token string">'purple'</span><span class="token punctuation">,</span> <span class="token comment">// 待办点标记颜色</span>
+  circle<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token comment">// 待办圆圈标记设置（如圆圈标记已签到日期），该设置与点标记设置互斥</span>
+  showLabelAlways<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token comment">// 点击时是否显示待办事项（圆点/文字），在 circle 为 true 及当日历配置 showLunar 为 true 时，此配置失效</span>
+  days<span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      year<span class="token operator">:</span> <span class="token number">2018</span><span class="token punctuation">,</span>
+      month<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+      day<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+      todoText<span class="token operator">:</span> <span class="token string">'待办'</span><span class="token punctuation">,</span>
+      color<span class="token operator">:</span> <span class="token string">'#f40'</span> <span class="token comment">// 单独定义代办颜色 (标记点、文字)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      year<span class="token operator">:</span> <span class="token number">2018</span><span class="token punctuation">,</span>
+      month<span class="token operator">:</span> <span class="token number">5</span><span class="token punctuation">,</span>
+      day<span class="token operator">:</span> <span class="token number">15</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h3 id="删除待办事项"><a href="#删除待办事项" class="header-anchor">#</a> 删除待办事项</h3> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">deleteTodoLabels</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+  <span class="token punctuation">{</span>
+    year<span class="token operator">:</span> <span class="token number">2018</span><span class="token punctuation">,</span>
+    month<span class="token operator">:</span> <span class="token number">5</span><span class="token punctuation">,</span>
+    day<span class="token operator">:</span> <span class="token number">12</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    year<span class="token operator">:</span> <span class="token number">2018</span><span class="token punctuation">,</span>
+    month<span class="token operator">:</span> <span class="token number">5</span><span class="token punctuation">,</span>
+    day<span class="token operator">:</span> <span class="token number">15</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h3 id="清空待办事项"><a href="#清空待办事项" class="header-anchor">#</a> 清空待办事项</h3> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">clearTodoLabels</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h3 id="获取所有代办日期"><a href="#获取所有代办日期" class="header-anchor">#</a> 获取所有代办日期</h3> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">const</span> options <span class="token operator">=</span> <span class="token punctuation">{</span>
+  lunar<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token comment">// 在配置showLunar为false, 但需返回农历信息时使用该选项</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">getTodoLabels</span><span class="token punctuation">(</span>options<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h2 id="禁选指定日期"><a href="#禁选指定日期" class="header-anchor">#</a> 禁选指定日期</h2> <p>注意：若入参为空数组，则清空所有禁选日期</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">disableDay</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+  <span class="token punctuation">{</span>
+    year<span class="token operator">:</span> <span class="token number">2018</span><span class="token punctuation">,</span>
+    month<span class="token operator">:</span> <span class="token number">7</span><span class="token punctuation">,</span>
+    day<span class="token operator">:</span> <span class="token number">31</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h2 id="指定可选日期"><a href="#指定可选日期" class="header-anchor">#</a> 指定可选日期</h2> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// 指定可选时间区域</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">enableArea</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'2018-11-12'</span><span class="token punctuation">,</span> <span class="token string">'2018-11-30'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 指定特定可选日期</span>
+<span class="token comment">// 注：若已调用enableArea() ，则会表现为追加</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">enableDays</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'2018-11-12'</span><span class="token punctuation">,</span> <span class="token string">'2018-12-3'</span><span class="token punctuation">,</span> <span class="token string">'2019-1-3'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h2 id="设置选中多个日期"><a href="#设置选中多个日期" class="header-anchor">#</a> 设置选中多个日期</h2> <p class="tip">该方法仅在多选模式下可用，初始化日历时请配置 multi。参数为数组，不传参则默认全选当前月份所有日期</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">const</span> toSet <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">{</span>
+    year<span class="token operator">:</span> <span class="token string">'2019'</span><span class="token punctuation">,</span>
+    month<span class="token operator">:</span> <span class="token string">'3'</span><span class="token punctuation">,</span>
+    day<span class="token operator">:</span> <span class="token string">'15'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    year<span class="token operator">:</span> <span class="token number">2019</span><span class="token punctuation">,</span>
+    month<span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+    day<span class="token operator">:</span> <span class="token number">18</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">setSelectedDays</span><span class="token punctuation">(</span>toSet<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h2 id="获取当前日历面板日期"><a href="#获取当前日历面板日期" class="header-anchor">#</a> 获取当前日历面板日期</h2> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">const</span> options <span class="token operator">=</span> <span class="token punctuation">{</span>
+  lunar<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token comment">// 在配置showLunar为false, 但需返回农历信息时使用该选项</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">const</span> dates <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">getCalendarDates</span><span class="token punctuation">(</span>options<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h2 id="周月视图切换"><a href="#周月视图切换" class="header-anchor">#</a> 周月视图切换</h2> <p><code>switchView('week')</code>，默认值为'month'；</p> <blockquote><p>因周视图模式特殊性，该模式下会隐藏年月切换操作栏</p></blockquote> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// 切换为周视图</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">switchView</span><span class="token punctuation">(</span><span class="token string">'week'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 切换为月视图</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">switchView</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 或者</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">switchView</span><span class="token punctuation">(</span><span class="token string">'month'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h2 id="设置日历配置"><a href="#设置日历配置" class="header-anchor">#</a> 设置日历配置</h2> <p><code>setCalendarConfig</code> 返回 <code>Promise</code></p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">setCalendarConfig</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  theme<span class="token operator">:</span> <span class="token string">'elegant'</span><span class="token punctuation">,</span>
+  <span class="token operator">...</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h2 id="获取日历配置"><a href="#获取日历配置" class="header-anchor">#</a> 获取日历配置</h2> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">const</span> conf <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">getCalendarConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h2 id="日期范围选择"><a href="#日期范围选择" class="header-anchor">#</a> 日期范围选择</h2> <blockquote><p>调用此方法默认打开 <code>chooseAreaMode</code>，非连续性日期选择请调用 <code>setSelectedDays()</code></p></blockquote> <blockquote><p>目前只支持单个连续时间段</p></blockquote> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// 当连续时间为单天时</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">chooseDateArea</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'2019-12-12'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 连续时间段</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">chooseDateArea</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'2019-12-28'</span><span class="token punctuation">,</span> <span class="token string">'2020-1-10'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">dates</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'choosed dates: '</span><span class="token punctuation">,</span> dates<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h2 id="设置指定日期样式"><a href="#设置指定日期样式" class="header-anchor">#</a> 设置指定日期样式</h2> <blockquote><p>该方法只会对日期生效。</p></blockquote> <p>组件样式隔离采用了 <code>apply-shared</code> 方案，此模式下页面样式会影响组件样式，使用时需注意页面样式对日历组件样式的覆盖。</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// 页面 js 文件</span>
+<span class="token keyword">const</span> toSet <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">{</span>
+    year<span class="token operator">:</span> <span class="token number">2019</span><span class="token punctuation">,</span>
+    month<span class="token operator">:</span> <span class="token number">11</span><span class="token punctuation">,</span>
+    day<span class="token operator">:</span> <span class="token number">19</span><span class="token punctuation">,</span>
+    <span class="token keyword">class</span><span class="token operator">:</span> <span class="token string">'orange-date other-class'</span> <span class="token comment">// 页面定义的 class，多个 class 由空格隔开</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>calendar<span class="token punctuation">.</span><span class="token function">setDateStyle</span><span class="token punctuation">(</span>toSet<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><div class="language-css extra-class"><pre class="language-css"><code><span class="token selector">.orange-date</span> <span class="token punctuation">{</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> #e8e8e8<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.orange-data .default_normal-date</span> <span class="token punctuation">{</span>
+  <span class="token property">color</span><span class="token punctuation">:</span> #333<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/treadpit/wx_calendar/edit/plugin-mode/v1/api.md" target="_blank" rel="noopener noreferrer">帮助我改善此页面！</a> <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></div> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">9/3/2020, 6:30:34 PM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/wx_calendar/v1/guide.html" class="prev">
+        快速开始
+      </a></span> <span class="next"><a href="/wx_calendar/v1/multiple.html">
+        多日历组件
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/wx_calendar/assets/js/app.53bef8c1.js" defer></script><script src="/wx_calendar/assets/js/2.9de5e40c.js" defer></script><script src="/wx_calendar/assets/js/7.41fc7b64.js" defer></script>
+  </body>
+</html>

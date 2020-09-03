@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>日期选择器模板 | 小历同学</title>
+    <meta name="generator" content="VuePress 1.5.4">
+    
+    <meta name="description" content="在2.0中使用了插件系统，按需引入对应功能插件">
+    <link rel="preload" href="/wx_calendar/assets/css/0.styles.15ac53b1.css" as="style"><link rel="preload" href="/wx_calendar/assets/js/app.53bef8c1.js" as="script"><link rel="preload" href="/wx_calendar/assets/js/2.9de5e40c.js" as="script"><link rel="preload" href="/wx_calendar/assets/js/8.e6f32368.js" as="script"><link rel="prefetch" href="/wx_calendar/assets/js/10.f3f4e614.js"><link rel="prefetch" href="/wx_calendar/assets/js/11.cbec1f11.js"><link rel="prefetch" href="/wx_calendar/assets/js/12.6904931e.js"><link rel="prefetch" href="/wx_calendar/assets/js/13.ee61d88b.js"><link rel="prefetch" href="/wx_calendar/assets/js/14.52129fcf.js"><link rel="prefetch" href="/wx_calendar/assets/js/3.53026b55.js"><link rel="prefetch" href="/wx_calendar/assets/js/4.32b0f5a5.js"><link rel="prefetch" href="/wx_calendar/assets/js/5.3961857e.js"><link rel="prefetch" href="/wx_calendar/assets/js/6.f20dce1d.js"><link rel="prefetch" href="/wx_calendar/assets/js/7.41fc7b64.js"><link rel="prefetch" href="/wx_calendar/assets/js/9.29303966.js">
+    <link rel="stylesheet" href="/wx_calendar/assets/css/0.styles.15ac53b1.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/wx_calendar/" class="home-link router-link-active"><!----> <span class="site-name">小历同学</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="文档版本" class="dropdown-title"><span class="title">文档版本</span> <span class="arrow down"></span></button> <button type="button" aria-label="文档版本" class="mobile-dropdown-title"><span class="title">文档版本</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/wx_calendar/v1/guide/" class="nav-link">
+  1.x
+</a></li><li class="dropdown-item"><!----> <a href="/wx_calendar/v2/guide/" class="nav-link">
+  2.0
+</a></li></ul></div></div> <a href="https://github.com/treadpit/wx_calendar" target="_blank" rel="noopener noreferrer" class="repo-link">
+    查看源码
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="文档版本" class="dropdown-title"><span class="title">文档版本</span> <span class="arrow down"></span></button> <button type="button" aria-label="文档版本" class="mobile-dropdown-title"><span class="title">文档版本</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/wx_calendar/v1/guide/" class="nav-link">
+  1.x
+</a></li><li class="dropdown-item"><!----> <a href="/wx_calendar/v2/guide/" class="nav-link">
+  2.0
+</a></li></ul></div></div> <a href="https://github.com/treadpit/wx_calendar" target="_blank" rel="noopener noreferrer" class="repo-link">
+    查看源码
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav>  <ul class="sidebar-links"><li><a href="/wx_calendar/v1/guide.html" class="sidebar-link">快速开始</a></li><li><a href="/wx_calendar/v1/api.html" class="sidebar-link">功能一览</a></li><li><a href="/wx_calendar/v1/multiple.html" class="sidebar-link">多日历组件</a></li><li><a href="/wx_calendar/v1/template.html" class="sidebar-link">日历模板</a></li><li><a href="/wx_calendar/v1/datepicker.html" aria-current="page" class="active sidebar-link">日期选择器模板</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/wx_calendar/v1/datepicker.html#引入" class="sidebar-link">引入</a></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/datepicker.html#初始化" class="sidebar-link">初始化</a></li><li class="sidebar-sub-header"><a href="/wx_calendar/v1/datepicker.html#配置" class="sidebar-link">配置</a></li></ul></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><div class="custom-block warning"><p class="custom-block-title">WARNING</p> <p>仅提供部分简单功能，且不再维护，建议使用日历组件自行重写此选择器。此 <code>template</code> 带有 <code>input</code> 输入框，不影响模板的使用，可配置隐藏</p></div> <h2 id="引入"><a href="#引入" class="header-anchor">#</a> 引入</h2> <div class="language-xml extra-class"><pre class="language-xml"><code>// example.wxml
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>import</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>../../template/datepicker/index.wxml<span class="token punctuation">&quot;</span></span><span class="token punctuation">/&gt;</span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>view</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>datepicker-box<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>datepicker<span class="token punctuation">&quot;</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>{{...datepicker}}<span class="token punctuation">&quot;</span></span> <span class="token punctuation">/&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>view</span><span class="token punctuation">&gt;</span></span>
+</code></pre></div><div class="language-css extra-class"><pre class="language-css"><code><span class="token comment">/* example.wxss */</span>
+<span class="token atrule"><span class="token rule">@import</span> <span class="token string">'../../template/datepicker/index.wxss'</span><span class="token punctuation">;</span></span>
+</code></pre></div><h2 id="初始化"><a href="#初始化" class="header-anchor">#</a> 初始化</h2> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">import</span> initDatepicker <span class="token keyword">from</span> <span class="token string">'../../template/datepicker/index'</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> conf <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token function-variable function">onShow</span><span class="token operator">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">initDatepicker</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 使用默认配置初始化日历选择器</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token function">Page</span><span class="token punctuation">(</span>conf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h2 id="配置"><a href="#配置" class="header-anchor">#</a> 配置</h2> <blockquote><p>此处 config 配置参考日历组件</p> <p>不同之处在于增加两个函数 showDatepicker/closeDatepicker, 控制开/关选择器面板</p> <p>打开面板跳转至指定日期，使用 showDatepicker()，参数形如：'2019-2-12'，不传则默认为当天</p></blockquote> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">import</span> initDatepicker<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  showDatepicker<span class="token punctuation">,</span>
+  closeDatepicker<span class="token punctuation">,</span>
+  getSelectedDay
+<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../../template/datepicker/index'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> conf <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token function-variable function">afterTapDay</span><span class="token operator">:</span> <span class="token parameter">currentSelect</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'当前点击的日期'</span><span class="token punctuation">,</span> currentSelect<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token function">initDatepicker</span><span class="token punctuation">(</span>conf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/treadpit/wx_calendar/edit/plugin-mode/v1/datepicker.md" target="_blank" rel="noopener noreferrer">帮助我改善此页面！</a> <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></div> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">9/3/2020, 6:30:34 PM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/wx_calendar/v1/template.html" class="prev">
+        日历模板
+      </a></span> <!----></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/wx_calendar/assets/js/app.53bef8c1.js" defer></script><script src="/wx_calendar/assets/js/2.9de5e40c.js" defer></script><script src="/wx_calendar/assets/js/8.e6f32368.js" defer></script>
+  </body>
+</html>
