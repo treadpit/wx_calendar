@@ -10,14 +10,14 @@ title: 安装插件
 
 ```js
 // 引入插件安装器
-import plugin from '/component/v2/index'
+import plugin from '/component/v2/plugins/index'
 
 // 设置代办
-import todo from '/component/v2/todo'
+import todo from '/component/v2/plugins/todo'
 // 禁用/启用可选状态
-import selectable from '/component/v2/selectable'
+import selectable from '/component/v2/plugins/selectable'
 // 农历相关功能
-import solarLunar from '/component/v2/solarLunar/index'
+import solarLunar from '/component/v2/plugins/solarLunar/index'
 
 // 开始安装，支持链式调用
 

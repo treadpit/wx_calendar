@@ -38,18 +38,24 @@ export default () => {
       const calendar = {
         ...calendarData
       }
-      const { multi } = calendarConfig
+      const { multi, inverse } = calendarConfig
       let dates = [...calendar.dates]
       if (!multi) {
-        dates = dates.map(d => ({
-          ...d,
-          choosed: false
-        }))
-        dates[dateIndex] = {
-          ...dates[dateIndex],
-          choosed: true
+        const preSelectedDate = [...calendar.selectedDates].pop() || {}
+        if (!inverse && +preSelectedDate.date === +tapeDate.date) {
+          return calendar
         }
-        calendar.selectedDates = [dates[dateIndex]]
+        let _tapeDate = { ...tapeDate, choosed: !tapeDate.choosed }
+
+        dates[dateIndex] = _tapeDate
+        if (preSelectedDate.date) {
+          dates[preSelectedDate.date - 1].choosed = false
+        }
+        if (dates[dateIndex].choosed) {
+          calendar.selectedDates = [dates[dateIndex]]
+        } else {
+          calendar.selectedDates = []
+        }
       } else {
         dates[dateIndex] = {
           ...dates[dateIndex],

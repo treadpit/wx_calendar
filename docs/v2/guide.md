@@ -6,7 +6,7 @@ title: 快速开始
 
 将 `calendar` 文件夹拷贝至自己的组件目录，页面 `json` 文件中配置组件，组件路径根据项目实际情况填写
 
-```json {3}
+``` json {3}
 {
   "usingComponents": {
     "calendar": "/component/calendar/index"
@@ -15,6 +15,7 @@ title: 快速开始
 ```
 
 在页面 `wxml` 中引入组件
+
 ```xml
 <calendar />
 ```
@@ -23,12 +24,11 @@ title: 快速开始
 
 ## 自定义事件
 
-另外日历组件提供一些自定义事件，其中自定义事件功能对应如下，返回参数的具体格式可运行 `calendarV2` 页面查看
-
+另外日历组件提供一些自定义事件，其中自定义事件功能对应如下，返回参数的具体格式可运行 `demo` 中 `pages/calendarV2/index` 页面查看
 
 ``` xml {2-7}
 <calendar
-  bind:onTapDate="onTapDate"
+  bind:takeoverTap="takeoverTap"
   bind:afterTapDate="afterTapDate"
   bind:afterCalendarRender="afterCalendarRender"
   bind:onSwipe="onSwipe"
@@ -48,8 +48,8 @@ Page({
    * 日期点击事件（此事件会完全接管点击事件），需自定义配置 takeoverTap 值为真才能生效
    * currentSelect 当前点击的日期
    */
-  onTapDate(e) {
-    console.log('onTapDate', e.detail) // => { year: 2019, month: 12, day: 3, ...}
+  takeoverTap(e) {
+    console.log('takeoverTap', e.detail) // => { year: 2019, month: 12, day: 3, ...}
   },
   /**
    * 选择日期后执行的事件
@@ -85,7 +85,7 @@ Page({
 ``` xml {1}
 <calendar
   config="{{calendarConfig}}"
-  bind:onTapDate="onTapDate"
+  bind:takeoverTap="takeoverTap"
   bind:afterTapDate="afterTapDate"
   bind:afterCalendarRender="afterCalendarRender"
   bind:onSwipe="onSwipe"
@@ -101,6 +101,10 @@ const conf = {
       multi: true, // 是否开启多选,
       theme: 'elegant', // 日历主题，目前共两款可选择，默认 default 及 elegant，自定义主题在 theme 文件夹扩展
       showLunar: true, // 是否显示农历，此配置会导致 setTodoLabels 中 showLabelAlways 配置失效
+      inverse: true, // 单选模式下是否支持取消选中,
+      markToday: '今', // 当天日期展示不使用默认数字，用特殊文字标记
+      takeoverTap: true, // 是否完全接管日期点击事件（日期不会选中)
+      highlightToday: true, // 是否高亮显示当天，区别于选中样式（初始化时当天高亮并不代表已选中当天）
       defaultDate: '2018-3-6', // 默认选中指定某天；当为 boolean 值 true 时则默认选中当天，非真值则在初始化时不自动选中日期，
       preventSwipe: true, // 是否禁用日历滑动切换月份
       firstDayOfWeek: 'Mon', // 每周第一天为周一还是周日，默认按周日开始

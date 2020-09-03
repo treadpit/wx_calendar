@@ -14,7 +14,7 @@ title: 插件系统
 
 ![](../.vuepress/public/process.png)
 
-## 插件开发
+## 插件结构
 
 拿简单的农历插件来说，该插件其实要满足的就是对于日期农历的计算。
 
@@ -29,16 +29,32 @@ export default () => {
      * beforeRender 可在日历渲染前做 calendarData 数据的处理操作
      * calendarData 由上一个插件处理后的数据
      * calendarConfig 组件配置
-     * 当前组件实例
+     * component 当前组件实例
      * @return calendarData
      **/
     beforeRender(calendarData, calendarConfig, component) {
-      // do something
+      // do some thing
       const some_data = {}
       // 此处须返回处理后的数据，否则下一个插件不能接收到数据导致不能运行
       // 无需做数据处理则不需要复写方法，或者直接返回上游的 calendarData
       return {
         some_data,
+        ...calendarData
+      }
+    },
+    /**
+     * 点击日期时可在日历渲染前根据所选日期做自有的处理
+     * tapeDate 当前点击的日期
+     * calendarData 由上一个插件处理后的数据
+     * calendarConfig 组件配置
+     * @return calendarData
+     **/
+    onTapDate(tapeDate, calendarData = {}, calendarConfig = {}) {
+      // do some thing
+
+      // 此处须返回处理后的数据，否则下一个插件不能接收到数据导致不能运行
+      // 无需做数据处理则不需要复写方法，或者直接返回上游的 calendarData
+      return {
         ...calendarData
       }
     },

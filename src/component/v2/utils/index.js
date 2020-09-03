@@ -184,11 +184,14 @@ class DateUtil {
   calcDates(year, month) {
     const datesCount = this.getDatesCountOfMonth(year, month)
     const dates = []
+    const today = dateUtil.todayFMD()
     for (let i = 1; i <= datesCount; i++) {
       const date = {
         year: +year,
         month: +month,
-        date: i
+        date: i,
+        isToday:
+          +today.year === +year && +today.month === +month && i === +today.date
       }
       dates.push(date)
     }

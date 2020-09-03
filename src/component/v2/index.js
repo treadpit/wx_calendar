@@ -66,7 +66,7 @@ Component({
       return {
         ...waitRenderData,
         todayTimestamp: timestamp,
-        weeksCh: dateUtil.getWeekHeader(config)
+        weeksCh: dateUtil.getWeekHeader(config.firstDayOfWeek)
       }
     },
     setConfig(config) {
@@ -107,6 +107,9 @@ Component({
       if (disable || !date) return
       const { calendar, config } = this.data
       let calendarData = calendar
+      if (config.takeoverTap) {
+        return this.triggerEvent('takeoverTap', info)
+      }
       for (let plugin of plugins.installed) {
         const [, p] = plugin
         if (typeof p.onTapDate === 'function') {
@@ -167,8 +170,15 @@ Component({
       const { curYear, curMonth } = calendarData
       const getMonthInfo = calcTargetYMInfo()[direction]
       const target = getMonthInfo({
-        year: curYear,
-        month: curMonth
+        year: +curYear,
+        month: +curMonth
+      })
+      this.triggerEvent('onSwipe', {
+        directionType: direction,
+        currentYM: {
+          year: +curYear,
+          month: +curMonth
+        }
       })
       this.renderCalendar(target)
     },
@@ -178,24 +188,25 @@ Component({
       const { curYear, curMonth } = calendarData
       const getMonthInfo = calcTargetYMInfo()[type]
       const target = getMonthInfo({
-        year: curYear,
-        month: curMonth
+        year: +curYear,
+        month: +curMonth
       })
       this.renderCalendar(target)
     },
     renderCalendar(target) {
-      let { calendar: calendarData, config, curYear, curMonth } = this.data
+      let { calendar: calendarData, config } = this.data
+      const { curYear, curMonth } = calendarData || {}
       for (let plugin of plugins.installed) {
         const [, p] = plugin
         if (typeof p.onChangeMonth === 'function') {
           calendarData = p.onChangeMonth(target, this)
         }
       }
-      renderCalendar.call(this, calendarData, config).then(() => {
+      return renderCalendar.call(this, calendarData, config).then(calender => {
         this.triggerEvent('whenChangeMonth', {
           current: {
-            year: curYear,
-            month: curMonth
+            year: +curYear,
+            month: +curMonth
           },
           next: target
         })

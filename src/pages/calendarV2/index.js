@@ -1,7 +1,7 @@
-import todo from '../../component/v2/todo'
-import selectable from '../../component/v2/selectable'
-import solarLunar from '../../component/v2/solarLunar/index'
-import plugin from '../../component/v2/index'
+import todo from '../../component/v2/plugins/todo'
+import selectable from '../../component/v2/plugins/selectable'
+import solarLunar from '../../component/v2/plugins/solarLunar/index'
+import plugin from '../../component/v2/plugins/index'
 
 plugin
   .use(todo)
@@ -11,17 +11,21 @@ plugin
 const conf = {
   data: {
     calendarConfig: {
-      // showLunar: true,
+      showLunar: true,
       theme: 'elegant',
+      inverse: true,
+      // markToday: '今',
+      highlightToday: true,
       // chooseAreaMode: true,
-      // firstDayOfWeek: 'Mon',
-      disableMode: {
-        type: 'after',
-        date: '2020-08-15'
-      },
-      defaultDate: '2020-8-6',
-      multi: true,
-      autoChoosedWhenJump: true
+      firstDayOfWeek: 'Mon'
+      // disableMode: {
+      //   type: 'after',
+      //   date: '2020-08-15'
+      // },
+      // defaultDate: '2020-8-6',
+      // multi: true,
+      // takeoverTap: true,
+      // autoChoosedWhenJump: true
     },
     actionBtn: [
       {
@@ -112,19 +116,6 @@ const conf = {
   },
   afterTapDate(e) {
     console.log('afterTapDate', e.detail)
-    // const calendar = this.selectComponent('#calendar').calendar
-    // console.log('onShow -> getSelectedDates', calendar.getSelectedDates())
-    // const toSet = [
-    //   {
-    //     year: 2020,
-    //     month: 8,
-    //     date: 19,
-    //     class: 'orange-date other-class' // 页面定义的 class，多个 class 由空格隔开
-    //   }
-    // ]
-    // calendar.setDateStyle(toSet).then(() => {
-    //   console.log('afterTapDate -> toSet', toSet)
-    // })
   },
   whenChangeMonth(e) {
     console.log('whenChangeMonth', e.detail)
@@ -132,14 +123,11 @@ const conf = {
   whenChangeWeek(e) {
     console.log('whenChangeWeek', e.detail)
   },
-  onTapDate(e) {
-    console.log('onTapDate', e.detail)
+  takeoverTap(e) {
+    console.log('takeoverTap', e.detail)
   },
   afterCalendarRender(e) {
     console.log('afterCalendarRender', e)
-    // this.calendar.switchView('week').then(() => {
-    //   this.calendar.jump(2020, 3, 1).then(date => {}); // 跳转至某日
-    // });
   },
   onSwipe(e) {
     console.log('onSwipe', e)
