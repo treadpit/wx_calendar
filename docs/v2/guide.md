@@ -26,7 +26,7 @@ title: 快速开始
 
 另外日历组件提供一些自定义事件，其中自定义事件功能对应如下，返回参数的具体格式可运行 `demo` 中 `pages/calendarV2/index` 页面查看
 
-``` xml {2-7}
+``` xml {2-6}
 <calendar
   bind:takeoverTap="takeoverTap"
   bind:afterTapDate="afterTapDate"
@@ -82,7 +82,7 @@ Page({
 
 组件支持一系列配置，自定义配置需手动传给组件，如：
 
-``` xml {1}
+``` xml {2}
 <calendar
   config="{{calendarConfig}}"
   bind:takeoverTap="takeoverTap"

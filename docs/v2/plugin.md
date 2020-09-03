@@ -40,7 +40,7 @@ plugin
 
 > 获取日历组件实例参考[selectComponent](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/events.html)
 
-```js {3-4}
+```js {4}
 Page({
   doSometing() {
     // 获取日历组件上的 calendar 对象

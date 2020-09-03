@@ -7,7 +7,7 @@ module.exports = {
     lastUpdated: 'Last Updated',
     nav: [
       {
-        text: '文档',
+        text: '文档版本',
         items: [
           {
             text: '1.x',
