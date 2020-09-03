@@ -8,6 +8,8 @@
     "build": "rm -rf component-calendar && webpack && gulp && gulp clean",
     "build:example": "rm -rf example && gulp example",
     "test": "jest",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
     "lint": "eslint src && stylelint \"src/**/*.wxss\"",
     "fix:js": "eslint src --fix",
     "fix:wxss": "stylelint \"src/**/*.wxss\" --fix"
@@ -65,6 +67,7 @@
     "stylelint-config-standard": "^18.0.0",
     "stylelint-config-wxss": "^2.4.0",
     "stylelint-no-z-index": "^1.1.2",
+    "vuepress": "^1.5.4",
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.7"
   },

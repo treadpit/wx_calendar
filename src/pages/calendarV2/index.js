@@ -1,7 +1,7 @@
-import todo from '../../component/calendarPlugin/plugins/todo'
-import selectable from '../../component/calendarPlugin/plugins/selectable'
-import solarLunar from '../../component/calendarPlugin/plugins/solarLunar/index'
-import plugin from '../../component/calendarPlugin/plugins/index'
+import todo from '../../component/v2/todo'
+import selectable from '../../component/v2/selectable'
+import solarLunar from '../../component/v2/solarLunar/index'
+import plugin from '../../component/v2/index'
 
 plugin
   .use(todo)
