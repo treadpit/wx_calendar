@@ -1,0 +1,26 @@
+<view style="width: 90%;height:640rpx;overflow:hidden;margin: 0 auto 40rpx;">
+  <calendar
+    id="calendar"
+    config="{{calendarConfig}}"
+    bind:onSwipe="onSwipe"
+    bind:takeoverTap="takeoverTap"
+    bind:afterTapDate="afterTapDate"
+    bind:whenChangeMonth="whenChangeMonth"
+    bind:afterCalendarRender="afterCalendarRender"
+  ></calendar>
+</view>
+
+<view class='b cc wrap btn-wrap'>
+    <button
+      class='b cc btn btn-{{item.color}} btn-action-{{item.action}}'
+      wx:for="{{actionBtn}}"
+      wx:key="action"
+      data-action="{{item.action}}"
+      data-disable="{{item.disable}}"
+      bindtap="handleAction">{{item.text}}</button>
+</view>
+
+<view class="show-rst-wrap">
+  <view wx:if="{{rst}}" wx:for="{{rst}}" wx:key="index" class="show-rst">{{item}}</view>
+  <view wx:if="{{rstStr}}" wx:key="index" class="show-rst">{{rstStr}}</view>
+</view>

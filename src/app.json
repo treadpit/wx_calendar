@@ -2,6 +2,7 @@
   "pages":[
     "pages/index/index",
     "pages/calendar/index",
+    "pages/calendarV2/index",
     "pages/calendarTemplate/index",
     "pages/calendarComponent/index",
     "pages/calendarMoreComponent/index",

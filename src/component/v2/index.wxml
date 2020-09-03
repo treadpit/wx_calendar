@@ -1,0 +1,58 @@
+<view class="flex b tb ac" wx:if="{{calendar}}">
+  <view class="calendar b tb">
+    <!-- 头部操作栏 -->
+    <view class="handle {{config.theme}}_handle-color fs28 b lr ac pc">
+      <view class="prev fs36">
+        <text class="prev-handle iconfont icon-doubleleft" bindtap="changeDate" data-type="prev_year"></text>
+        <text class="prev-handle iconfont icon-left" bindtap="changeDate" data-type="prev_month"></text>
+      </view>
+      <view class="flex date-in-handle b lr cc" bindtap="doubleClickToToday">{{calendar.curYear || "--"}} 年 {{calendar.curMonth || "--"}} 月</view>
+      <view class="next fs36">
+        <text class="next-handle iconfont icon-right" bindtap="changeDate" data-type="next_month"></text>
+        <text class="next-handle iconfont icon-doubleright" bindtap="changeDate" data-type="next_year"></text>
+      </view>
+    </view>
+    <!-- 星期栏 -->
+    <view class="weeks b lr ac {{config.theme}}_week-color">
+      <view class="week fs28" wx:for="{{calendar.weeksCh}}" wx:key="index" data-idx="{{index}}">{{item}}</view>
+    </view>
+    <!-- 日历面板主体 -->
+    <view class="b lr wrap" bindtouchstart="calendarTouchstart" catchtouchmove="calendarTouchmove" catchtouchend="calendarTouchend">
+      <!-- 上月日期格子 -->
+      <view class="grid b ac pc {{config.theme}}_prev-month-date" wx:for="{{calendar.prevMonthGrids}}" wx:key="index" data-idx="{{index}}">
+        <view class="date-wrap b cc">
+          <view class="date">
+                {{item.date}}
+          </view>
+        </view>
+      </view>
+      <!-- 本月日期格子 -->
+      <view wx:for="{{calendar.dates}}" wx:key="index" data-idx="{{index}}" data-info="{{item}}" bindtap="tapDate" class="grid {{item.class ? item.class  : ''}} {{config.theme}}_normal-date b ac pc">
+        <view class="date-wrap b cc {{(item.week === 0 || item.week === 6) ? config.theme + '_weekend-color' : ''}}">
+          <view class="date b ac pc {{item.class ? item.class  : ''}} {{item.isToday ? config.theme + '_today' : ''}} {{item.choosed ? config.theme + '_choosed' : ''}} {{item.disable ? config.theme + '_date-disable' : ''}}">
+                {{config.markToday && item.isToday ? config.markToday : item.date}}
+                <view
+                  wx:if="{{(config.showLunar && item.lunar && !item.showTodoLabel) || (item.showTodoLabel && calendar.todoLabelPos !== 'bottom')}}"
+                  class="date-desc {{config.theme}}_date-desc date-desc-bottom {{(item.choosed || item.isToday) ? 'date-desc-bottom-always' : ''}} {{item.disable ? config.theme + '_date-desc-disable' : ''}}">
+                  {{item.lunar.Term || item.lunar.IDayCn}}
+                </view>
+                <view
+                  wx:if="{{item.showTodoLabel && !calendar.todoLabelCircle}}"
+                  class="{{item.todoText ? 'date-desc' : config.theme + '_todo-dot todo-dot'}} {{config.showLunar ? config.theme + '_date-desc-lunar' : ''}} {{calendar.todoLabelPos === 'bottom' ? 'date-desc-bottom todo-dot-bottom' : 'date-desc-top todo-dot-top'}} {{calendar.showLabelAlways && item.choosed && calendar.todoLabelPos === 'bottom' ? 'date-desc-bottom-always todo-dot-bottom-always' : ''}} {{calendar.showLabelAlways && item.choosed && calendar.todoLabelPos === 'top' ? 'date-desc-top-always todo-dot-top-always' : ''}}"
+                  style="background-color: {{item.todoText ? '' : item.color || calendar.todoLabelColor}}; color: {{item.color}}">
+                    {{item.todoText}}
+                </view>
+          </view>
+        </view>
+      </view>
+      <!-- 下月日期格子 -->
+      <view class="grid b ac pc {{config.theme}}_next-month-date" wx:for="{{calendar.nextMonthGrids}}" wx:key="index" data-idx="{{index}}">
+        <view class="date-wrap b cc">
+          <view class="date">
+              {{item.date}}
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

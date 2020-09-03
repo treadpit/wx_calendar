@@ -2,7 +2,7 @@ import initCalendar, {
   getSelectedDay,
   setTodoLabels,
   switchView
-} from '../../template/calendar/index';
+} from '../../template/calendar/index'
 const conf = {
   onShow: function() {
     initCalendar({
@@ -14,14 +14,14 @@ const conf = {
        * @param { array } allSelectedDays 选择的所有日期（当mulit为true时，才有allSelectedDays参数）
        */
       afterTapDay: (currentSelect, allSelectedDays) => {
-        console.log('===============================');
-        console.log('当前点击的日期', currentSelect);
+        console.log('===============================')
+        console.log('当前点击的日期', currentSelect)
         console.log(
           '当前点击的日期是否有事件标记: ',
           currentSelect.hasTodo || false
-        );
-        allSelectedDays && console.log('选择的所有日期', allSelectedDays);
-        console.log('getSelectedDay方法', getSelectedDay());
+        )
+        allSelectedDays && console.log('选择的所有日期', allSelectedDays)
+        console.log('getSelectedDay方法', getSelectedDay())
       },
       whenChangeMonth(current, next) {
         // console.log(current);
@@ -52,24 +52,24 @@ const conf = {
             day: 18,
             todoText: '待办'
           }
-        ];
+        ]
         // 异步请求
         setTimeout(() => {
           setTodoLabels({
             circle: true,
             days: data
-          });
-        }, 1000);
+          })
+        }, 1000)
         // enableArea(['2018-10-7', '2018-10-28']);
       }
-    });
+    })
   },
   switchView() {
     if (!this.weekMode) {
-      switchView('week');
+      switchView('week')
     } else {
-      switchView();
+      switchView()
     }
   }
-};
-Page(conf);
+}
+Page(conf)

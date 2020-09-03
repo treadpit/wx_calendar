@@ -90,61 +90,61 @@ const conf = {
     ]
   },
   afterTapDay(e) {
-    console.log('afterTapDay', e.detail);
+    console.log('afterTapDay', e.detail)
   },
   whenChangeMonth(e) {
-    console.log('whenChangeMonth', e.detail);
+    console.log('whenChangeMonth', e.detail)
   },
   whenChangeWeek(e) {
-    console.log('whenChangeWeek', e.detail);
+    console.log('whenChangeWeek', e.detail)
   },
   onTapDay(e) {
-    console.log('onTapDay', e.detail);
+    console.log('onTapDay', e.detail)
   },
   afterCalendarRender(e) {
-    console.log('afterCalendarRender', e);
+    console.log('afterCalendarRender', e)
     // this.calendar.switchView('week').then(() => {
     //   this.calendar.jump(2020, 3, 1).then(date => {}); // 跳转至某日
     // });
   },
   onSwipe(e) {
-    console.log('onSwipe', e);
+    console.log('onSwipe', e)
   },
   showToast(msg) {
-    if (!msg || typeof msg !== 'string') return;
+    if (!msg || typeof msg !== 'string') return
     wx.showToast({
       title: msg,
       icon: 'none',
       duration: 1500
-    });
+    })
   },
   generateRandomDate(type) {
-    let random = ~~(Math.random() * 10);
+    let random = ~~(Math.random() * 10)
     switch (type) {
       case 'year':
-        random = 201 * 10 + ~~(Math.random() * 10);
-        break;
+        random = 201 * 10 + ~~(Math.random() * 10)
+        break
       case 'month':
-        random = (~~(Math.random() * 10) % 9) + 1;
-        break;
+        random = (~~(Math.random() * 10) % 9) + 1
+        break
       case 'date':
-        random = (~~(Math.random() * 100) % 27) + 1;
-        break;
+        random = (~~(Math.random() * 100) % 27) + 1
+        break
       default:
-        break;
+        break
     }
-    return random;
+    return random
   },
   handleAction(e) {
-    const { action, disable } = e.currentTarget.dataset;
+    const { action, disable } = e.currentTarget.dataset
     if (disable) {
-      this.showToast('抱歉，还不支持～😂');
+      this.showToast('抱歉，还不支持～😂')
     }
     this.setData({
       rst: []
-    });
-    const calendar = this.calendar;
-    const { year, month } = calendar.getCurrentYM();
+    })
+    const calendar = this.calendar
+    const { year, month } = calendar.getCurrentYM()
     switch (action) {
       case 'config':
         calendar
@@ -154,32 +154,32 @@ const conf = {
             multi: true
           })
           .then(conf => {
-            console.log('设置成功：', conf);
-          });
-        break;
+            console.log('设置成功：', conf)
+          })
+        break
       case 'getConfig':
-        const config = calendar.getCalendarConfig();
-        this.showToast('请在控制台查看结果');
-        console.log('自定义配置: ', config);
-        break;
+        const config = calendar.getCalendarConfig()
+        this.showToast('请在控制台查看结果')
+        console.log('自定义配置: ', config)
+        break
       case 'jump': {
-        const year = this.generateRandomDate('year');
-        const month = this.generateRandomDate('month');
-        const date = this.generateRandomDate('date');
-        calendar[action](year, month, date);
-        break;
+        const year = this.generateRandomDate('year')
+        const month = this.generateRandomDate('month')
+        const date = this.generateRandomDate('date')
+        calendar[action](year, month, date)
+        break
       }
       case 'getSelectedDay': {
-        const selected = calendar[action]();
+        const selected = calendar[action]()
         if (!selected || !selected.length)
-          return this.showToast('当前未选择任何日期');
-        this.showToast('请在控制台查看结果');
-        console.log('get selected days: ', selected);
-        const rst = selected.map(item => JSON.stringify(item));
+          return this.showToast('当前未选择任何日期')
+        this.showToast('请在控制台查看结果')
+        console.log('get selected days: ', selected)
+        const rst = selected.map(item => JSON.stringify(item))
         this.setData({
           rst
-        });
-        break;
+        })
+        break
       }
       case 'cancelSelectedDates':
         calendar[action]([
@@ -188,8 +188,8 @@ const conf = {
             month: 3,
             day: 3
           }
-        ]);
-        break;
+        ])
+        break
       case 'setTodoLabels': {
         const days = [
           {
@@ -198,53 +198,53 @@ const conf = {
             day: this.generateRandomDate('date'),
             todoText: Math.random() * 10 > 5 ? '领奖日' : ''
           }
-        ];
+        ]
         calendar[action]({
           showLabelAlways: true,
           days
-        });
-        console.log('set todo labels: ', days);
-        break;
+        })
+        console.log('set todo labels: ', days)
+        break
       }
       case 'deleteTodoLabels': {
-        const todos = [...calendar.getTodoLabels()];
+        const todos = [...calendar.getTodoLabels()]
         if (todos && todos.length) {
-          todos.length = 1;
-          calendar[action](todos);
-          const _todos = [...calendar.getTodoLabels()];
+          todos.length = 1
+          calendar[action](todos)
+          const _todos = [...calendar.getTodoLabels()]
           setTimeout(() => {
-            const rst = _todos.map(item => JSON.stringify(item));
+            const rst = _todos.map(item => JSON.stringify(item))
             this.setData(
               {
                 rst
               },
               () => {
-                console.log('set todo labels: ', todos);
+                console.log('set todo labels: ', todos)
               }
-            );
-          });
+            )
+          })
         } else {
-          this.showToast('没有待办事项');
+          this.showToast('没有待办事项')
         }
-        break;
+        break
       }
       case 'clearTodoLabels':
-        const todos = [...calendar.getTodoLabels()];
+        const todos = [...calendar.getTodoLabels()]
         if (!todos || !todos.length) {
-          return this.showToast('没有待办事项');
+          return this.showToast('没有待办事项')
         }
-        calendar[action]();
-        break;
+        calendar[action]()
+        break
       case 'getTodoLabels': {
-        const selected = calendar[action]();
+        const selected = calendar[action]()
         if (!selected || !selected.length)
-          return this.showToast('未设置待办事项');
-        const rst = selected.map(item => JSON.stringify(item));
-        rst.map(item => JSON.stringify(item));
+          return this.showToast('未设置待办事项')
+        const rst = selected.map(item => JSON.stringify(item))
+        rst.map(item => JSON.stringify(item))
         this.setData({
           rst
-        });
-        break;
+        })
+        break
       }
       case 'disableDay':
         calendar[action]([
@@ -253,20 +253,20 @@ const conf = {
             month,
             day: this.generateRandomDate('date')
           }
-        ]);
-        break;
+        ])
+        break
       case 'enableArea': {
-        let sDate = this.generateRandomDate('date');
-        let eDate = this.generateRandomDate('date');
+        let sDate = this.generateRandomDate('date')
+        let eDate = this.generateRandomDate('date')
         if (sDate > eDate) {
-          [eDate, sDate] = [sDate, eDate];
+          ;[eDate, sDate] = [sDate, eDate]
         }
-        const area = [`${year}-${month}-${sDate}`, `${year}-${month}-${eDate}`];
-        calendar[action](area);
+        const area = [`${year}-${month}-${sDate}`, `${year}-${month}-${eDate}`]
+        calendar[action](area)
         this.setData({
           rstStr: JSON.stringify(area)
-        });
-        break;
+        })
+        break
       }
       case 'enableDays':
         const days = [
@@ -275,21 +275,21 @@ const conf = {
           `${year}-${month}-${this.generateRandomDate('date')}`,
           `${year}-${month}-${this.generateRandomDate('date')}`,
           `${year}-${month}-${this.generateRandomDate('date')}`
-        ];
-        calendar[action](days);
+        ]
+        calendar[action](days)
         this.setData({
           rstStr: JSON.stringify(days)
-        });
-        break;
+        })
+        break
       case 'switchView':
         if (!this.week) {
-          calendar[action]('week');
-          this.week = true;
+          calendar[action]('week')
+          this.week = true
         } else {
-          calendar[action]();
-          this.week = false;
+          calendar[action]()
+          this.week = false
         }
-        break;
+        break
       case 'setSelectedDays':
         const toSet = [
           {
@@ -302,17 +302,17 @@ const conf = {
             month,
             day: this.generateRandomDate('date')
           }
-        ];
-        calendar[action](toSet);
-        break;
+        ]
+        calendar[action](toSet)
+        break
       case 'getCalendarDates':
-        this.showToast('请在控制台查看结果');
-        console.log(calendar.getCalendarDates());
-        break;
+        this.showToast('请在控制台查看结果')
+        console.log(calendar.getCalendarDates())
+        break
       default:
-        break;
+        break
     }
   }
-};
+}
 
-Page(conf);
+Page(conf)
