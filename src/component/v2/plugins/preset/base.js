@@ -40,8 +40,12 @@ export default () => {
       }
       const { multi, inverse } = calendarConfig
       let dates = [...calendar.dates]
+      const { selectedDates = [] } = calendar
       if (!multi) {
-        const preSelectedDate = [...calendar.selectedDates].pop() || {}
+        let preSelectedDate = {}
+        if (selectedDates.length) {
+          preSelectedDate = [...selectedDates].pop() || {}
+        }
         if (!inverse && +preSelectedDate.date === +tapeDate.date) {
           return calendar
         }
