@@ -16,7 +16,7 @@ features:
 footer: MIT Licensed | Copyright © 2019-present treadpit
 ---
 
-::: warning 使用2.0注意事项
+::: warning 警告 ⚠️
 小历同学2.0还在逐步完善测试中，已迁移的功能参考2.0版本文档，如果还未支持所需功能，请使用 [1.x版本](./v1/guide.md)。
 :::
 

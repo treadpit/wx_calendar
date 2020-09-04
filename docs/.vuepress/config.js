@@ -2,6 +2,12 @@ module.exports = {
   base: '/wx_calendar/',
   title: '小历同学',
   description: '在2.0中使用了插件系统，按需引入对应功能插件',
+  head: [
+    [
+      'script',
+      { src: 'https://hm.baidu.com/hm.js?aa798833bfba6405a36b03d0fc38a3da' }
+    ]
+  ],
   themeConfig: {
     sidebarDepth: 2,
     lastUpdated: 'Last Updated',
