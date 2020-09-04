@@ -121,7 +121,7 @@ const conf = {
 };
 Page(conf);
 ```
-::: warning
+::: warning 警告 ⚠️
 日历组件以下两项配置不再使用，请使用 `disableMode`
 
 ~~disablePastDay: true, // 是否禁选当天之前的日期~~
