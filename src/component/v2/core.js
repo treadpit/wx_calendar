@@ -38,9 +38,11 @@ function calculatePrevMonthGrids(year, month, config) {
       if (onlyShowCurrentMonth) {
         empytGrids.push('')
       } else {
+        const week = dateUtil.getDayOfWeek(+year, +month, i)
         empytGrids.push({
           ...YMInfo,
-          date: i
+          date: i,
+          day: week || 7
         })
       }
     }
@@ -59,14 +61,14 @@ function calculateExtraEmptyDate(year, month, config) {
   let extDate = 0
   if (+month === 2) {
     extDate += 7
-    let firstDayofMonth = dateUtil.dayOfWeek(year, month, 1)
+    let firstDayofMonth = dateUtil.getDayOfWeek(year, month, 1)
     if (config.firstDayOfWeek === 'Mon') {
       if (+firstDayofMonth === 1) extDate += 7
     } else {
       if (+firstDayofMonth === 0) extDate += 7
     }
   } else {
-    let firstDayofMonth = dateUtil.dayOfWeek(year, month, 1)
+    let firstDayofMonth = dateUtil.getDayOfWeek(year, month, 1)
     if (config.firstDayOfWeek === 'Mon') {
       if (firstDayofMonth !== 0 && firstDayofMonth < 6) {
         extDate += 7
@@ -87,7 +89,7 @@ function calculateExtraEmptyDate(year, month, config) {
 function calculateNextMonthGrids(year, month, config) {
   let emptyGrids = []
   const datesCount = dateUtil.getDatesCountOfMonth(year, month)
-  let lastDayWeek = dateUtil.dayOfWeek(year, month, datesCount)
+  let lastDayWeek = dateUtil.getDayOfWeek(year, month, datesCount)
   if (config.firstDayOfWeek === 'Mon') {
     if (lastDayWeek === 0) {
       lastDayWeek = 6
@@ -102,12 +104,15 @@ function calculateNextMonthGrids(year, month, config) {
   }
   const YMInfo = dateUtil.getNextMonthInfo({ year, month })
   for (let i = 1; i <= len; i++) {
+    const week = dateUtil.getDayOfWeek(+year, +month, i)
     if (onlyShowCurrentMonth) {
       emptyGrids.push('')
     } else {
       emptyGrids.push({
+        id: i - 1,
         ...YMInfo,
-        date: i
+        date: i,
+        day: week || 7
       })
     }
   }

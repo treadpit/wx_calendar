@@ -91,7 +91,7 @@ class DateUtil {
    * @param {number} month  月份
    * @param {number} date 日期
    */
-  dayOfWeek(year, month, date) {
+  getDayOfWeek(year, month, date) {
     return new Date(Date.UTC(year, month - 1, date)).getUTCDay()
   }
   todayFMD() {
@@ -181,15 +181,23 @@ class DateUtil {
       month: +date.month
     }
   }
+  findDateIndexInArray(target, dates) {
+    return dates.findIndex(
+      item => dateUtil.toTimeStr(item) === dateUtil.toTimeStr(target)
+    )
+  }
   calcDates(year, month) {
     const datesCount = this.getDatesCountOfMonth(year, month)
     const dates = []
     const today = dateUtil.todayFMD()
     for (let i = 1; i <= datesCount; i++) {
+      const week = dateUtil.getDayOfWeek(+year, +month, i)
       const date = {
         year: +year,
+        id: i - 1,
         month: +month,
         date: i,
+        day: week || 7,
         isToday:
           +today.year === +year && +today.month === +month && i === +today.date
       }

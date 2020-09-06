@@ -1,31 +1,33 @@
 import todo from '../../component/v2/plugins/todo'
 import selectable from '../../component/v2/plugins/selectable'
 import solarLunar from '../../component/v2/plugins/solarLunar/index'
+import week from '../../component/v2/plugins/week'
 import plugin from '../../component/v2/plugins/index'
 
 plugin
   .use(todo)
   .use(solarLunar)
   .use(selectable)
+  .use(week)
 
 const conf = {
   data: {
     calendarConfig: {
-      showLunar: true,
+      // showLunar: true,
       theme: 'elegant',
-      inverse: true,
+      // inverse: true,
       // markToday: '今',
-      highlightToday: true,
+      // highlightToday: true
       // chooseAreaMode: true,
-      firstDayOfWeek: 'Mon'
+      // firstDayOfWeek: 'Mon'
       // disableMode: {
       //   type: 'after',
       //   date: '2020-08-15'
       // },
-      // defaultDate: '2020-8-6',
+      defaultDate: '2020-9-8',
       // multi: true,
       // takeoverTap: true,
-      // autoChoosedWhenJump: true
+      autoChoosedWhenJump: true
     },
     actionBtn: [
       {
@@ -128,6 +130,9 @@ const conf = {
   },
   afterCalendarRender(e) {
     console.log('afterCalendarRender', e)
+    // 获取日历组件上的 calendar 对象
+    const calendar = this.selectComponent('#calendar').calendar
+    console.log('afterCalendarRender -> calendar', calendar)
   },
   onSwipe(e) {
     console.log('onSwipe', e)

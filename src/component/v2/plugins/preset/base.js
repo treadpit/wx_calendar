@@ -13,19 +13,17 @@ export default () => {
     install(comp) {},
     beforeRender(calendarData = {}) {
       const calendar = calendarData
-      const { selectedDates = [], dates, curYear, curMonth } = calendar
+      const { selectedDates = [], dates } = calendar
       let _dates = [...dates]
       if (selectedDates.length) {
-        const selectedDateOfThisMonth = dateUtil.filterDatesByYM(
-          {
-            year: curYear,
-            month: curMonth
-          },
-          selectedDates
+        const selectedDatesStr = selectedDates.map(date =>
+          dateUtil.toTimeStr(date)
         )
-        selectedDateOfThisMonth.forEach(d => {
-          const date = _dates[d.date - 1]
-          date.choosed = true
+        _dates.forEach(date => {
+          const dateStr = dateUtil.toTimeStr(date)
+          if (selectedDatesStr.includes(dateStr)) {
+            date.choosed = true
+          }
         })
       }
       return {
@@ -33,11 +31,14 @@ export default () => {
         dates: _dates
       }
     },
-    onTapDate(tapeDate, calendarData = {}, calendarConfig = {}) {
-      const dateIndex = tapeDate.date - 1
+    onTapDate(tapedDate, calendarData = {}, calendarConfig = {}) {
       const calendar = {
         ...calendarData
       }
+      const dateIndex = dateUtil.findDateIndexInArray(
+        tapedDate,
+        calendarData.dates
+      )
       const { multi, inverse } = calendarConfig
       let dates = [...calendar.dates]
       const { selectedDates = [] } = calendar
@@ -46,14 +47,17 @@ export default () => {
         if (selectedDates.length) {
           preSelectedDate = [...selectedDates].pop() || {}
         }
-        if (!inverse && +preSelectedDate.date === +tapeDate.date) {
+        if (!inverse && +preSelectedDate.date === +tapedDate.date) {
           return calendar
         }
-        let _tapeDate = { ...tapeDate, choosed: !tapeDate.choosed }
+        let _tapedDate = { ...tapedDate, choosed: !tapedDate.choosed }
 
-        dates[dateIndex] = _tapeDate
+        dates[dateIndex] = _tapedDate
         if (preSelectedDate.date) {
-          dates[preSelectedDate.date - 1].choosed = false
+          const idx = dateUtil.findDateIndexInArray(preSelectedDate, dates)
+          const date = dates[idx]
+          if (!date) return
+          date.choosed = false
         }
         if (dates[dateIndex].choosed) {
           calendar.selectedDates = [dates[dateIndex]]
@@ -82,7 +86,7 @@ export default () => {
         dates
       }
     },
-    onChangeMonth(date, component) {
+    onSwitchCalendar(date, component) {
       const calendarData = getCalendarData('calendar', component)
       const calendarConfig = getCalendarConfig(component)
       const updatedRenderData = calcJumpData({
@@ -104,7 +108,7 @@ export default () => {
           const existCalendarData = getCalendarData('calendar', component)
           const config = getCalendarConfig(component)
           if (config.autoChoosedWhenJump) {
-            const target = updatedRenderData.dates[dateInfo.date - 1]
+            const target = updatedRenderData.dates[dateInfo.id]
             if (!updatedRenderData.selectedDates) {
               updatedRenderData.selectedDates = [target]
             } else {
