@@ -10,7 +10,6 @@ import {
 export default () => {
   return {
     name: 'base',
-    install(comp) {},
     beforeRender(calendarData = {}) {
       const calendar = calendarData
       const { selectedDates = [], dates } = calendar
@@ -56,8 +55,9 @@ export default () => {
         if (preSelectedDate.date) {
           const idx = dateUtil.findDateIndexInArray(preSelectedDate, dates)
           const date = dates[idx]
-          if (!date) return
-          date.choosed = false
+          if (date) {
+            date.choosed = false
+          }
         }
         if (dates[dateIndex].choosed) {
           calendar.selectedDates = [dates[dateIndex]]
@@ -86,9 +86,11 @@ export default () => {
         dates
       }
     },
-    onSwitchCalendar(date, component) {
-      const calendarData = getCalendarData('calendar', component)
+    onSwitchCalendar(date, calendarData = {}, component) {
       const calendarConfig = getCalendarConfig(component)
+      if (calendarConfig.weekMode) {
+        return calendarData
+      }
       const updatedRenderData = calcJumpData({
         dateInfo: date,
         config: calendarConfig

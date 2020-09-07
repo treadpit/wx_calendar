@@ -78,7 +78,6 @@ Component({
         config.highlightToday = true
       }
       config.theme = config.theme || 'default'
-      this.weekMode = config.weekMode
       this.setData(
         {
           config
@@ -177,6 +176,7 @@ Component({
         year: +curYear,
         month: +curMonth
       })
+      target.direction = direction
       this.renderCalendar(target)
     },
     changeDate(e) {
@@ -188,6 +188,7 @@ Component({
         year: +curYear,
         month: +curMonth
       })
+      target.direction = type
       this.renderCalendar(target)
     },
     renderCalendar(target) {
@@ -196,7 +197,7 @@ Component({
       for (let plugin of plugins.installed) {
         const [, p] = plugin
         if (typeof p.onSwitchCalendar === 'function') {
-          calendarData = p.onSwitchCalendar(target, this)
+          calendarData = p.onSwitchCalendar(target, calendarData, this)
         }
       }
       return renderCalendar.call(this, calendarData, config).then(() => {

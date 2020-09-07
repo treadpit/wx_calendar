@@ -8,24 +8,6 @@ import {
 import { calcJumpData } from '../core'
 
 /**
- * 计算周视图下当前这一周和当月的最后一天
- */
-// function calculateLastDay() {
-//   const { days = [], curYear, curMonth } = this.getData('calendar')
-//   const lastDayInThisWeek = days[days.length - 1].day
-//   const lastDayInThisMonth = dateUtil.getDatesCountOfMonth(curYear, curMonth)
-//   return { lastDayInThisWeek, lastDayInThisMonth }
-// }
-/**
- * 计算周视图下当前这一周第一天
- */
-// function calculateFirstDay() {
-//   const { days } = this.getData('calendar')
-//   const firstDayInThisWeek = days[0].day
-//   return { firstDayInThisWeek }
-// }
-
-/**
  * 当月第一周所有日期
  */
 function firstWeekInMonth(
@@ -63,13 +45,16 @@ function lastWeekInMonth(target = {}, calendarDates = [], calendarConfig = {}) {
 function dateIsInDatesRange(target, dates) {
   if (!target || !dates || !dates.length) return false
   const targetDateStr = dateUtil.toTimeStr(target)
+  let rst = false
   for (let date of dates) {
     const dateStr = dateUtil.toTimeStr(date)
     if (dateStr === targetDateStr) {
-      return true
+      rst = true
+      return rst
     }
-    return false
+    rst = false
   }
+  return rst
 }
 
 function getDatesWhenTargetInFirstWeek(target, firstWeekDates) {
@@ -98,10 +83,10 @@ function getDatesWhenTargetInLastWeek(target, lastWeekDates) {
   let lastWeekCount = lastWeekDates.length
   for (let i = 0; i < 7 - lastWeekCount; i++) {
     const week = dateUtil.getDayOfWeek(+year, +month, i + 1)
-    dates.unshift({
+    dates.push({
       year: prevMonthInfo.year,
       month: prevMonthInfo.month,
-      date: i,
+      date: i + 1,
       day: week
     })
   }
@@ -131,19 +116,150 @@ function getTargetWeekDates(target, calendarConfig) {
   if (dateIsInDatesRange(target, firstWeekDates)) {
     return getDatesWhenTargetInFirstWeek(target, firstWeekDates)
   } else if (dateIsInDatesRange(target, lastWeekDates)) {
-    return getDatesWhenTargetInLastWeek(target, firstWeekDates)
+    return getDatesWhenTargetInLastWeek(target, lastWeekDates)
   } else {
     return getDates(target, calendarDates, calendarConfig)
+  }
+}
+
+/**
+ * 计算周视图下当前这一周最后一天
+ */
+function calculateLastDateOfCurrentWeek(calendarData = {}) {
+  const { dates = [] } = calendarData
+  return dates[dates.length - 1]
+}
+/**
+ * 计算周视图下当前这一周第一天
+ */
+function calculateFirstDateOfCurrentWeek(calendarData = {}) {
+  const { dates } = calendarData
+  return dates[0]
+}
+
+/**
+ * 计算下一周的日期
+ */
+function calculateNextWeekDates(calendarData = {}) {
+  let { curYear, curMonth } = calendarData
+  let calendarDates = []
+  let lastDateInThisWeek = calculateLastDateOfCurrentWeek(calendarData)
+  const { year: LYear, month: LMonth } = lastDateInThisWeek
+  if (curYear !== LYear || curMonth !== LMonth) {
+    calendarDates = dateUtil.calcDates(LYear, LMonth)
+    curYear = LYear
+    curMonth = LMonth
+  } else {
+    calendarDates = dateUtil.calcDates(curYear, curMonth)
+  }
+  const lastDateInThisMonth = dateUtil.getDatesCountOfMonth(curYear, curMonth)
+  const count = lastDateInThisMonth - lastDateInThisWeek.date
+  const lastDateIdx = calendarDates.findIndex(
+    date => dateUtil.toTimeStr(date) === dateUtil.toTimeStr(lastDateInThisWeek)
+  )
+  const startIdx = lastDateIdx + 1
+  if (count >= 7) {
+    return {
+      dates: calendarDates.splice(startIdx, 7),
+      year: curYear,
+      month: curMonth
+    }
+  } else {
+    const nextMonth = dateUtil.getNextMonthInfo({
+      year: curYear,
+      month: curMonth
+    })
+    const { year, month } = nextMonth || {}
+    const calendarDatesOfNextMonth = dateUtil.calcDates(year, month)
+    const remainDatesOfThisMonth = calendarDates.splice(startIdx)
+    const patchDatesOfNextMonth = calendarDatesOfNextMonth.splice(
+      0,
+      7 - remainDatesOfThisMonth.length
+    )
+    return {
+      dates: [...remainDatesOfThisMonth, ...patchDatesOfNextMonth],
+      ...nextMonth
+    }
+  }
+}
+
+/**
+ * 计算上一周的日期
+ */
+function calculatePrevWeekDates(calendarData = {}) {
+  let { curYear, curMonth } = calendarData
+  let firstDateInThisWeek = calculateFirstDateOfCurrentWeek(calendarData)
+  let calendarDates = []
+  const { year: FYear, month: FMonth } = firstDateInThisWeek
+  if (curYear !== FYear || curMonth !== FMonth) {
+    calendarDates = dateUtil.calcDates(FYear, FMonth)
+    curYear = FYear
+    curMonth = FMonth
+  } else {
+    calendarDates = dateUtil.calcDates(curYear, curMonth)
+  }
+  const firstDateIdx = calendarDates.findIndex(
+    date => dateUtil.toTimeStr(date) === dateUtil.toTimeStr(firstDateInThisWeek)
+  )
+  if (firstDateInThisWeek.date - 7 >= 0) {
+    const startIdx = firstDateIdx - 7
+    return {
+      dates: calendarDates.splice(startIdx, 7),
+      year: curYear,
+      month: curMonth
+    }
+  } else {
+    const prevMonth = dateUtil.getPrevMonthInfo({
+      year: curYear,
+      month: curMonth
+    })
+    const { year, month } = prevMonth || {}
+    const calendarDatesOfPrevMonth = dateUtil.calcDates(year, month)
+    const remainDatesOfThisMonth = calendarDates.splice(
+      0,
+      firstDateInThisWeek.date - 1
+    )
+    const patchDatesOfPrevMonth = calendarDatesOfPrevMonth.splice(
+      -(7 - remainDatesOfThisMonth.length)
+    )
+    return {
+      dates: [...patchDatesOfPrevMonth, ...remainDatesOfThisMonth],
+      ...prevMonth
+    }
   }
 }
 
 export default () => {
   return {
     name: 'week',
-    onSwitchCalendar(target, component) {
-      const calendarData = getCalendarData('calendar', component)
-      // const calendarConfig = getCalendarConfig(component)
-      if (component.weekMode) {
+    beforeRender(calendarData = {}, calendarConfig = {}, component) {
+      if (calendarConfig.weekMode) {
+        // const waitRenderData = this.methods(component).calcDatesWhenSwitchView(
+        //   'week'
+        // )
+        // const { data } = waitRenderData
+        // return data
+      }
+      return calendarData
+    },
+    onSwitchCalendar(target = {}, calendarData = {}, component) {
+      const { direction } = target
+      const { curYear, curMonth } = calendarData
+      const calendarConfig = getCalendarConfig(component)
+      let waitRenderData = {}
+      if (calendarConfig.weekMode) {
+        if (direction === 'left') {
+          waitRenderData = calculateNextWeekDates(calendarData)
+        } else {
+          waitRenderData = calculatePrevWeekDates(calendarData)
+        }
+        const { dates, year, month } = waitRenderData
+        return {
+          ...calendarData,
+          dates,
+          curYear: year || curYear,
+          curMonth: month || curMonth
+        }
       }
       return calendarData
     },
@@ -152,9 +268,9 @@ export default () => {
         /**
          * 周、月视图切换
          * @param {string} view  视图 [week, month]
-         * @param {object} target  {year: 2017, month: 11, day: 1}
+         * @param {object} target
          */
-        switchView(view, target) {
+        calcDatesWhenSwitchView(view, target) {
           const config = getCalendarConfig(component)
           if (config.multi) return logger.warn('多选模式不能切换周月视图')
           const existCalendarData = getCalendarData('calendar', component) || {}
@@ -164,7 +280,6 @@ export default () => {
             curYear,
             curMonth
           } = existCalendarData
-          // const notInCurrentMonth = curYear !== year || curMonth !== month
           const currentMonthSelected = selectedDates.filter(
             item => curYear === +item.year || curMonth === +item.month
           )
@@ -178,28 +293,50 @@ export default () => {
               jumpTarget = dates[0]
             }
           }
+          const calendarConfig = getCalendarConfig(component)
+          const { year, month } = jumpTarget
           if (view === 'week') {
             const weekDates = getTargetWeekDates(jumpTarget, config)
             weekDates.forEach((date, idx) => (date.id = idx))
-            component.weekMode = true
-            return renderCalendar.call(component, {
-              ...existCalendarData,
-              prevMonthGrids: null,
-              nextMonthGrids: null,
-              dates: weekDates
-            })
+            return {
+              data: {
+                ...existCalendarData,
+                prevMonthGrids: null,
+                nextMonthGrids: null,
+                dates: weekDates,
+                curYear: year,
+                curMonth: month
+              },
+              config: {
+                ...calendarConfig,
+                weekMode: true
+              }
+            }
           } else {
             const waitRenderData = calcJumpData({
               dateInfo: jumpTarget,
               config
             })
-            component.weekMode = false
-            return renderCalendar.call(component, {
-              ...existCalendarData,
-              ...waitRenderData,
-              weekMode: false
-            })
+            return {
+              data: {
+                ...existCalendarData,
+                ...waitRenderData,
+                curYear: year,
+                curMonth: month
+              },
+              config: {
+                ...calendarConfig,
+                weekMode: false
+              }
+            }
           }
+        },
+        switchView: (view, target) => {
+          const waitRenderData = this.methods(
+            component
+          ).calcDatesWhenSwitchView(view, target)
+          const { data, config } = waitRenderData
+          return renderCalendar.call(component, data, config)
         }
       }
     }
