@@ -1,31 +1,21 @@
 import todo from '../../component/v2/plugins/todo'
 import selectable from '../../component/v2/plugins/selectable'
 import solarLunar from '../../component/v2/plugins/solarLunar/index'
+import week from '../../component/v2/plugins/week'
 import plugin from '../../component/v2/plugins/index'
 
 plugin
   .use(todo)
   .use(solarLunar)
   .use(selectable)
+  .use(week)
 
 const conf = {
   data: {
     calendarConfig: {
-      showLunar: true,
       theme: 'elegant',
-      inverse: true,
-      // markToday: '今',
-      highlightToday: true,
-      // chooseAreaMode: true,
-      firstDayOfWeek: 'Mon'
-      // disableMode: {
-      //   type: 'after',
-      //   date: '2020-08-15'
-      // },
-      // defaultDate: '2020-8-6',
-      // multi: true,
-      // takeoverTap: true,
-      // autoChoosedWhenJump: true
+      defaultDate: '2020-9-8',
+      autoChoosedWhenJump: true
     },
     actionBtn: [
       {
@@ -105,15 +95,6 @@ const conf = {
       }
     ]
   },
-  onShow() {
-    // setTimeout(() => {
-    //   this.calendar.jump({
-    //     year: 2020,
-    //     month: 9,
-    //     date: 5
-    //   })
-    // }, 5000)
-  },
   afterTapDate(e) {
     console.log('afterTapDate', e.detail)
   },
@@ -128,6 +109,9 @@ const conf = {
   },
   afterCalendarRender(e) {
     console.log('afterCalendarRender', e)
+    // 获取日历组件上的 calendar 对象
+    // const calendar = this.selectComponent('#calendar').calendar
+    // console.log('afterCalendarRender -> calendar', calendar)
   },
   onSwipe(e) {
     console.log('onSwipe', e)
@@ -300,10 +284,14 @@ const conf = {
         break
       case 'switchView':
         if (!this.week) {
-          calendar[action]('week')
+          calendar[action]('week').then(calendarData => {
+            console.log('switch success!', calendarData)
+          })
           this.week = true
         } else {
-          calendar[action]()
+          calendar[action]().then(calendarData => {
+            console.log('switch success!', calendarData)
+          })
           this.week = false
         }
         break

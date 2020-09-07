@@ -44,9 +44,9 @@ Component({
           return logger.warn('defaultDate配置格式应为: 2018-4-2 或 2018-04-02')
         } else {
           date = {
-            year: dateInfo[0],
-            month: dateInfo[1],
-            date: dateInfo[2]
+            year: +dateInfo[0],
+            month: +dateInfo[1],
+            date: +dateInfo[2]
           }
         }
       }
@@ -56,11 +56,15 @@ Component({
       })
       const timestamp = dateUtil.todayTimestamp()
       if (config.autoChoosedWhenJump) {
-        const target = waitRenderData.dates[date.date - 1]
-        if (!waitRenderData.selectedDates) {
-          waitRenderData.selectedDates = [target]
-        } else {
-          waitRenderData.selectedDates.push(target)
+        const target = waitRenderData.dates.filter(
+          item => dateUtil.toTimeStr(item) === dateUtil.toTimeStr(date)
+        )
+        if (target && target.length) {
+          if (!waitRenderData.selectedDates) {
+            waitRenderData.selectedDates = target
+          } else {
+            waitRenderData.selectedDates.push(target[0])
+          }
         }
       }
       return {
@@ -74,7 +78,6 @@ Component({
         config.highlightToday = true
       }
       config.theme = config.theme || 'default'
-      this.weekMode = config.weekMode
       this.setData(
         {
           config
@@ -117,7 +120,7 @@ Component({
         }
       }
       renderCalendar.call(this, calendarData, config).then(() => {
-        this.triggerEvent('afterTapDate', calendarData.dates[date - 1])
+        this.triggerEvent('afterTapDate', info)
       })
     },
     /**
@@ -173,13 +176,7 @@ Component({
         year: +curYear,
         month: +curMonth
       })
-      this.triggerEvent('onSwipe', {
-        directionType: direction,
-        currentYM: {
-          year: +curYear,
-          month: +curMonth
-        }
-      })
+      target.direction = direction
       this.renderCalendar(target)
     },
     changeDate(e) {
@@ -191,6 +188,7 @@ Component({
         year: +curYear,
         month: +curMonth
       })
+      target.direction = type
       this.renderCalendar(target)
     },
     renderCalendar(target) {
@@ -198,11 +196,11 @@ Component({
       const { curYear, curMonth } = calendarData || {}
       for (let plugin of plugins.installed) {
         const [, p] = plugin
-        if (typeof p.onChangeMonth === 'function') {
-          calendarData = p.onChangeMonth(target, this)
+        if (typeof p.onSwitchCalendar === 'function') {
+          calendarData = p.onSwitchCalendar(target, calendarData, this)
         }
       }
-      return renderCalendar.call(this, calendarData, config).then(calender => {
+      return renderCalendar.call(this, calendarData, config).then(() => {
         this.triggerEvent('whenChangeMonth', {
           current: {
             year: +curYear,

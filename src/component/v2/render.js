@@ -24,15 +24,20 @@ export function renderCalendar(calendarData, config) {
         )
       }
     }
+
     Component.setData(
       {
+        config: calendarConfig,
         calendar: calendarData
       },
       () => {
-        resolve({
+        const rst = {
           calendar: calendarData,
+          config: calendarConfig,
           firstRender: Component.firstRender
-        })
+        }
+        resolve(rst)
+        Component.triggerEvent('afterCalendarRender', rst)
       }
     )
   })

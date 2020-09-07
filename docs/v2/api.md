@@ -18,7 +18,7 @@ title: 功能一览
 # 预设功能
 
 ::: tip
-预设功能为日历组件自有方法，无需单独引入插件
+预设功能为一系列插件集合(plugins/preset/index.js)，无需单独引入
 :::
 
 ## 跳转至指定日期
@@ -150,7 +150,7 @@ calendar.setDateStyle(toSet)
 }
 ```
 
-# 需引入插件： todo
+# 需引入插件： plugins/todo.js
 
 ## 待办事项
 
@@ -206,7 +206,7 @@ calendar.clearTodos()
 calendar.getTodos(options)
 ```
 
-# 需引入插件： selectable
+# 需引入插件： plugins/selectable.js
 
 ## 指定可选日期区域
 
@@ -224,7 +224,27 @@ calendar.enableArea(['2018-11-12', '2018-11-30'])
 calendar.enableDates(['2018-11-12', '2018-12-3', '2019-1-3'])
 ```
 
-# 需引入插件： solarLunar
+# 需引入插件： plugins/week.js
+
+## 周月视图切换
+
+默认值为 'month'
+
+::: tip
+因周视图模式特殊性，该模式下会隐藏年月切换操作栏
+:::
+
+```js
+// 切换为周视图
+calendar.switchView('week').then(() => {});
+
+// 切换为月视图
+calendar.switchView().then(() => {});
+// 或者
+calendar.switchView('month').then(() => {});
+```
+
+# 需引入插件： plugins/solarLunar.js
 
 ## 获取指定日期农历信息
 

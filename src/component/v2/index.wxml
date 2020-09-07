@@ -2,12 +2,12 @@
   <view class="calendar b tb">
     <!-- 头部操作栏 -->
     <view class="handle {{config.theme}}_handle-color fs28 b lr ac pc">
-      <view class="prev fs36">
+      <view class="prev fs36" wx:if="{{!config.weekMode}}">
         <text class="prev-handle iconfont icon-doubleleft" bindtap="changeDate" data-type="prev_year"></text>
         <text class="prev-handle iconfont icon-left" bindtap="changeDate" data-type="prev_month"></text>
       </view>
       <view class="flex date-in-handle b lr cc" bindtap="doubleClickToToday">{{calendar.curYear || "--"}} 年 {{calendar.curMonth || "--"}} 月</view>
-      <view class="next fs36">
+      <view class="next fs36" wx:if="{{!config.weekMode}}">
         <text class="next-handle iconfont icon-right" bindtap="changeDate" data-type="next_month"></text>
         <text class="next-handle iconfont icon-doubleright" bindtap="changeDate" data-type="next_year"></text>
       </view>
@@ -29,7 +29,7 @@
       <!-- 本月日期格子 -->
       <view wx:for="{{calendar.dates}}" wx:key="index" data-idx="{{index}}" data-info="{{item}}" bindtap="tapDate" class="grid {{item.class ? item.class  : ''}} {{config.theme}}_normal-date b ac pc">
         <view class="date-wrap b cc {{(item.week === 0 || item.week === 6) ? config.theme + '_weekend-color' : ''}}">
-          <view class="date b ac pc {{item.class ? item.class  : ''}} {{item.isToday ? config.theme + '_today' : ''}} {{item.choosed ? config.theme + '_choosed' : ''}} {{item.disable ? config.theme + '_date-disable' : ''}}">
+          <view class="date b ac pc {{item.class ? item.class  : ''}} {{item.isToday && config.highlightToday ? config.theme + '_today' : ''}} {{item.choosed ? config.theme + '_choosed' : ''}} {{item.disable ? config.theme + '_date-disable' : ''}}">
                 {{config.markToday && item.isToday ? config.markToday : item.date}}
                 <view
                   wx:if="{{(config.showLunar && item.lunar && !item.showTodoLabel) || (item.showTodoLabel && calendar.todoLabelPos !== 'bottom')}}"
