@@ -1,42 +1,22 @@
 [![Build Status](https://travis-ci.org/treadpit/wx_calendar.svg?branch=master)](https://travis-ci.org/treadpit/wx_calendar)
 ![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/treadpit/wx_calendar?style=flat-square)
 
-# 小程序日历
+### Demo
 
-### 引入组件
+以下为一个简单日历展示的使用方法
 
-在 `json` 文件中配置组件
-
-```json
+``` json {3}
 {
   "usingComponents": {
-    "calendar": "/component/calendar/index"
+    "calendar": "/your_component_path/calendar/index"
   }
 }
 ```
 
-在 `wxml` 中引入组件
+在页面 `wxml` 中引入组件
 
 ```xml
-<calendar calendarConfig="{{calendarConfig}}"></calendar>
-```
-
-### 自定义配置初始化日历
-
-```js
-const conf = {
-  data: {
-    calendarConfig: {
-      // 配置内置主题
-      theme: 'elegant'
-    }
-  },
-  doSomeThing() {
-    // 调用日历方法
-    this.calendar.enableArea(['2018-10-7', '2018-10-28']);
-  }
-};
-Page(conf);
+<calendar />
 ```
 
 更多自定义配置及功能 [请查阅日历文档](https://treadpit.github.io/wx_calendar)
