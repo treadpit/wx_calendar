@@ -219,7 +219,9 @@ this.calendar.switchView('month').then(() => {});
 
 ## 设置日历配置
 
-`setCalendarConfig` 返回 `Promise`
+::: tip 提示 👇
+setCalendarConfig() 不会立即重新渲染日历数据，只会对部分基础配置（如theme, multi等）并且是在下一次渲染时生效
+:::
 
 ```js
 this.calendar.setCalendarConfig({
