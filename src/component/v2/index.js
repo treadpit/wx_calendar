@@ -30,7 +30,7 @@ Component({
       const calendarConfig = this.properties.config || {}
       if (calendarConfig.disableMode && !calendarConfig.disableMode.date) {
         calendarConfig.disableMode.date = dateUtil.toTimeStr(
-          dateUtil.todayDate()
+          dateUtil.todayFMD()
         )
       }
       return calendarConfig
