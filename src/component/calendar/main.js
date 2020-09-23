@@ -847,7 +847,7 @@ function autoSelectDay(defaultDay) {
     jump(+day[0], +day[1], +day[2])
   } else {
     if (!defaultDay) {
-      // Component.config.noDefault = true;
+      Component.config.noDefault = true
       setData({
         'config.noDefault': true
       })
