@@ -1,5 +1,5 @@
 <view class="wrap">
-	  <navigator class="navigator" url="/pages/calendarComponent/index">日历组件2.0 Component 示例</navigator>
+	  <navigator class="navigator" url="/pages/calendarV2/index">日历组件2.0 Component 示例</navigator>
 	  <navigator class="navigator" url="/pages/calendarComponent/index">日历组件1.x Component 示例</navigator>
 	  <navigator class="navigator" url="/pages/calendarTemplate/index">日历模板 Template 示例</navigator>
 	  <navigator class="navigator" url="/pages/datepickerTemplate/index">日期选择器 Template 示例</navigator>
