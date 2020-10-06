@@ -4,10 +4,16 @@ export default () => {
   return {
     name: 'convertSolarLunar',
     beforeRender(calendarData = {}, calendarConfig = {}) {
-      const { dates } = calendarData
-      let _dates = dates
+      let { dates = [], selectedDates = [] } = calendarData
       if (calendarConfig.showLunar) {
-        _dates = [...dates].map(dataInfo => {
+        dates = dates.map(dataInfo => {
+          const { year, month, date } = dataInfo
+          return {
+            ...dataInfo,
+            lunar: convertSolarLunar.solar2lunar(year, month, date)
+          }
+        })
+        selectedDates = selectedDates.map(dataInfo => {
           const { year, month, date } = dataInfo
           return {
             ...dataInfo,
@@ -17,7 +23,8 @@ export default () => {
       }
       return {
         ...calendarData,
-        dates: _dates
+        dates: dates,
+        selectedDates: selectedDates
       }
     },
     methods(component) {

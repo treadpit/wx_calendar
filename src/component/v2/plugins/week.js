@@ -233,12 +233,24 @@ export default () => {
   return {
     name: 'week',
     beforeRender(calendarData = {}, calendarConfig = {}, component) {
-      if (calendarConfig.weekMode) {
-        // const waitRenderData = this.methods(component).calcDatesWhenSwitchView(
-        //   'week'
-        // )
-        // const { data } = waitRenderData
-        // return data
+      if (calendarConfig.weekMode && !calendarData.initializedWeekMode) {
+        const { defaultDate } = calendarConfig
+        const target =
+          dateUtil.transformTimeStr2Dict(defaultDate) || dateUtil.todayFMD()
+        const waitRenderData = this.methods(
+          component
+        ).__calcDatesWhenSwitchView('week', target)
+        const { data, config } = waitRenderData || {}
+        const setSelectDates = this.methods(
+          component
+        ).__selectTargetDateWhenJump(target, data.dates, config)
+        return {
+          ...data,
+          ...setSelectDates,
+          config,
+          weeksCh: dateUtil.getWeekHeader(calendarConfig.firstDayOfWeek),
+          initializedWeekMode: true
+        }
       }
       return calendarData
     },
@@ -265,14 +277,71 @@ export default () => {
     },
     methods(component) {
       return {
+        __selectTargetDateWhenJump: (target = {}, dates = [], config = {}) => {
+          let selectedDate = target
+          const weekDates = dates.map((date, idx) => {
+            const tmp = { ...date }
+            tmp.id = idx
+            const isTarget =
+              dateUtil.toTimeStr(target) === dateUtil.toTimeStr(tmp)
+            if (isTarget && !target.choosed && config.autoChoosedWhenJump) {
+              tmp.choosed = true
+              selectedDate = tmp
+            }
+            return tmp
+          })
+          return {
+            dates: weekDates,
+            selectedDates: [selectedDate]
+          }
+        },
+        __calcDatesForWeekMode(target, config = {}, calendarData = {}) {
+          const { year, month } = target || {}
+          const weekDates = getTargetWeekDates(target, config)
+          weekDates.forEach((date, idx) => (date.id = idx))
+          return {
+            data: {
+              ...calendarData,
+              prevMonthGrids: null,
+              nextMonthGrids: null,
+              dates: weekDates,
+              curYear: year,
+              curMonth: month
+            },
+            config: {
+              ...config,
+              weekMode: true
+            }
+          }
+        },
+        __calcDatesForMonthMode(target, config = {}, calendarData = {}) {
+          const { year, month } = target || {}
+          const waitRenderData = calcJumpData({
+            dateInfo: target,
+            config
+          })
+          return {
+            data: {
+              ...calendarData,
+              ...waitRenderData,
+              curYear: year,
+              curMonth: month
+            },
+            config: {
+              ...config,
+              weekMode: false
+            }
+          }
+        },
         /**
          * 周、月视图切换
          * @param {string} view  视图 [week, month]
          * @param {object} target
          */
-        calcDatesWhenSwitchView(view, target) {
-          const config = getCalendarConfig(component)
-          if (config.multi) return logger.warn('多选模式不能切换周月视图')
+        __calcDatesWhenSwitchView: (view, target) => {
+          const calendarConfig = getCalendarConfig(component)
+          if (calendarConfig.multi)
+            return logger.warn('多选模式不能切换周月视图')
           const existCalendarData = getCalendarData('calendar', component) || {}
           const {
             selectedDates = [],
@@ -293,48 +362,44 @@ export default () => {
               jumpTarget = dates[0]
             }
           }
-          const calendarConfig = getCalendarConfig(component)
-          const { year, month } = jumpTarget
           if (view === 'week') {
-            const weekDates = getTargetWeekDates(jumpTarget, config)
-            weekDates.forEach((date, idx) => (date.id = idx))
-            return {
-              data: {
-                ...existCalendarData,
-                prevMonthGrids: null,
-                nextMonthGrids: null,
-                dates: weekDates,
-                curYear: year,
-                curMonth: month
-              },
-              config: {
-                ...calendarConfig,
-                weekMode: true
-              }
-            }
+            return this.methods(component).__calcDatesForWeekMode(
+              jumpTarget,
+              calendarConfig,
+              existCalendarData
+            )
           } else {
-            const waitRenderData = calcJumpData({
-              dateInfo: jumpTarget,
-              config
-            })
-            return {
-              data: {
-                ...existCalendarData,
-                ...waitRenderData,
-                curYear: year,
-                curMonth: month
-              },
-              config: {
-                ...calendarConfig,
-                weekMode: false
-              }
-            }
+            return this.methods(component).__calcDatesForMonthMode(
+              jumpTarget,
+              calendarConfig,
+              existCalendarData
+            )
           }
+        },
+        weekModeJump: dateInfo => {
+          const target = dateInfo || dateUtil.todayFMD()
+          const existCalendarData = getCalendarData('calendar', component) || {}
+          const waitRenderData = this.methods(
+            component
+          ).__calcDatesWhenSwitchView('week', target)
+          const { data, config } = waitRenderData || {}
+          const setSelectDates = this.methods(
+            component
+          ).__selectTargetDateWhenJump(target, data.dates, config)
+          return renderCalendar.call(
+            component,
+            {
+              ...existCalendarData,
+              ...data,
+              ...setSelectDates
+            },
+            config
+          )
         },
         switchView: (view, target) => {
           const waitRenderData = this.methods(
             component
-          ).calcDatesWhenSwitchView(view, target)
+          ).__calcDatesWhenSwitchView(view, target)
           const { data, config } = waitRenderData
           return renderCalendar.call(component, data, config)
         }

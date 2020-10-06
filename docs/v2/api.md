@@ -23,7 +23,9 @@ title: 功能一览
 
 ## 跳转至指定日期
 
-```js
+```js  {4,17}
+// 月视图
+
 // 默认跳转至今天
 calendar.jump()
 // 跳转至某日
@@ -34,13 +36,25 @@ calendar
     date: 6
   })
   .then()
+
+// 周视图
+
+// 默认跳转至今天
+calendar.weekModeJump()// 跳转至某日
+calendar
+  .weekModeJump({
+    year: 2019,
+    month: 10,
+    date: 6
+  })
+  .then()
 ```
 
 ## 获取当前选择的日期
 
-```js
+```js {2}
 const options = {
-  lunar: true // 在配置showLunar为false, 但需返回农历信息时使用该选项
+  lunar: true // 在配置showLunar为false, 但需返回农历信息时使用该选项，使用此配置需引用农历插件
 }
 const selectedDay = calendar.getSelectedDates(options)
 
@@ -57,7 +71,7 @@ const ym = calendar.getCurrentYM()
 
 ## 取消选中日期
 
-```js
+```js {9,12}
 // 取消指定选中日期
 const dates = [
   {
@@ -79,7 +93,7 @@ calendar.cancelSelectedDates()
 该方法仅在多选模式下可用，初始化日历时请配置 multi。参数为数组，不传参则默认全选当前月份所有日期
 :::
 
-```js
+```js {13}
 const toSet = [
   {
     year: 2019,
@@ -224,6 +238,12 @@ calendar.enableArea(['2018-11-12', '2018-11-30'])
 
 ```js
 calendar.enableDates(['2018-11-12', '2018-12-3', '2019-1-3'])
+```
+
+## 禁用指定日期
+
+```js
+calendar.disableDates(['2018-11-12'])
 ```
 
 # 需引入插件： plugins/week.js

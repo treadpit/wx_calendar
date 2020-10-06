@@ -172,7 +172,12 @@ const conf = {
         const year = this.generateRandomDate('year')
         const month = this.generateRandomDate('month')
         const date = this.generateRandomDate('date')
-        calendar[action]({ year, month, date })
+        const config = calendar.getCalendarConfig()
+        if (config.weekMode) {
+          calendar['weekModeJump']({ year, month, date })
+        } else {
+          calendar[action]({ year, month, date })
+        }
         break
       }
       case 'getSelectedDates': {

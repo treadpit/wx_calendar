@@ -4,6 +4,10 @@ title: 快速开始
 
 ## 快速接入
 
+::: tip 提示 👇
+1.x 版本源码 位于 /src/component/calendar
+:::
+
 将 `calendar` 文件夹拷贝至自己的组件目录，页面 `json` 文件中配置组件，组件路径根据项目实际情况填写
 
 ```json
