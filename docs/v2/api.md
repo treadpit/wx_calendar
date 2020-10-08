@@ -228,7 +228,6 @@ calendar.getTodos(options)
 
 ```js
 calendar.enableArea(['2018-11-12', '2018-11-30'])
-
 ```
 ## 指定特定可选日期
 

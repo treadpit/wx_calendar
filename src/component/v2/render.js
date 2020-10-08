@@ -4,7 +4,7 @@ import { getCalendarConfig } from './utils/index'
 /**
  * 渲染日历
  */
-export function renderCalendar(calendarData, config) {
+export function renderCalendar(calendarData, calendarConfig) {
   return new Promise(resolve => {
     const Component = this
     if (Component.firstRender === void 0) {
@@ -12,16 +12,20 @@ export function renderCalendar(calendarData, config) {
     } else {
       Component.firstRender = false
     }
-    const calendarConfig = config || getCalendarConfig(Component)
     const exitData = Component.data.calendar || {}
     for (let plugin of plugins.installed) {
       const [, p] = plugin
       if (typeof p.beforeRender === 'function') {
-        calendarData = p.beforeRender(
+        const {
+          calendarData: newData,
+          calendarConfig: newConfig
+        } = p.beforeRender(
           { ...exitData, ...calendarData },
-          calendarConfig,
+          calendarConfig || getCalendarConfig(Component),
           Component
         )
+        calendarData = newData
+        calendarConfig = newConfig
       }
     }
 

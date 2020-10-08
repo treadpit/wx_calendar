@@ -1,3 +1,11 @@
+/**
+ * @Author: drfu*
+ * @Description: 基础功能
+ * @Date: 2020-10-08 21:22:09*
+ * @Last Modified by: drfu
+ * @Last Modified time: 2020-10-08 21:26:27
+ * */
+
 import { calcJumpData } from '../../core'
 import { renderCalendar } from '../../render'
 import {
@@ -10,7 +18,7 @@ import {
 export default () => {
   return {
     name: 'base',
-    beforeRender(calendarData = {}) {
+    beforeRender(calendarData = {}, calendarConfig) {
       const calendar = calendarData
       const { selectedDates = [], dates } = calendar
       let _dates = [...dates]
@@ -26,8 +34,11 @@ export default () => {
         })
       }
       return {
-        ...calendarData,
-        dates: _dates
+        calendarData: {
+          ...calendarData,
+          dates: _dates
+        },
+        calendarConfig
       }
     },
     onTapDate(tapedDate, calendarData = {}, calendarConfig = {}) {

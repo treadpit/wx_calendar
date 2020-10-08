@@ -1,3 +1,11 @@
+/**
+ * @Author: drfu*
+ * @Description: 禁用、启用日期选择
+ * @Date: 2020-10-08 21:22:09*
+ * @Last Modified by: drfu
+ * @Last Modified time: 2020-10-08 21:25:00
+ * */
+
 import { getCalendarData, dateUtil, logger } from '../utils/index'
 import { renderCalendar } from '../render'
 
@@ -121,8 +129,11 @@ export default () => {
       })
 
       return {
-        ...calendarData,
-        dates: _dates
+        calendarData: {
+          ...calendarData,
+          dates: _dates
+        },
+        calendarConfig
       }
     },
     methods(component) {

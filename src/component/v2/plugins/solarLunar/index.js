@@ -22,9 +22,12 @@ export default () => {
         })
       }
       return {
-        ...calendarData,
-        dates: dates,
-        selectedDates: selectedDates
+        calendarData: {
+          ...calendarData,
+          dates: dates,
+          selectedDates: selectedDates
+        },
+        calendarConfig
       }
     },
     methods(component) {

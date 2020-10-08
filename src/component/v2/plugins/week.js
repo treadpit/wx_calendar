@@ -1,3 +1,11 @@
+/**
+ * @Author: drfu*
+ * @Description: 周视图
+ * @Date: 2020-10-08 21:22:09*
+ * @Last Modified by: drfu
+ * @Last Modified time: 2020-10-08 21:26:04
+ * */
+
 import { renderCalendar } from '../render'
 import {
   getCalendarConfig,
@@ -245,14 +253,20 @@ export default () => {
           component
         ).__selectTargetDateWhenJump(target, data.dates, config)
         return {
-          ...data,
-          ...setSelectDates,
-          config,
-          weeksCh: dateUtil.getWeekHeader(calendarConfig.firstDayOfWeek),
-          initializedWeekMode: true
+          calendarData: {
+            ...data,
+            ...setSelectDates,
+            config,
+            weeksCh: dateUtil.getWeekHeader(calendarConfig.firstDayOfWeek),
+            initializedWeekMode: true
+          },
+          calendarConfig
         }
       }
-      return calendarData
+      return {
+        calendarData,
+        calendarConfig
+      }
     },
     onSwitchCalendar(target = {}, calendarData = {}, component) {
       const { direction } = target

@@ -11,7 +11,7 @@ export default {
       name !== 'methods' &&
       !this.installed.some(p => p[0] === name)
     ) {
-      this.installed.push([name, info])
+      this.installed.unshift([name, info])
     }
     return this
   }
