@@ -35,11 +35,18 @@ export default () => {
     beforeRender(calendarData, calendarConfig, component) {
       // do some thing
       const some_data = {}
+      const some_config = {}
       // 此处须返回处理后的数据，否则下一个插件不能接收到数据导致不能运行
-      // 无需做数据处理则不需要复写方法，或者直接返回上游的 calendarData
+      // 无需做数据处理则不需要定义该方法，或者直接返回上游的 calendarData, calendarConfig
       return {
-        some_data,
-        ...calendarData
+        calendarData: {
+          ...some_data,
+          ...calendarData
+        },
+        calendarConfig: {
+          ...some_config,
+          ...calendarConfig
+        }
       }
     },
     /**
@@ -53,9 +60,10 @@ export default () => {
       // do some thing
 
       // 此处须返回处理后的数据，否则下一个插件不能接收到数据导致不能运行
-      // 无需做数据处理则不需要复写方法，或者直接返回上游的 calendarData
+      // 无需做数据处理则不需要复写方法，或者直接返回上游的 calendarData, calendarConfig
       return {
-        ...calendarData
+        ...calendarData,
+        ...calendarConfig
       }
     },
     /**

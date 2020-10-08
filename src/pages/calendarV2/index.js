@@ -79,11 +79,6 @@ const conf = {
         color: 'orange'
       },
       {
-        text: '自定义配置',
-        action: 'config',
-        color: 'pink'
-      },
-      {
         text: '获取自定义配置',
         action: 'getConfig',
         color: 'olive'
@@ -268,7 +263,7 @@ const conf = {
           ;[eDate, sDate] = [sDate, eDate]
         }
         const area = [`${year}-${month}-${sDate}`, `${year}-${month}-${eDate}`]
-        calendar[action](['2020-8-12', '2020-8-30'])
+        calendar[action](area)
         this.setData({
           rstStr: JSON.stringify(area)
         })

@@ -1,3 +1,11 @@
+/**
+ * @Author: drfu*
+ * @Description: 基础功能
+ * @Date: 2020-10-08 21:22:09*
+ * @Last Modified by: drfu
+ * @Last Modified time: 2020-10-08 21:26:27
+ * */
+
 import { calcJumpData } from '../../core'
 import { renderCalendar } from '../../render'
 import {
@@ -10,7 +18,7 @@ import {
 export default () => {
   return {
     name: 'base',
-    beforeRender(calendarData = {}) {
+    beforeRender(calendarData = {}, calendarConfig) {
       const calendar = calendarData
       const { selectedDates = [], dates } = calendar
       let _dates = [...dates]
@@ -26,8 +34,11 @@ export default () => {
         })
       }
       return {
-        ...calendarData,
-        dates: _dates
+        calendarData: {
+          ...calendarData,
+          dates: _dates
+        },
+        calendarConfig
       }
     },
     onTapDate(tapedDate, calendarData = {}, calendarConfig = {}) {
@@ -171,6 +182,50 @@ export default () => {
           return renderCalendar.call(component, {
             ...existCalendarData,
             ...updatedRenderData
+          })
+        },
+        setSelectedDates: targetDates => {
+          const existCalendarData = getCalendarData('calendar', component)
+          let { dates, selectedDates = [] } = existCalendarData || {}
+          let __selectedDates = []
+          let __dates = dates
+          if (!targetDates) {
+            __dates = dates.map(item => {
+              const date = { ...item }
+              date.choosed = true
+              if (existCalendarData.showLabelAlways && date.showTodoLabel) {
+                date.showTodoLabel = true
+              } else {
+                date.showTodoLabel = false
+              }
+              return date
+            })
+            __selectedDates = dates
+          } else if (targetDates && targetDates.length) {
+            const allSelected = dateUtil.uniqueArrayByDate(
+              selectedDates.concat(targetDates)
+            )
+            const allSelectedDateStr = allSelected.map(d =>
+              dateUtil.toTimeStr(d)
+            )
+            __dates = dates.map(item => {
+              const date = { ...item }
+              if (allSelectedDateStr.includes(dateUtil.toTimeStr(date))) {
+                date.choosed = true
+                __selectedDates.push(date)
+              }
+              if (existCalendarData.showLabelAlways && date.showTodoLabel) {
+                date.showTodoLabel = true
+              } else {
+                date.showTodoLabel = false
+              }
+              return date
+            })
+          }
+          return renderCalendar.call(component, {
+            ...existCalendarData,
+            dates: __dates,
+            selectedDates: __selectedDates
           })
         },
         setDateStyle: toSetDates => {

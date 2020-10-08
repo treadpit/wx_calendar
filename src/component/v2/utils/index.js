@@ -276,3 +276,10 @@ export const setCalendarData = (data, component) =>
   new WxData(component).setData(data)
 export const getCalendarConfig = component =>
   getCalendarData('config', component)
+export const setCalendarConfig = (config, component) =>
+  setCalendarData(
+    {
+      config
+    },
+    component
+  )

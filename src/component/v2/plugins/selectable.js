@@ -1,3 +1,11 @@
+/**
+ * @Author: drfu*
+ * @Description: 禁用、启用日期选择
+ * @Date: 2020-10-08 21:22:09*
+ * @Last Modified by: drfu
+ * @Last Modified time: 2020-10-08 21:25:00
+ * */
+
 import { getCalendarData, dateUtil, logger } from '../utils/index'
 import { renderCalendar } from '../render'
 
@@ -86,36 +94,22 @@ export default () => {
         disableDates,
         renderCausedBy
       } = calendarData
-      const [startTimestamp, endTimestamp] = enableArea || []
       const _dates = [...dates].map(date => {
         let item = { ...date }
         const timeStr = dateUtil.toTimeStr(date)
         const timestamp = +dateUtil.getTimeStamp(item)
         if (renderCausedBy === 'enableDates') {
           if (enableDates && enableDates.length) {
-            if (enableArea) {
-              const ifOutofArea =
-                +startTimestamp > timestamp || timestamp > +endTimestamp
-              if (ifOutofArea) {
-                item.disable = true
-              } else {
-                item.disable = false
-              }
-            } else {
-              item = disabledByConfig(item, timestamp, calendarConfig)
-            }
             if (enableDates.includes(timeStr)) {
               item.disable = false
+            } else {
+              item.disable = true
             }
             return item
           }
         } else if (renderCausedBy === 'enableArea') {
           if (enableArea && enableArea.length) {
-            if (enableDates && enableDates.includes(timeStr)) {
-              item.disable = false
-            } else {
-              item.disable = true
-            }
+            const [startTimestamp, endTimestamp] = enableArea || []
             const ifOutofArea =
               +startTimestamp > timestamp || timestamp > +endTimestamp
             item.disable = ifOutofArea
@@ -135,8 +129,11 @@ export default () => {
       })
 
       return {
-        ...calendarData,
-        dates: _dates
+        calendarData: {
+          ...calendarData,
+          dates: _dates
+        },
+        calendarConfig
       }
     },
     methods(component) {
@@ -167,38 +164,56 @@ export default () => {
           if (!toSet.length) return
           const existCalendarData = getCalendarData('calendar', component)
           const { enableDates = [] } = existCalendarData || {}
-          let toSetDates = toSet.map(item =>
-            dateUtil.transformTimeStr2Dict(item)
-          )
+          let toSetDates = toSet.map(item => {
+            let date = { ...item }
+            if (typeof date === 'string') {
+              return dateUtil.transformTimeStr2Dict(item)
+            }
+            return item
+          })
           if (enableDates.length) {
             toSetDates = dateUtil.uniqueArrayByDate([
               ...toSetDates,
-              ...enableDates
+              ...enableDates.map(d => dateUtil.transformTimeStr2Dict(d))
             ])
           }
           return renderCalendar.call(component, {
             ...existCalendarData,
             renderCausedBy: 'enableDates',
-            enableDates: toSetDates.map(item => dateUtil.toTimeStr(item))
+            enableDates: toSetDates.map(date => {
+              if (typeof date !== 'string') {
+                return dateUtil.toTimeStr(date)
+              }
+              return date
+            })
           })
         },
         disableDates: toSet => {
           const existCalendarData = getCalendarData('calendar', component)
           const { disableDates = [], dates = [] } = existCalendarData || {}
-          let toSetDates = toSet.map(item =>
-            dateUtil.transformTimeStr2Dict(item)
-          )
+          let toSetDates = toSet.map(item => {
+            let date = { ...item }
+            if (typeof date === 'string') {
+              return dateUtil.transformTimeStr2Dict(item)
+            }
+            return item
+          })
           if (disableDates && disableDates.length) {
             toSetDates = dateUtil.uniqueArrayByDate([
               ...toSetDates,
-              ...disableDates
+              ...disableDates.map(d => dateUtil.transformTimeStr2Dict(d))
             ])
           }
           return renderCalendar.call(component, {
             ...existCalendarData,
             renderCausedBy: 'disableDates',
             dates,
-            disableDates: toSetDates.map(item => dateUtil.toTimeStr(item))
+            disableDates: toSetDates.map(date => {
+              if (typeof date !== 'string') {
+                return dateUtil.toTimeStr(date)
+              }
+              return date
+            })
           })
         }
       }

@@ -1,3 +1,11 @@
+/**
+ * @Author: drfu*
+ * @Description: 获取日历数据
+ * @Date: 2020-10-08 21:22:09*
+ * @Last Modified by: drfu
+ * @Last Modified time: 2020-10-08 21:26:41
+ * */
+
 import { getCalendarData, logger, getCalendarConfig } from '../../utils/index'
 
 function wrapDateWithLunar(dates = [], convertFn) {
