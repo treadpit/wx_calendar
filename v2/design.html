@@ -7,7 +7,7 @@
     <meta name="generator" content="VuePress 1.5.4">
     <script src="https://hm.baidu.com/hm.js?aa798833bfba6405a36b03d0fc38a3da"></script>
     <meta name="description" content="在2.0中使用了插件系统，按需引入对应功能插件">
-    <link rel="preload" href="/wx_calendar/assets/css/0.styles.73f0e813.css" as="style"><link rel="preload" href="/wx_calendar/assets/js/app.96554a09.js" as="script"><link rel="preload" href="/wx_calendar/assets/js/2.ff000b44.js" as="script"><link rel="preload" href="/wx_calendar/assets/js/4.5c527821.js" as="script"><link rel="prefetch" href="/wx_calendar/assets/js/10.f3f4e614.js"><link rel="prefetch" href="/wx_calendar/assets/js/11.faacc609.js"><link rel="prefetch" href="/wx_calendar/assets/js/12.de51c613.js"><link rel="prefetch" href="/wx_calendar/assets/js/13.8eb599fd.js"><link rel="prefetch" href="/wx_calendar/assets/js/14.e85c46a8.js"><link rel="prefetch" href="/wx_calendar/assets/js/3.3db0c70f.js"><link rel="prefetch" href="/wx_calendar/assets/js/5.3961857e.js"><link rel="prefetch" href="/wx_calendar/assets/js/6.4b844a2f.js"><link rel="prefetch" href="/wx_calendar/assets/js/7.a986fb9f.js"><link rel="prefetch" href="/wx_calendar/assets/js/8.6c1054fa.js"><link rel="prefetch" href="/wx_calendar/assets/js/9.c0ffc8cd.js">
+    <link rel="preload" href="/wx_calendar/assets/css/0.styles.73f0e813.css" as="style"><link rel="preload" href="/wx_calendar/assets/js/app.5c130054.js" as="script"><link rel="preload" href="/wx_calendar/assets/js/2.ff000b44.js" as="script"><link rel="preload" href="/wx_calendar/assets/js/4.0c746c42.js" as="script"><link rel="prefetch" href="/wx_calendar/assets/js/10.f3f4e614.js"><link rel="prefetch" href="/wx_calendar/assets/js/11.faacc609.js"><link rel="prefetch" href="/wx_calendar/assets/js/12.6e7531dc.js"><link rel="prefetch" href="/wx_calendar/assets/js/13.ace0ad22.js"><link rel="prefetch" href="/wx_calendar/assets/js/14.e85c46a8.js"><link rel="prefetch" href="/wx_calendar/assets/js/3.3db0c70f.js"><link rel="prefetch" href="/wx_calendar/assets/js/5.3961857e.js"><link rel="prefetch" href="/wx_calendar/assets/js/6.4b844a2f.js"><link rel="prefetch" href="/wx_calendar/assets/js/7.a986fb9f.js"><link rel="prefetch" href="/wx_calendar/assets/js/8.6c1054fa.js"><link rel="prefetch" href="/wx_calendar/assets/js/9.c0ffc8cd.js">
     <link rel="stylesheet" href="/wx_calendar/assets/css/0.styles.73f0e813.css">
   </head>
   <body>
@@ -39,11 +39,18 @@
     <span class="token function">beforeRender</span><span class="token punctuation">(</span><span class="token parameter">calendarData<span class="token punctuation">,</span> calendarConfig<span class="token punctuation">,</span> component</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
       <span class="token comment">// do some thing</span>
       <span class="token keyword">const</span> some_data <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token keyword">const</span> some_config <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
       <span class="token comment">// 此处须返回处理后的数据，否则下一个插件不能接收到数据导致不能运行</span>
-      <span class="token comment">// 无需做数据处理则不需要复写方法，或者直接返回上游的 calendarData</span>
+      <span class="token comment">// 无需做数据处理则不需要定义该方法，或者直接返回上游的 calendarData, calendarConfig</span>
       <span class="token keyword">return</span> <span class="token punctuation">{</span>
-        some_data<span class="token punctuation">,</span>
-        <span class="token operator">...</span>calendarData
+        calendarData<span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token operator">...</span>some_data<span class="token punctuation">,</span>
+          <span class="token operator">...</span>calendarData
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        calendarConfig<span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token operator">...</span>some_config<span class="token punctuation">,</span>
+          <span class="token operator">...</span>calendarConfig
+        <span class="token punctuation">}</span>
       <span class="token punctuation">}</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token comment">/**
@@ -57,9 +64,10 @@
       <span class="token comment">// do some thing</span>
 
       <span class="token comment">// 此处须返回处理后的数据，否则下一个插件不能接收到数据导致不能运行</span>
-      <span class="token comment">// 无需做数据处理则不需要复写方法，或者直接返回上游的 calendarData</span>
+      <span class="token comment">// 无需做数据处理则不需要复写方法，或者直接返回上游的 calendarData, calendarConfig</span>
       <span class="token keyword">return</span> <span class="token punctuation">{</span>
-        <span class="token operator">...</span>calendarData
+        <span class="token operator">...</span>calendarData<span class="token punctuation">,</span>
+        <span class="token operator">...</span>calendarConfig
       <span class="token punctuation">}</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token comment">/**
@@ -83,11 +91,11 @@
     <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
-</code></pre></div><p>至此一个简单的插件已经开发完成。</p> <p>相较于 <code>1.x</code> 版本无论是否需要农历功能，都需要附带一个比较大的农历计算 <code>js</code> 库，采用插件形式则可以将不需要的功能给去除。</p> <p>对于小程序有代码大小包的限制来说寸土寸金，对比仅需展示简单功能的而言，<code>2.0</code> 比 <code>1.x</code> 版本体积减少达 70%。</p></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/treadpit/wx_calendar/edit/plugin-mode/v2/design.md" target="_blank" rel="noopener noreferrer">帮助我改善此页面！</a> <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></div> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">9/9/2020, 3:03:19 PM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+</code></pre></div><p>至此一个简单的插件已经开发完成。</p> <p>相较于 <code>1.x</code> 版本无论是否需要农历功能，都需要附带一个比较大的农历计算 <code>js</code> 库，采用插件形式则可以将不需要的功能给去除。</p> <p>对于小程序有代码大小包的限制来说寸土寸金，对比仅需展示简单功能的而言，<code>2.0</code> 比 <code>1.x</code> 版本体积减少达 70%。</p></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/treadpit/wx_calendar/edit/plugin-mode/v2/design.md" target="_blank" rel="noopener noreferrer">帮助我改善此页面！</a> <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></div> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">10/8/2020, 1:40:28 PM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
       ←
       <a href="/wx_calendar/v2/api.html" class="prev">
         功能一览
       </a></span> <!----></p></div> </main></div><div class="global-ui"></div></div>
-    <script src="/wx_calendar/assets/js/app.96554a09.js" defer></script><script src="/wx_calendar/assets/js/2.ff000b44.js" defer></script><script src="/wx_calendar/assets/js/4.5c527821.js" defer></script>
+    <script src="/wx_calendar/assets/js/app.5c130054.js" defer></script><script src="/wx_calendar/assets/js/2.ff000b44.js" defer></script><script src="/wx_calendar/assets/js/4.0c746c42.js" defer></script>
   </body>
 </html>
