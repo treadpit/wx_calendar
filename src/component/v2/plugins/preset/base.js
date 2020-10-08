@@ -103,6 +103,8 @@ export default () => {
     methods(component) {
       return {
         jump: dateInfo => {
+          if (Object.prototype.toString.call(dateInfo) !== '[object Object]')
+            return
           const updatedRenderData = calcJumpData({
             dateInfo,
             component
@@ -110,7 +112,7 @@ export default () => {
           const existCalendarData = getCalendarData('calendar', component)
           const config = getCalendarConfig(component)
           if (config.autoChoosedWhenJump) {
-            const target = updatedRenderData.dates[dateInfo.id]
+            const target = updatedRenderData.dates[dateInfo.date - 1]
             if (!updatedRenderData.selectedDates) {
               updatedRenderData.selectedDates = [target]
             } else {

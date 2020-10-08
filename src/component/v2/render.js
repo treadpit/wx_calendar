@@ -37,7 +37,10 @@ export function renderCalendar(calendarData, config) {
           firstRender: Component.firstRender
         }
         resolve(rst)
-        Component.triggerEvent('afterCalendarRender', rst)
+        if (Component.firstRender) {
+          Component.triggerEvent('afterCalendarRender', rst)
+          Component.firstRender = false
+        }
       }
     )
   })
