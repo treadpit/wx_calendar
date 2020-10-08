@@ -86,24 +86,12 @@ export default () => {
         disableDates,
         renderCausedBy
       } = calendarData
-      const [startTimestamp, endTimestamp] = enableArea || []
       const _dates = [...dates].map(date => {
         let item = { ...date }
         const timeStr = dateUtil.toTimeStr(date)
         const timestamp = +dateUtil.getTimeStamp(item)
         if (renderCausedBy === 'enableDates') {
           if (enableDates && enableDates.length) {
-            if (enableArea) {
-              const ifOutofArea =
-                +startTimestamp > timestamp || timestamp > +endTimestamp
-              if (ifOutofArea) {
-                item.disable = true
-              } else {
-                item.disable = false
-              }
-            } else {
-              item = disabledByConfig(item, timestamp, calendarConfig)
-            }
             if (enableDates.includes(timeStr)) {
               item.disable = false
             } else {
@@ -113,11 +101,7 @@ export default () => {
           }
         } else if (renderCausedBy === 'enableArea') {
           if (enableArea && enableArea.length) {
-            if (enableDates && enableDates.includes(timeStr)) {
-              item.disable = false
-            } else {
-              item.disable = true
-            }
+            const [startTimestamp, endTimestamp] = enableArea || []
             const ifOutofArea =
               +startTimestamp > timestamp || timestamp > +endTimestamp
             item.disable = ifOutofArea
