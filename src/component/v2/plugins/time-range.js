@@ -3,12 +3,104 @@
  * @Description: 时间区域选择
  * @Date: 2020-10-08 21:22:09*
  * @Last Modified by: drfu
- * @Last Modified time: 2020-10-08 21:24:21
+ * @Last Modified time: 2020-10-11 13:39:21
  * */
 
 import { renderCalendar } from '../render'
-import { dateUtil, getCalendarConfig, logger } from '../utils/index'
-import getCalendarData from './preset/get-calendar-data'
+import {
+  logger,
+  dateUtil,
+  getCalendarConfig,
+  getCalendarData
+} from '../utils/index'
+
+function pusheNextMonthDateArea(
+  dateInfo = {},
+  startTimestamp,
+  endTimestamp,
+  selectedDates = []
+) {
+  let tempOfSelectedDate = [...selectedDates]
+  const dates = dateUtil.calcDates(dateInfo.year, dateInfo.month)
+  let datesLen = dates.length
+  for (let i = 0; i < datesLen; i++) {
+    const date = dates[i]
+    const timeStamp = dateUtil.getTimeStamp(date)
+    if (timeStamp <= endTimestamp && timeStamp >= startTimestamp) {
+      tempOfSelectedDate.push({
+        ...date,
+        choosed: true
+      })
+    }
+    if (i === datesLen - 1 && timeStamp < endTimestamp) {
+      pusheNextMonthDateArea(
+        dateUtil.getNextMonthInfo(date),
+        startTimestamp,
+        endTimestamp,
+        tempOfSelectedDate
+      )
+    }
+  }
+  return tempOfSelectedDate
+}
+function pushPrevMonthDateArea(
+  dateInfo = {},
+  startTimestamp,
+  endTimestamp,
+  selectedDates = []
+) {
+  let tempOfSelectedDate = [...selectedDates]
+  const dates = dateUtil.sortDatesByTime(
+    dateUtil.calcDates(dateInfo.year, dateInfo.month),
+    'desc'
+  )
+  let datesLen = dates.length
+  let firstDate = dateUtil.getTimeStamp(dates[0])
+  for (let i = 0; i < datesLen; i++) {
+    const date = dates[i]
+    const timeStamp = dateUtil.getTimeStamp(date)
+    if (timeStamp >= startTimestamp && timeStamp <= endTimestamp) {
+      tempOfSelectedDate.push({
+        ...date,
+        choosed: true
+      })
+    }
+    if (i === datesLen - 1 && firstDate > startTimestamp) {
+      pushPrevMonthDateArea(
+        dateUtil.getPrevMonthInfo(date),
+        startTimestamp,
+        endTimestamp,
+        tempOfSelectedDate
+      )
+    }
+  }
+  return tempOfSelectedDate
+}
+/**
+ * 当设置日期区域非当前时保存其他月份的日期至已选日期数组
+ * @param {object} info
+ */
+function calcDateWhenNotInOneMonth(info) {
+  const { firstDate, lastDate, startTimestamp, endTimestamp } = info
+  let { selectedDate } = info
+  if (dateUtil.getTimeStamp(firstDate) > startTimestamp) {
+    selectedDate = pushPrevMonthDateArea(
+      dateUtil.getPrevMonthInfo(firstDate),
+      startTimestamp,
+      endTimestamp,
+      selectedDate
+    )
+  }
+  if (dateUtil.getTimeStamp(lastDate) < endTimestamp) {
+    selectedDate = pusheNextMonthDateArea(
+      dateUtil.getNextMonthInfo(lastDate),
+      startTimestamp,
+      endTimestamp,
+      selectedDate
+    )
+  }
+  return [...selectedDate]
+}
 
 /**
  *  指定日期区域转时间戳
@@ -78,27 +170,96 @@ export default () => {
       } = calendarData
       let __dates = dates
       let __selectedDates = selectedDates
+      const [startDateTimestamp, endDateTimestamp] = chooseAreaTimestamp
       if (chooseAreaTimestamp.length === 2) {
+        __selectedDates = []
         __dates = dates.map(d => {
           const date = { ...d }
           const dateTimeStamp = dateUtil.getTimeStamp(date)
           if (
-            dateTimeStamp >= chooseAreaTimestamp[0] &&
-            chooseAreaTimestamp[1] >= dateTimeStamp
+            dateTimeStamp >= startDateTimestamp &&
+            endDateTimestamp >= dateTimeStamp
           ) {
             date.choosed = true
             __selectedDates.push(date)
+          } else {
+            date.choosed = false
+            __selectedDates = __selectedDates.filter(
+              item => dateUtil.getTimeStamp(item) !== dateTimeStamp
+            )
           }
           return date
         })
+        const monthOfStartDate = new Date(startDateTimestamp).getMonth()
+        const monthOfEndDate = new Date(endDateTimestamp).getMonth()
+        if (monthOfStartDate !== monthOfEndDate) {
+          __selectedDates = calcDateWhenNotInOneMonth({
+            firstDate: __dates[0],
+            lastDate: __dates[__dates.length - 1],
+            startTimestamp: startDateTimestamp,
+            endTimestamp: endDateTimestamp,
+            selectedDate: __selectedDates
+          })
+        }
       }
       return {
         calendarData: {
           ...calendarData,
           dates: __dates,
-          selectedDates: dateUtil.uniqueArrayByDate(__selectedDates)
+          selectedDates: dateUtil.sortDatesByTime(
+            dateUtil.uniqueArrayByDate(__selectedDates)
+          )
         },
         calendarConfig
+      }
+    },
+    onTapDate(tapedDate, calendarData = {}, calendarConfig = {}) {
+      let {
+        tempChooseAreaTimestamp = [],
+        chooseAreaTimestamp: existChooseAreaTimestamp = [],
+        selectedDates = [],
+        dates = []
+      } = calendarData
+      const timestamp = dateUtil.getTimeStamp(tapedDate)
+      let __dates = [...dates]
+      let __selectedDates = [...selectedDates]
+      if (
+        tempChooseAreaTimestamp.length === 2 ||
+        existChooseAreaTimestamp.length === 2
+      ) {
+        tempChooseAreaTimestamp = [tapedDate]
+        __selectedDates = []
+        __dates.forEach(d => (d.choosed = false))
+      } else if (tempChooseAreaTimestamp.length === 1) {
+        const preChoosedDate = tempChooseAreaTimestamp[0]
+        const preTimestamp = dateUtil.getTimeStamp(preChoosedDate)
+        if (preTimestamp <= timestamp) {
+          tempChooseAreaTimestamp.push(tapedDate)
+        } else if (preTimestamp > timestamp) {
+          tempChooseAreaTimestamp.unshift(tapedDate)
+        }
+      } else {
+        tempChooseAreaTimestamp = [tapedDate]
+      }
+      let chooseAreaTimestamp = []
+      if (tempChooseAreaTimestamp.length === 2) {
+        const [startDate, endDate] = tempChooseAreaTimestamp
+        const startDateTimestamp = dateUtil.getTimeStamp(startDate)
+        const endDateTimestamp = dateUtil.getTimeStamp(endDate)
+        chooseAreaTimestamp = [startDateTimestamp, endDateTimestamp]
+      }
+      return {
+        calendarData: {
+          ...calendarData,
+          chooseAreaTimestamp,
+          tempChooseAreaTimestamp,
+          dates: __dates,
+          selectedDates: __selectedDates
+        },
+        calendarConfig: {
+          ...calendarConfig,
+          multi: true
+        }
       }
     },
     methods(component) {
@@ -107,7 +268,7 @@ export default () => {
          * 设置连续日期选择区域
          * @param {array} dateArea 区域开始结束日期数组
          */
-        chooseArea: (dateArea = []) => {
+        chooseDateArea: (dateArea = []) => {
           if (dateArea.length === 1) {
             dateArea = dateArea.concat(dateArea)
           }
@@ -127,7 +288,7 @@ export default () => {
             },
             {
               ...config,
-              mulit: true,
+              multi: true,
               chooseAreaMode: true
             }
           )

@@ -3,7 +3,7 @@
  * @Description: 基础功能
  * @Date: 2020-10-08 21:22:09*
  * @Last Modified by: drfu
- * @Last Modified time: 2020-10-08 21:26:27
+ * @Last Modified time: 2020-10-11 13:28:52
  * */
 
 import { calcJumpData } from '../../core'
@@ -93,8 +93,11 @@ export default () => {
         }
       }
       return {
-        ...calendar,
-        dates
+        calendarData: {
+          ...calendar,
+          dates
+        },
+        calendarConfig
       }
     },
     onSwitchCalendar(date, calendarData = {}, component) {
@@ -153,6 +156,14 @@ export default () => {
           const existCalendarData = getCalendarData('calendar', component) || {}
           const { dates = [], selectedDates = [] } = existCalendarData
           let updatedRenderData = {}
+          const config = getCalendarConfig(component)
+          let chooseAreaData = {}
+          if (config.chooseAreaMode) {
+            chooseAreaData = {
+              chooseAreaTimestamp: [],
+              tempChooseAreaTimestamp: []
+            }
+          }
           if (!cancelDates.length) {
             dates.forEach(item => {
               item.choosed = false
@@ -181,7 +192,8 @@ export default () => {
 
           return renderCalendar.call(component, {
             ...existCalendarData,
-            ...updatedRenderData
+            ...updatedRenderData,
+            ...chooseAreaData
           })
         },
         setSelectedDates: targetDates => {

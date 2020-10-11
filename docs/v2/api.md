@@ -264,6 +264,21 @@ calendar.switchView().then(() => {});
 // 或者
 calendar.switchView('month').then(() => {});
 ```
+# 需引入插件： plugins/time-range.js
+
+## 日期范围选择
+
+> 调用此方法默认打开 `chooseAreaMode` 配置，非连续性日期选择请调用 `setSelectedDates()`
+
+> 只支持单个连续时间段
+
+```js
+// 当连续时间为单天时
+calendar.chooseDateArea(['2020-10-12']);
+
+// 连续时间段
+calendar.chooseDateArea(['2020-10-20', '2020-10-30'])
+```
 
 # 需引入插件： plugins/solarLunar.js
 

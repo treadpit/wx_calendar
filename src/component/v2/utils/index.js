@@ -133,7 +133,7 @@ class DateUtil {
     return target
   }
   sortDatesByTime(dates = [], sortType) {
-    return dates.sort(function(a, b) {
+    return dates.sort((a, b) => {
       const at = this.getTimeStamp(a)
       const bt = this.getTimeStamp(b)
       if (at < bt && sortType !== 'desc') {

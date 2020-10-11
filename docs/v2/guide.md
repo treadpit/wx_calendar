@@ -105,6 +105,7 @@ const conf = {
       inverse: true, // 单选模式下是否支持取消选中,
       markToday: '今', // 当天日期展示不使用默认数字，用特殊文字标记
       takeoverTap: true, // 是否完全接管日期点击事件（日期不会选中)
+      chooseAreaMode: true, // 开启日期范围选择模式，该模式下只可选择时间段
       highlightToday: true, // 是否高亮显示当天，区别于选中样式（初始化时当天高亮并不代表已选中当天）
       defaultDate: '2018-3-6', // 默认选中指定某天，如需选中需配置 autoChoosedWhenJump: true
       preventSwipe: true, // 是否禁用日历滑动切换月份
