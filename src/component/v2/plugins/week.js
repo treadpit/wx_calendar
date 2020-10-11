@@ -3,7 +3,7 @@
  * @Description: 周视图
  * @Date: 2020-10-08 21:22:09*
  * @Last Modified by: drfu
- * @Last Modified time: 2020-10-08 21:26:04
+ * @Last Modified time: 2020-10-11 14:13:53
  * */
 
 import { renderCalendar } from '../render'
@@ -244,7 +244,8 @@ export default () => {
       if (calendarConfig.weekMode && !calendarData.initializedWeekMode) {
         const { defaultDate } = calendarConfig
         const target =
-          dateUtil.transformTimeStr2Dict(defaultDate) || dateUtil.todayFMD()
+          (defaultDate && dateUtil.transformTimeStr2Dict(defaultDate)) ||
+          dateUtil.todayFMD()
         const waitRenderData = this.methods(
           component
         ).__calcDatesWhenSwitchView('week', target)
@@ -256,7 +257,6 @@ export default () => {
           calendarData: {
             ...data,
             ...setSelectDates,
-            config,
             weeksCh: dateUtil.getWeekHeader(calendarConfig.firstDayOfWeek),
             initializedWeekMode: true
           },
