@@ -1,6 +1,7 @@
 import todo from '../../component/v2/plugins/todo'
 import selectable from '../../component/v2/plugins/selectable'
 import solarLunar from '../../component/v2/plugins/solarLunar/index'
+import timeRange from '../../component/v2/plugins/time-range'
 import week from '../../component/v2/plugins/week'
 import plugin from '../../component/v2/plugins/index'
 
@@ -9,13 +10,15 @@ plugin
   .use(solarLunar)
   .use(selectable)
   .use(week)
+  .use(timeRange)
 
 const conf = {
   data: {
     calendarConfig: {
-      theme: 'elegant',
-      defaultDate: '2020-9-8',
-      autoChoosedWhenJump: true
+      theme: 'elegant'
+      // chooseAreaMode: true
+      // defaultDate: '2020-9-8',
+      // autoChoosedWhenJump: true
     },
     actionBtn: [
       {

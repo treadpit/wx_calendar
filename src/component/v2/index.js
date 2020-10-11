@@ -110,16 +110,22 @@ Component({
       if (disable || !date) return
       const { calendar, config } = this.data
       let calendarData = calendar
+      let calendarConfig = config
       if (config.takeoverTap) {
         return this.triggerEvent('takeoverTap', info)
       }
       for (let plugin of plugins.installed) {
         const [, p] = plugin
         if (typeof p.onTapDate === 'function') {
-          calendarData = p.onTapDate(info, calendarData, config)
+          const {
+            calendarData: __calendarData,
+            calendarConfig: __calendarConfig
+          } = p.onTapDate(info, calendarData, calendarConfig)
+          calendarData = __calendarData
+          calendarConfig = __calendarConfig
         }
       }
-      renderCalendar.call(this, calendarData, config).then(() => {
+      renderCalendar.call(this, calendarData, calendarConfig).then(() => {
         this.triggerEvent('afterTapDate', info)
       })
     },

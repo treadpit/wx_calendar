@@ -3,7 +3,7 @@
  * @Description: 获取日历数据
  * @Date: 2020-10-08 21:22:09*
  * @Last Modified by: drfu
- * @Last Modified time: 2020-10-08 21:26:41
+ * @Last Modified time: 2020-10-11 13:42:37
  * */
 
 import { getCalendarData, logger, getCalendarConfig } from '../../utils/index'
@@ -55,6 +55,12 @@ export default () => {
             }
           } else {
             return dates
+          }
+        },
+        getCalendarAllData: () => {
+          return {
+            data: getCalendarData('calendar', component) || {},
+            config: getCalendarConfig(component) || {}
           }
         }
       }

@@ -29,7 +29,7 @@
       <!-- 本月日期格子 -->
       <view wx:for="{{calendar.dates}}" wx:key="index" data-idx="{{index}}" data-info="{{item}}" bindtap="tapDate" class="grid {{item.class ? item.class  : ''}} {{config.theme}}_normal-date b ac pc">
         <view class="date-wrap b cc {{(item.week === 0 || item.week === 6) ? config.theme + '_weekend-color' : ''}}">
-          <view class="date b ac pc {{item.class ? item.class  : ''}} {{item.isToday && config.highlightToday ? config.theme + '_today' : ''}} {{item.choosed ? config.theme + '_choosed' : ''}} {{item.disable ? config.theme + '_date-disable' : ''}}">
+          <view class="date b ac pc {{item.class ? item.class  : ''}} {{item.isToday && config.highlightToday ? config.theme + '_today' : ''}} {{item.choosed ? config.theme + '_choosed' : ''}} {{item.disable ? config.theme + '_date-disable' : ''}} {{config.chooseAreaMode ? 'date-area-mode' : ''}}">
                 {{config.markToday && item.isToday ? config.markToday : item.date}}
                 <view
                   wx:if="{{(config.showLunar && item.lunar && !item.showTodoLabel) || (item.showTodoLabel && calendar.todoLabelPos !== 'bottom')}}"
