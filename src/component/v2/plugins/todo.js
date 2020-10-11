@@ -3,7 +3,7 @@
  * @Description: 代办事项
  * @Date: 2020-10-08 21:22:09*
  * @Last Modified by: drfu
- * @Last Modified time: 2020-10-08 21:25:23
+ * @Last Modified time: 2020-10-11 14:23:02
  * */
 
 import { getCalendarData, dateUtil } from '../utils/index'
@@ -142,7 +142,7 @@ export default () => {
           })
         },
         getTodos() {
-          return getCalendarData('calendar.todos', component)
+          return getCalendarData('calendar.todos', component) || []
         }
       }
     }
