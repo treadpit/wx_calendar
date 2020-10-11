@@ -3,7 +3,7 @@
  * @Description: 时间区域选择
  * @Date: 2020-10-08 21:22:09*
  * @Last Modified by: drfu
- * @Last Modified time: 2020-10-11 13:39:21
+ * @Last Modified time: 2020-10-11 13:56:32
  * */
 
 import { renderCalendar } from '../render'
@@ -214,6 +214,12 @@ export default () => {
       }
     },
     onTapDate(tapedDate, calendarData = {}, calendarConfig = {}) {
+      if (!calendarConfig.chooseAreaMode) {
+        return {
+          calendarData,
+          calendarConfig
+        }
+      }
       let {
         tempChooseAreaTimestamp = [],
         chooseAreaTimestamp: existChooseAreaTimestamp = [],
