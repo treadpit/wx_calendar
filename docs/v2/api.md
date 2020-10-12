@@ -268,9 +268,11 @@ calendar.switchView('month').then(() => {});
 
 ## 日期范围选择
 
-> 调用此方法默认打开 `chooseAreaMode` 配置，非连续性日期选择请调用 `setSelectedDates()`
-
 > 只支持单个连续时间段
+
+::: tip 提示 👇
+调用此方法默认打开 `chooseAreaMode` 配置，非连续性日期选择请调用 `setSelectedDates()`
+:::
 
 ```js
 // 当连续时间为单天时
@@ -278,6 +280,36 @@ calendar.chooseDateArea(['2020-10-12']);
 
 // 连续时间段
 calendar.chooseDateArea(['2020-10-20', '2020-10-30'])
+```
+
+# 需引入插件： plugins/holidays/index.js
+
+::: tip 提示 👇
+节假日数据来源：[国务院办公厅_政府信息公开专栏](http://www.gov.cn/zhengce/content/2019-11/21/content_5454164.htm)，目前仅支持了 `2020年份` 的数据，其他数据可按需自行补充 `/plugins/holidays/holidays-map.js`
+:::
+
+## 显示法定节假日班/休情况
+
+配置日历config:
+
+```js {2}
+calendarConfig: {
+  showHolidays: true,
+  ... // 更多配置待接入
+}
+```
+
+## 获取当前年份节假日信息
+
+```js
+calendar.getHolidaysOfCurrentYear()
+```
+
+## 获取指定年份节假日信息
+
+```js
+const year = 2020
+calendar.getHolidaysOfYear(year)
 ```
 
 # 需引入插件： plugins/solarLunar.js

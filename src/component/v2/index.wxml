@@ -37,6 +37,12 @@
                   {{item.lunar.Term || item.lunar.IDayCn}}
                 </view>
                 <view
+                  wx:if="{{config.showHolidays && item.label && !item.choosed}}"
+                  class="date-desc {{config.theme + '_date-desc-lunar'}} date-desc-bottom"
+                  style="background-color: {{item.label ? '' : item.color}}; color: {{item.color}}">
+                    {{item.label}}
+                </view>
+                <view
                   wx:if="{{item.showTodoLabel && !calendar.todoLabelCircle}}"
                   class="{{item.todoText ? 'date-desc' : config.theme + '_todo-dot todo-dot'}} {{config.showLunar ? config.theme + '_date-desc-lunar' : ''}} {{calendar.todoLabelPos === 'bottom' ? 'date-desc-bottom todo-dot-bottom' : 'date-desc-top todo-dot-top'}} {{calendar.showLabelAlways && item.choosed && calendar.todoLabelPos === 'bottom' ? 'date-desc-bottom-always todo-dot-bottom-always' : ''}} {{calendar.showLabelAlways && item.choosed && calendar.todoLabelPos === 'top' ? 'date-desc-top-always todo-dot-top-always' : ''}}"
                   style="background-color: {{item.todoText ? '' : item.color || calendar.todoLabelColor}}; color: {{item.color}}">
