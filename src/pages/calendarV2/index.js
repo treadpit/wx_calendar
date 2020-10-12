@@ -3,6 +3,7 @@ import selectable from '../../component/v2/plugins/selectable'
 import solarLunar from '../../component/v2/plugins/solarLunar/index'
 import timeRange from '../../component/v2/plugins/time-range'
 import week from '../../component/v2/plugins/week'
+import holidays from '../../component/v2/plugins/holidays/index'
 import plugin from '../../component/v2/plugins/index'
 
 plugin
@@ -11,11 +12,13 @@ plugin
   .use(selectable)
   .use(week)
   .use(timeRange)
+  .use(holidays)
 
 const conf = {
   data: {
     calendarConfig: {
-      theme: 'elegant'
+      // theme: 'elegant',
+      // showHolidays: true,
       // chooseAreaMode: true
       // defaultDate: '2020-9-8',
       // autoChoosedWhenJump: true
