@@ -3,7 +3,7 @@
  * @Description: 周视图
  * @Date: 2020-10-08 21:22:09*
  * @Last Modified by: drfu
- * @Last Modified time: 2020-10-11 14:13:53
+ * @Last Modified time: 2020-10-12 14:39:45
  * */
 
 import { renderCalendar } from '../render'
@@ -414,7 +414,8 @@ export default () => {
           const waitRenderData = this.methods(
             component
           ).__calcDatesWhenSwitchView(view, target)
-          const { data, config } = waitRenderData
+          const { data, config } = waitRenderData || {}
+          if (!data) return logger.warn('当前状态不能切换为周视图')
           return renderCalendar.call(component, data, config)
         }
       }
