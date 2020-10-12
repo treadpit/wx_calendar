@@ -288,7 +288,9 @@ calendar.chooseDateArea(['2020-10-20', '2020-10-30'])
 节假日数据来源：[国务院办公厅_政府信息公开专栏](http://www.gov.cn/zhengce/content/2019-11/21/content_5454164.htm)，目前仅支持了 `2020年份` 的数据，其他数据可按需自行补充 `/plugins/holidays/holidays-map.js`
 :::
 
-## 显示法定节假日班/休情况
+## 节假日
+
+### 显示法定节假日班/休情况
 
 配置日历config:
 
@@ -299,13 +301,13 @@ calendarConfig: {
 }
 ```
 
-## 获取当前年份节假日信息
+### 获取当前年份节假日信息
 
 ```js
 calendar.getHolidaysOfCurrentYear()
 ```
 
-## 获取指定年份节假日信息
+### 获取指定年份节假日信息
 
 ```js
 const year = 2020
