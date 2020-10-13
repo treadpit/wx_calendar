@@ -1,3 +1,4 @@
+import { dateUtil } from '../../utils'
 import convertSolarLunar from './convertSolarLunar'
 
 export default () => {
@@ -30,10 +31,14 @@ export default () => {
         calendarConfig
       }
     },
-    methods(component) {
+    methods() {
       return {
-        convertSolarLunar: (dataInfo = {}) => {
-          const { year, month, date } = dataInfo
+        convertSolarLunar: dateInfo => {
+          if (!dateInfo) return dateInfo
+          if (typeof dateInfo === 'string' && dateInfo.includes('-')) {
+            dateInfo = dateUtil.transformDateRow2Dict(dateInfo)
+          }
+          const { year, month, date } = dateInfo
           return convertSolarLunar.solar2lunar(year, month, date)
         }
       }

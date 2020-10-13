@@ -167,14 +167,14 @@ export default () => {
           let toSetDates = toSet.map(item => {
             let date = { ...item }
             if (typeof date === 'string') {
-              return dateUtil.transformTimeStr2Dict(item)
+              return dateUtil.transformDateRow2Dict(item)
             }
             return item
           })
           if (enableDates.length) {
             toSetDates = dateUtil.uniqueArrayByDate([
               ...toSetDates,
-              ...enableDates.map(d => dateUtil.transformTimeStr2Dict(d))
+              ...enableDates.map(d => dateUtil.transformDateRow2Dict(d))
             ])
           }
           return renderCalendar.call(component, {
@@ -194,14 +194,14 @@ export default () => {
           let toSetDates = toSet.map(item => {
             let date = { ...item }
             if (typeof date === 'string') {
-              return dateUtil.transformTimeStr2Dict(item)
+              return dateUtil.transformDateRow2Dict(item)
             }
             return item
           })
           if (disableDates && disableDates.length) {
             toSetDates = dateUtil.uniqueArrayByDate([
               ...toSetDates,
-              ...disableDates.map(d => dateUtil.transformTimeStr2Dict(d))
+              ...disableDates.map(d => dateUtil.transformDateRow2Dict(d))
             ])
           }
           return renderCalendar.call(component, {

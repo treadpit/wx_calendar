@@ -244,7 +244,7 @@ export default () => {
       if (calendarConfig.weekMode && !calendarData.initializedWeekMode) {
         const { defaultDate } = calendarConfig
         const target =
-          (defaultDate && dateUtil.transformTimeStr2Dict(defaultDate)) ||
+          (defaultDate && dateUtil.transformDateRow2Dict(defaultDate)) ||
           dateUtil.todayFMD()
         const waitRenderData = this.methods(
           component
