@@ -61,7 +61,7 @@ class DateUtil {
    */
   getTimeStamp(dateInfo) {
     if (typeof dateInfo === 'string') {
-      dateInfo = this.transformTimeStr2Dict(dateInfo)
+      dateInfo = this.transformDateRow2Dict(dateInfo)
     }
     if (Object.prototype.toString.call(dateInfo) !== '[object Object]') return
     const dateUtil = new DateUtil()
@@ -113,7 +113,7 @@ class DateUtil {
   toTimeStr(dateInfo = {}) {
     return `${+dateInfo.year}-${+dateInfo.month}-${+dateInfo.date}`
   }
-  transformTimeStr2Dict(dateStr) {
+  transformDateRow2Dict(dateStr) {
     if (typeof dateStr === 'string' && dateStr.includes('-')) {
       const [year, month, date] = dateStr.split('-')
       return this.tranformStr2NumOfDate({
