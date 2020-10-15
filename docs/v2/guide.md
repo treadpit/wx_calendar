@@ -49,15 +49,13 @@ Page({
    * currentSelect 当前点击的日期
    */
   takeoverTap(e) {
-    console.log('takeoverTap', e.detail) // => { year: 2019, month: 12, day: 3, ...}
+    console.log('takeoverTap', e.detail) // => { year: 2019, month: 12, date: 3, ...}
   },
   /**
    * 选择日期后执行的事件
-   * currentSelect 当前点击的日期
-   * allSelectedDays 选择的所有日期（当multi为true时，allSelectedDays有值）
    */
   afterTapDate(e) {
-    console.log('afterTapDate', e.detail) // => { currentSelect: {}, allSelectedDays: [] }
+    console.log('afterTapDate', e.detail) // => { year: 2019, month: 12, date: 3, ...}
   },
   /**
    * 当日历滑动时触发(适用于周/月视图)
