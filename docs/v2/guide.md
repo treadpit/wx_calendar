@@ -103,6 +103,7 @@ const conf = {
       inverse: true, // 单选模式下是否支持取消选中,
       markToday: '今', // 当天日期展示不使用默认数字，用特殊文字标记
       takeoverTap: true, // 是否完全接管日期点击事件（日期不会选中)
+      emphasisWeek: true, // 是否高亮显示周末日期
       chooseAreaMode: true, // 开启日期范围选择模式，该模式下只可选择时间段
       showHolidays: true, // 显示法定节假日班/休情况，需引入holidays插件
       showFestival: true, // 显示节日信息（如教师节等），需引入holidays插件

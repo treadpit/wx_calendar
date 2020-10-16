@@ -42,7 +42,7 @@ function calculatePrevMonthGrids(year, month, config) {
         empytGrids.push({
           ...YMInfo,
           date: i,
-          day: week || 7
+          week
         })
       }
     }
@@ -112,7 +112,7 @@ function calculateNextMonthGrids(year, month, config) {
         id: i - 1,
         ...YMInfo,
         date: i,
-        day: week || 7
+        week: week || 7
       })
     }
   }

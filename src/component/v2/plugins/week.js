@@ -77,7 +77,7 @@ function getDatesWhenTargetInFirstWeek(target, firstWeekDates) {
       year: prevMonthInfo.year,
       month: prevMonthInfo.month,
       date: lastMonthDatsCount,
-      day: week
+      week
     })
     lastMonthDatsCount -= 1
   }
@@ -95,7 +95,7 @@ function getDatesWhenTargetInLastWeek(target, lastWeekDates) {
       year: prevMonthInfo.year,
       month: prevMonthInfo.month,
       date: i + 1,
-      day: week
+      week
     })
   }
   return dates

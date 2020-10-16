@@ -197,7 +197,7 @@ class DateUtil {
         id: i - 1,
         month: +month,
         date: i,
-        day: week || 7,
+        week,
         isToday:
           +today.year === +year && +today.month === +month && i === +today.date
       }
