@@ -1,4 +1,4 @@
-import { dateUtil } from '../../utils'
+import { dateUtil } from '../../utils/index'
 import convertSolarLunar from './convertSolarLunar'
 
 export default () => {
