@@ -34,7 +34,7 @@
                 <view
                   wx:if="{{(config.showLunar && item.lunar && !item.showTodoLabel) || (item.showTodoLabel && calendar.todoLabelPos !== 'bottom') || config.showHolidays}}"
                   class="date-desc {{config.theme}}_date-desc date-desc-bottom {{(item.choosed || item.isToday) ? 'date-desc-bottom-always' : ''}} {{item.disable ? config.theme + '_date-desc-disable' : ''}}">
-                  <text class="{{config.showHolidays && !item.showTodoLabel && item.label && !item.choosed ? config.theme + '_date-desc-lunar' : ''}}">{{item.label || item.lunar.Term || item.lunar.IDayCn}}</text>
+                  <text class="{{config.showHolidays && !item.showTodoLabel && item.label && !item.choosed ? config.theme + '_date-desc-lunar' : ''}} {{item.type === 'festival' ? config.theme + '_festival' : ''}}">{{item.label || item.lunar.Term || item.lunar.IDayCn}}</text>
                 </view>
                 <view
                   wx:if="{{item.showTodoLabel && !calendar.todoLabelCircle}}"

@@ -288,17 +288,6 @@ calendar.chooseDateArea(['2020-10-20', '2020-10-30'])
 
 ## 节假日
 
-### 显示法定节假日班/休情况
-
-配置日历config:
-
-```js {2}
-calendarConfig: {
-  showHolidays: true,
-  ... // 更多配置待接入
-}
-```
-
 ### 获取日历面板当前年份节假日信息
 
 ```js

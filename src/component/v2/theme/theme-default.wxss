@@ -55,3 +55,7 @@
 .default_date-desc-disable {
     color: #e2e2e2;
 }
+
+.default_festival {
+    color: #c2c2c2;
+}
