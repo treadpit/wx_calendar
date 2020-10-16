@@ -52,3 +52,7 @@
 .elegant_date-desc-disable {
     color: #e2e2e2;
 }
+
+.elegant_festival {
+    color: #c2c2c2;
+}

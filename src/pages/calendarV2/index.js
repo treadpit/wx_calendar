@@ -19,7 +19,8 @@ const conf = {
     calendarConfig: {
       // theme: 'elegant',
       // showHolidays: true,
-      // chooseAreaMode: true
+      // emphasisWeek: true,
+      chooseAreaMode: true
       // defaultDate: '2020-9-8',
       // autoChoosedWhenJump: true
     },
