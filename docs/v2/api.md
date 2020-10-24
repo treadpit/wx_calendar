@@ -296,7 +296,7 @@ calendar.getHolidaysOfCurrentYear()
 
 ### 获取指定年份节假日信息
 
-> ::: tip 提示 👇
+::: tip 提示 👇
 指定年份节假日信息需自行扩展才可查询到
 :::
 
