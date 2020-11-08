@@ -1,9 +1,9 @@
-const del = require('del');
-const gulp = require('gulp');
-const path = require('path');
-const debug = require('gulp-debug');
+const del = require('del')
+const gulp = require('gulp')
+const path = require('path')
+const debug = require('gulp-debug')
 
-const rootPath = path.join(__dirname, 'src');
+const rootPath = path.join(__dirname, 'src')
 
 function copyExample(dir) {
   return gulp
@@ -15,7 +15,7 @@ function copyExample(dir) {
         title: '复制:'
       })
     )
-    .pipe(gulp.dest(dir));
+    .pipe(gulp.dest(dir))
 }
 
 function CopyCompJs() {
@@ -26,7 +26,7 @@ function CopyCompJs() {
         title: '复制:'
       })
     )
-    .pipe(gulp.dest('calendar'));
+    .pipe(gulp.dest('calendar_v1'))
 }
 
 function copyCalendar() {
@@ -41,16 +41,16 @@ function copyCalendar() {
         title: '复制:'
       })
     )
-    .pipe(gulp.dest('calendar'));
+    .pipe(gulp.dest('calendar_v1'))
 }
 
-exports.copyCalendar = gulp.series(copyCalendar, CopyCompJs);
+exports.copyCalendar = gulp.series(copyCalendar, CopyCompJs)
 
-gulp.task('default', gulp.series(copyCalendar, CopyCompJs));
-gulp.task('example', () => copyExample('example'));
+gulp.task('default', gulp.series(copyCalendar, CopyCompJs))
+gulp.task('example', () => copyExample('example'))
 gulp.task('clean', function() {
-  return del(['calendar-dist']);
-});
+  return del(['calendar-dist'])
+})
 gulp.task('watch', () => {
-  gulp.watch(['src/**/*', 'src/*'], () => copyExample('dist'));
-});
+  gulp.watch(['src/**/*', 'src/*'], () => copyExample('dist'))
+})
