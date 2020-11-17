@@ -17,10 +17,10 @@ plugin
 const conf = {
   data: {
     calendarConfig: {
-      // theme: 'elegant',
+      theme: 'elegant'
       // showHolidays: true,
       // emphasisWeek: true,
-      chooseAreaMode: true
+      // chooseAreaMode: true
       // defaultDate: '2020-9-8',
       // autoChoosedWhenJump: true
     },
