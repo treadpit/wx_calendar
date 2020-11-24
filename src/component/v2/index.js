@@ -207,7 +207,11 @@ Component({
         }
       }
       return renderCalendar.call(this, calendarData, config).then(() => {
-        this.triggerEvent('whenChangeMonth', {
+        let triggerEventName = 'whenChangeMonth'
+        if (config.weekMode) {
+          triggerEventName = 'whenChangeWeek'
+        }
+        this.triggerEvent(triggerEventName, {
           current: {
             year: +curYear,
             month: +curMonth
