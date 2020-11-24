@@ -91,6 +91,7 @@ Component({
             if (typeof p.methods === 'function') {
               const methods = p.methods(this)
               for (let fnName in methods) {
+                if (fnName.startsWith('__')) continue
                 const fn = methods[fnName]
                 if (typeof fn === 'function') {
                   if (!this.calendar) this.calendar = {}
