@@ -68,18 +68,21 @@ function dateIsInDatesRange(target, dates) {
 function getDatesWhenTargetInFirstWeek(target, firstWeekDates) {
   const { year, month } = target
   const prevMonthInfo = dateUtil.getPrevMonthInfo({ year, month })
-  let lastMonthDatsCount = dateUtil.getDatesCountOfMonth(year, month)
+  let lastMonthDatesCount = dateUtil.getDatesCountOfMonth(
+    prevMonthInfo.year,
+    prevMonthInfo.month
+  )
   let dates = firstWeekDates
   let firstWeekCount = firstWeekDates.length
   for (let i = 0; i < 7 - firstWeekCount; i++) {
-    const week = dateUtil.getDayOfWeek(+year, +month, lastMonthDatsCount)
+    const week = dateUtil.getDayOfWeek(+year, +month, lastMonthDatesCount)
     dates.unshift({
       year: prevMonthInfo.year,
       month: prevMonthInfo.month,
-      date: lastMonthDatsCount,
+      date: lastMonthDatesCount,
       week
     })
-    lastMonthDatsCount -= 1
+    lastMonthDatesCount -= 1
   }
   return dates
 }
@@ -209,7 +212,7 @@ function calculatePrevWeekDates(calendarData = {}) {
   const firstDateIdx = calendarDates.findIndex(
     date => dateUtil.toTimeStr(date) === dateUtil.toTimeStr(firstDateInThisWeek)
   )
-  if (firstDateInThisWeek.date - 7 >= 0) {
+  if (firstDateIdx - 7 >= 0) {
     const startIdx = firstDateIdx - 7
     return {
       dates: calendarDates.splice(startIdx, 7),
