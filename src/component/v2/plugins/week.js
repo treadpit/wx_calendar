@@ -42,7 +42,10 @@ function lastWeekInMonth(target = {}, calendarDates = [], calendarConfig = {}) {
   const firstDayOfWeekIsMon = firstDayOfWeek === 'Mon'
   const { year, month } = target
   const lastDay = dateUtil.getDatesCountOfMonth(year, month)
-  const lastDayWeek = dateUtil.getDayOfWeek(year, month, lastDay)
+  let lastDayWeek = dateUtil.getDayOfWeek(year, month, lastDay)
+  if (firstDayOfWeekIsMon && lastDayWeek === 0) {
+    lastDayWeek = 7
+  }
   const [start, end] = [lastDay - lastDayWeek, lastDay]
   return calendarDates.slice(firstDayOfWeekIsMon ? start : start - 1, end)
 }
@@ -244,9 +247,11 @@ export default () => {
   return {
     name: 'week',
     beforeRender(calendarData = {}, calendarConfig = {}, component) {
-      if (calendarConfig.weekMode && !calendarData.initializedWeekMode) {
+      const { initializedWeekMode, selectedDates } = calendarData
+      if (calendarConfig.weekMode && !initializedWeekMode) {
         const { defaultDate } = calendarConfig
         const target =
+          (selectedDates && selectedDates[0]) ||
           (defaultDate && dateUtil.transformDateRow2Dict(defaultDate)) ||
           dateUtil.todayFMD()
         const waitRenderData = this.methods(
