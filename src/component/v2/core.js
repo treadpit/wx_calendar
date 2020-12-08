@@ -20,7 +20,7 @@ function calculateEmptyGrids(year, month, config) {
  * @param {number} month 月份
  */
 function calculatePrevMonthGrids(year, month, config) {
-  let empytGrids = []
+  let emptyGrids = []
   const prevMonthDays = dateUtil.getDatesCountOfMonth(year, month - 1)
   let firstDayOfWeek = dateUtil.firstDayOfWeek(year, month)
   if (config.firstDayOfWeek === 'Mon') {
@@ -36,19 +36,19 @@ function calculatePrevMonthGrids(year, month, config) {
     const YMInfo = dateUtil.getPrevMonthInfo({ year, month })
     for (let i = prevMonthDays; i > len; i--) {
       if (onlyShowCurrentMonth) {
-        empytGrids.push('')
+        emptyGrids.push('')
       } else {
         const week = dateUtil.getDayOfWeek(+year, +month, i)
-        empytGrids.push({
+        emptyGrids.push({
           ...YMInfo,
           date: i,
           week
         })
       }
     }
-    empytGrids.reverse()
+    emptyGrids.reverse()
   }
-  return empytGrids
+  return emptyGrids
 }
 /**
  * 计算下一月日期是否需要多展示的日期
