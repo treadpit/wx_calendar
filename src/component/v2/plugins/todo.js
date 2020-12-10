@@ -40,10 +40,10 @@ function updateDatePropertyOfTodoLabel(todos, dates, showLabelAlways) {
     } else {
       target.showTodoLabel = !target.choosed
     }
-    if (target.showTodoLabel && todo.todoText) {
+    if (target.showTodoLabel) {
       target.todoText = todo.todoText
     }
-    if (todo.color) target.color = todo.color
+    target.color = todo.color
   }
   return datesInfo
 }
@@ -88,8 +88,8 @@ export default () => {
             )
           }
           if (!circle) {
-            if (pos) calendarData.todoLabelPos = pos
-            if (dotColor) calendarData.todoLabelColor = dotColor
+            calendarData.todoLabelPos = pos
+            calendarData.todoLabelColor = dotColor
           }
           calendarData.todoLabelCircle = circle || false
           calendarData.showLabelAlways = showLabelAlways || false

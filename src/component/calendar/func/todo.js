@@ -28,7 +28,7 @@ class Todo extends WxData {
       showLabelAlways,
       days: todoDays = []
     } = options || this.Component.todoConfig || {}
-    const { todoLabels = [], todoLabelPos, todoLabelColor } = calendar
+    const { todoLabels = [] } = calendar
     const currentMonthTodoLabels = this.getTodoLabels({
       year: curYear,
       month: curMonth
@@ -58,20 +58,18 @@ class Todo extends WxData {
       } else {
         target.showTodoLabel = !target.choosed
       }
-      if (target.showTodoLabel && todo.todoText) {
+      if (target.showTodoLabel) {
         target.todoText = todo.todoText
       }
-      if (todo.color) target.color = todo.color
+      target.color = todo.color
     }
     const o = {
       'calendar.days': dates,
       'calendar.todoLabels': uniqueArrayByDate(todoLabels.concat(todoDays))
     }
     if (!circle) {
-      if (pos && pos !== todoLabelPos) o['calendar.todoLabelPos'] = pos
-      if (dotColor && dotColor !== todoLabelColor) {
-        o['calendar.todoLabelColor'] = dotColor
-      }
+      o['calendar.todoLabelPos'] = pos
+      o['calendar.todoLabelColor'] = dotColor
     }
     o['calendar.todoLabelCircle'] = circle || false
     o['calendar.showLabelAlways'] = showLabelAlways || false
