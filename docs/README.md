@@ -16,10 +16,6 @@ features:
 footer: MIT Licensed | Copyright © 2019-present treadpit
 ---
 
-::: warning 警告 ⚠️
-小历同学2.0还在逐步完善测试中，已迁移的功能参考2.0版本文档，如果还未支持所需功能，请使用 [1.x版本](./v1/guide.md)。
-:::
-
 ``` js {2,4,7}
 // 引入插件安装器
 import plugin from '/component/v2/plugins/index'
@@ -40,6 +36,8 @@ Page({
 ```
 
 #### 插件一览表
+
+> 插件位于 `/src/component/v2/plugins` 目录下，可按需取舍
 
 |插件|描述|文件|
 |:--|:--|:--|
