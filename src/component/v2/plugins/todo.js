@@ -33,7 +33,10 @@ function filterTodos({ curYear, curMonth, exsitedTodos, toSetTodos }) {
 function updateDatePropertyOfTodoLabel(todos, dates, showLabelAlways) {
   const datesInfo = [...dates]
   for (let todo of todos) {
-    let target = datesInfo[todo.date - 1]
+    let targetIdx = datesInfo.findIndex(
+      item => dateUtil.toTimeStr(item) === dateUtil.toTimeStr(todo)
+    )
+    let target = datesInfo[targetIdx]
     if (!target) continue
     if (showLabelAlways) {
       target.showTodoLabel = true
