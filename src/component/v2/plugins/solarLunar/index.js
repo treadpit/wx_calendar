@@ -1,6 +1,14 @@
 import { dateUtil } from '../../utils/index'
 import convertSolarLunar from './convertSolarLunar'
 
+function getDateRow2Dict(dateInfo) {
+  if (!dateInfo) return dateInfo
+  if (typeof dateInfo === 'string' && dateInfo.includes('-')) {
+    dateInfo = dateUtil.transformDateRow2Dict(dateInfo)
+  }
+  return dateInfo
+}
+
 export default () => {
   return {
     name: 'convertSolarLunar',
@@ -34,12 +42,16 @@ export default () => {
     methods() {
       return {
         convertSolarLunar: dateInfo => {
+          dateInfo = getDateRow2Dict(dateInfo)
           if (!dateInfo) return dateInfo
-          if (typeof dateInfo === 'string' && dateInfo.includes('-')) {
-            dateInfo = dateUtil.transformDateRow2Dict(dateInfo)
-          }
           const { year, month, date } = dateInfo
           return convertSolarLunar.solar2lunar(year, month, date)
+        },
+        convertlLunar2Solar: (dateInfo, isLeapMonth) => {
+          dateInfo = getDateRow2Dict(dateInfo)
+          if (!dateInfo) return dateInfo
+          const { year, month, date } = dateInfo
+          return convertSolarLunar.lunar2solar(year, month, date, isLeapMonth)
         }
       }
     }

@@ -45,13 +45,6 @@ export const festival = {
         name: '重阳节',
         label: '重阳节'
       }
-    },
-    12: {
-      30: {
-        type: 'festival',
-        name: '除夕',
-        label: '除夕'
-      }
     }
   },
   // 阳历固定日期节日
@@ -87,11 +80,6 @@ export const festival = {
         type: 'festival',
         name: '劳动节',
         label: '劳动节'
-      },
-      6: {
-        type: 'festival',
-        name: '立夏',
-        label: '立夏'
       }
     },
     6: {

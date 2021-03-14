@@ -40,7 +40,7 @@ calendar
 // 周视图
 
 // 默认跳转至今天
-calendar.weekModeJump()// 跳转至某日
+calendar.weekModeJump() // 跳转至某日
 calendar
   .weekModeJump({
     year: 2019,
@@ -86,7 +86,6 @@ calendar.cancelSelectedDates(dates)
 calendar.cancelSelectedDates()
 ```
 
-
 ## 设置选中多个日期
 
 ::: tip 提示 👇
@@ -121,7 +120,7 @@ const dates = calendar.getCalendarDates(options)
 ## 设置日历配置
 
 ::: tip 提示 👇
-setCalendarConfig() 不会立即重新渲染日历数据，只会对部分基础配置（如theme, multi等）并且是在下一次渲染时生效
+setCalendarConfig() 不会立即重新渲染日历数据，只会对部分基础配置（如 theme, multi 等）并且是在下一次渲染时生效
 :::
 
 ```js {2}
@@ -166,7 +165,7 @@ calendar.setDateStyle(toSet)
 }
 ```
 
-# 需引入插件： plugins/todo.js
+# plugins/todo.js
 
 ## 待办事项
 
@@ -222,17 +221,18 @@ calendar.clearTodos()
 calendar.getTodos(options)
 ```
 
-# 需引入插件： plugins/selectable.js
+# plugins/selectable.js
 
 ## 指定可选日期区域
 
 ```js
 calendar.enableArea(['2018-11-12', '2018-11-30'])
 ```
+
 ## 指定特定可选日期
 
 ::: tip 提示 👇
-若已使用enableArea() ，则会表现为追加
+若已使用 enableArea() ，则会表现为追加
 :::
 
 ```js
@@ -245,7 +245,7 @@ calendar.enableDates(['2018-11-12', '2018-12-3', '2019-1-3'])
 calendar.disableDates(['2018-11-12'])
 ```
 
-# 需引入插件： plugins/week.js
+# plugins/week.js
 
 ## 周月视图切换
 
@@ -257,14 +257,15 @@ calendar.disableDates(['2018-11-12'])
 
 ```js
 // 切换为周视图
-calendar.switchView('week').then(() => {});
+calendar.switchView('week').then(() => {})
 
 // 切换为月视图
-calendar.switchView().then(() => {});
+calendar.switchView().then(() => {})
 // 或者
-calendar.switchView('month').then(() => {});
+calendar.switchView('month').then(() => {})
 ```
-# 需引入插件： plugins/time-range.js
+
+# plugins/time-range.js
 
 ## 日期范围选择
 
@@ -274,16 +275,16 @@ calendar.switchView('month').then(() => {});
 
 ```js
 // 当连续时间为单天时
-calendar.chooseDateArea(['2020-10-12']);
+calendar.chooseDateArea(['2020-10-12'])
 
 // 连续时间段
 calendar.chooseDateArea(['2020-10-20', '2020-10-30'])
 ```
 
-# 需引入插件： plugins/holidays/index.js
+# plugins/holidays/index.js
 
 ::: tip 提示 👇
-节假日数据来源：[国务院办公厅_政府信息公开专栏](http://www.gov.cn/zhengce/content/2019-11/21/content_5454164.htm)，目前仅支持了 `2020年份` 的数据，其他数据可按需自行补充 `/plugins/holidays/holidays-map.js`
+节假日数据来源：[国务院办公厅\_政府信息公开专栏](http://www.gov.cn/zhengce/content/2019-11/21/content_5454164.htm)，目前仅支持了 `2020年份` 的数据，其他数据可按需自行补充 `/plugins/holidays/holidays-map.js`
 :::
 
 ## 节假日
@@ -305,7 +306,7 @@ const year = 2020
 calendar.getHolidaysOfYear(year)
 ```
 
-# 需引入插件： plugins/solarLunar.js
+# plugins/solarLunar.js
 
 ## 获取指定日期农历信息
 
@@ -319,5 +320,4 @@ const lunar = calendar.convertSolarLunar({
 // 或日期字符串
 
 const lunar = calendar.convertSolarLunar('2020-8-30')
-
 ```
