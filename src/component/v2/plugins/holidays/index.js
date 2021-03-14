@@ -40,24 +40,61 @@ function inHolidays({ year, month }, { start, end, current }) {
   }
   return false
 }
+
+function addSpecialFestival(date, component) {
+  const { convertlLunar2Solar, convertSolarLunar } = component.calendar || {}
+  const lunarDateInfo = convertSolarLunar(date)
+  const { lYear, lMonth } = lunarDateInfo || {}
+  // 春节
+  const info = {
+    type: 'festival',
+    name: '除夕',
+    label: '除夕'
+  }
+  if (lMonth === 12) {
+    if (!festival.lunar['12']) festival.lunar['12'] = {}
+    if (convertlLunar2Solar(`${lYear}-12-30`) === -1) {
+      festival.lunar['12']['29'] = info
+    } else {
+      festival.lunar['12']['30'] = info
+    }
+  }
+}
+
 /**
  * 是否匹配到节日
  * @param {object} [dateInfo={}]
  * @param {object} [component={}]
- * @returns
+ * @returns {object|boolean} 匹配到的节日数据或者false
  */
 function hasFestivalDate(dateInfo = {}, component = {}) {
   const { month, date } = dateInfo
   let festivalDate = festival.solar[month] && festival.solar[month][date]
   if (!festivalDate) {
     const { convertSolarLunar } = component.calendar || {}
-    if (typeof convertSolarLunar === 'function') {
-      const { lMonth, lDay } = convertSolarLunar(dateInfo)
-      festivalDate = festival.lunar[lMonth] && festival.lunar[lMonth][lDay]
-    } else {
-      logger.warn(
-        '农历节日显示需要引入农历插件(/component/v2/plugins/solarLunar)'
+    const lunarDateInfo = convertSolarLunar(dateInfo)
+    const { lMonth, lDay } = lunarDateInfo
+    festivalDate = festival.lunar[lMonth] && festival.lunar[lMonth][lDay]
+    if (!festivalDate) {
+      const festivalOfMonth = festival.lunar[lMonth] || {}
+      const festivalDateKey = Object.keys(festivalOfMonth).find(item =>
+        item.match(new RegExp(`\\b${lDay}\\b`))
       )
+      if (!festivalDateKey) {
+        festivalDate = false
+      } else {
+        const festivalInfo = festival.lunar[lMonth][festivalDateKey]
+        if (!festivalInfo) {
+          festivalDate = false
+        } else {
+          const { condition } = festivalInfo
+          if (typeof condition === 'function') {
+            festivalDate = condition(lunarDateInfo)
+          } else {
+            festivalDate = false
+          }
+        }
+      }
     }
   }
   return festivalDate
@@ -72,18 +109,18 @@ export default () => {
         dates = dates.map(d => {
           let item = { ...d }
           const { year, month, date } = item
-          const hasHolidaysOfThisMonth =
+          const holidaysOfMonth =
             (holidays[year] && holidays[year][month]) || {}
-          const holidayDate = hasHolidaysOfThisMonth[date]
+          const holidayDate = holidaysOfMonth[date]
           if (holidayDate) {
             item = {
               ...item,
               ...holidayDate
             }
           } else {
-            const holidayKeys = Object.keys(
-              hasHolidaysOfThisMonth
-            ).filter(item => item.includes('-'))
+            const holidayKeys = Object.keys(holidaysOfMonth).filter(item =>
+              item.includes('-')
+            )
             let target = ''
             for (let v of holidayKeys) {
               const [start, end] = v.split('-')
@@ -107,9 +144,20 @@ export default () => {
             if (isInHolidays) {
               item = {
                 ...item,
-                ...hasHolidaysOfThisMonth[target]
+                ...holidaysOfMonth[target]
               }
             } else if (calendarConfig.showFestival) {
+              const { convertSolarLunar, convertlLunar2Solar } =
+                component.calendar || {}
+              if (
+                typeof convertSolarLunar !== 'function' ||
+                typeof convertlLunar2Solar !== 'function'
+              ) {
+                return logger.warn(
+                  '农历节日显示需要引入农历插件(/component/v2/plugins/solarLunar)'
+                )
+              }
+              addSpecialFestival(item, component)
               const festivalDate = hasFestivalDate(item, component)
               if (festivalDate) {
                 item = {
