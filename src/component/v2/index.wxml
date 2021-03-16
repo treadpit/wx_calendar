@@ -19,10 +19,28 @@
     <!-- 日历面板主体 -->
     <view class="b lr wrap" bindtouchstart="calendarTouchstart" catchtouchmove="calendarTouchmove" catchtouchend="calendarTouchend">
       <!-- 上月日期格子 -->
-      <view class="grid b ac pc {{config.theme}}_prev-month-date" wx:for="{{calendar.prevMonthGrids}}" wx:key="index" data-idx="{{index}}">
+      <!-- <view class="grid b ac pc {{config.theme}}_prev-month-date" wx:for="{{calendar.prevMonthGrids}}" wx:key="index" data-idx="{{index}}">
         <view class="date-wrap b cc">
           <view class="date">
                 {{item.date}}
+          </view>
+        </view>
+      </view> -->
+      <view wx:for="{{calendar.prevMonthGrids}}" wx:key="index" data-idx="{{index}}" data-info="{{item}}" class="grid b ac pc {{config.theme}}_prev-month-date">
+        <view class="date-wrap b cc {{config.emphasisWeek && (item.week === 0 || item.week === 6) ? config.theme + '_weekend-color' : ''}}">
+          <view class="date b ac pc {{item.class ? item.class  : ''}} {{item.isToday && config.highlightToday ? config.theme + '_today' : ''}} {{item.choosed ? config.theme + '_choosed' : ''}} {{item.disable ? config.theme + '_date-disable' : ''}} {{config.chooseAreaMode ? 'date-area-mode' : ''}}  {{calendar.todoLabelCircle && item.showTodoLabel && !item.choosed ? config.theme + '_todo-circle todo-circle' : '' }}">
+                {{config.markToday && item.isToday ? config.markToday : item.date}}
+                <view
+                  wx:if="{{(config.showLunar && item.lunar && !item.showTodoLabel) || (item.showTodoLabel && calendar.todoLabelPos !== 'bottom') || config.showHolidays}}"
+                  class="date-desc {{config.theme}}_date-desc date-desc-bottom {{(item.choosed || item.isToday) ? 'date-desc-bottom-always' : ''}} {{item.disable ? config.theme + '_date-desc-disable' : ''}}">
+                  <text class="{{config.showHolidays && !item.showTodoLabel && item.label && !item.choosed ? config.theme + '_date-desc-lunar' : ''}} {{item.type === 'festival' ? config.theme + '_festival' : ''}}">{{item.label || item.lunar.Term || item.lunar.IDayCn}}</text>
+                </view>
+                <view
+                  wx:if="{{item.showTodoLabel && !calendar.todoLabelCircle}}"
+                  class="{{item.todoText ? 'date-desc' : config.theme + '_todo-dot todo-dot'}} {{config.showLunar ? config.theme + '_date-desc-lunar' : ''}} {{calendar.todoLabelPos === 'bottom' ? 'date-desc-bottom todo-dot-bottom' : 'date-desc-top todo-dot-top'}} {{calendar.showLabelAlways && item.choosed && calendar.todoLabelPos === 'bottom' ? 'date-desc-bottom-always todo-dot-bottom-always' : ''}} {{calendar.showLabelAlways && item.choosed && calendar.todoLabelPos === 'top' ? 'date-desc-top-always todo-dot-top-always' : ''}}"
+                  style="background-color: {{item.todoText ? '' : item.color || calendar.todoLabelColor}}; color: {{item.color}}">
+                    {{item.todoText}}
+                </view>
           </view>
         </view>
       </view>
@@ -46,13 +64,31 @@
         </view>
       </view>
       <!-- 下月日期格子 -->
-      <view class="grid b ac pc {{config.theme}}_next-month-date" wx:for="{{calendar.nextMonthGrids}}" wx:key="index" data-idx="{{index}}">
+      <view wx:for="{{calendar.nextMonthGrids}}" wx:key="index" data-idx="{{index}}" data-info="{{item}}" class="grid b ac pc {{config.theme}}_next-month-date">
+        <view class="date-wrap b cc {{config.emphasisWeek && (item.week === 0 || item.week === 6) ? config.theme + '_weekend-color' : ''}}">
+          <view class="date b ac pc {{item.class ? item.class  : ''}} {{item.isToday && config.highlightToday ? config.theme + '_today' : ''}} {{item.choosed ? config.theme + '_choosed' : ''}} {{item.disable ? config.theme + '_date-disable' : ''}} {{config.chooseAreaMode ? 'date-area-mode' : ''}}  {{calendar.todoLabelCircle && item.showTodoLabel && !item.choosed ? config.theme + '_todo-circle todo-circle' : '' }}">
+                {{config.markToday && item.isToday ? config.markToday : item.date}}
+                <view
+                  wx:if="{{(config.showLunar && item.lunar && !item.showTodoLabel) || (item.showTodoLabel && calendar.todoLabelPos !== 'bottom') || config.showHolidays}}"
+                  class="date-desc {{config.theme}}_date-desc date-desc-bottom {{(item.choosed || item.isToday) ? 'date-desc-bottom-always' : ''}} {{item.disable ? config.theme + '_date-desc-disable' : ''}}">
+                  <text class="{{config.showHolidays && !item.showTodoLabel && item.label && !item.choosed ? config.theme + '_date-desc-lunar' : ''}} {{item.type === 'festival' ? config.theme + '_festival' : ''}}">{{item.label || item.lunar.Term || item.lunar.IDayCn}}</text>
+                </view>
+                <view
+                  wx:if="{{item.showTodoLabel && !calendar.todoLabelCircle}}"
+                  class="{{item.todoText ? 'date-desc' : config.theme + '_todo-dot todo-dot'}} {{config.showLunar ? config.theme + '_date-desc-lunar' : ''}} {{calendar.todoLabelPos === 'bottom' ? 'date-desc-bottom todo-dot-bottom' : 'date-desc-top todo-dot-top'}} {{calendar.showLabelAlways && item.choosed && calendar.todoLabelPos === 'bottom' ? 'date-desc-bottom-always todo-dot-bottom-always' : ''}} {{calendar.showLabelAlways && item.choosed && calendar.todoLabelPos === 'top' ? 'date-desc-top-always todo-dot-top-always' : ''}}"
+                  style="background-color: {{item.todoText ? '' : item.color || calendar.todoLabelColor}}; color: {{item.color}}">
+                    {{item.todoText}}
+                </view>
+          </view>
+        </view>
+      </view>
+      <!-- <view class="grid b ac pc {{config.theme}}_next-month-date" wx:for="{{calendar.nextMonthGrids}}" wx:key="index" data-idx="{{index}}">
         <view class="date-wrap b cc">
           <view class="date">
               {{item.date}}
           </view>
         </view>
-      </view>
+      </view> -->
     </view>
   </view>
 </view>

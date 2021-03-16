@@ -62,6 +62,8 @@ export default () => {
             return Promise.reject('请等待日历初始化完成后再调用该方法')
           }
           let dates = [...calendar.dates]
+          let nextMonthGrids = [...(calendar.nextMonthGrids || [])]
+          let prevMonthGrids = [...(calendar.prevMonthGrids || [])]
           const { curYear, curMonth } = calendar
           const {
             circle,
@@ -71,19 +73,32 @@ export default () => {
             dates: todoDates = []
           } = options
           const { todos = [] } = calendar
-          const allTodosOfThisMonths = filterTodos({
-            curYear,
-            curMonth,
-            exsitedTodos: todos,
-            toSetTodos: todoDates
-          })
+          // const allTodosOfThisMonths = filterTodos({
+          //   curYear,
+          //   curMonth,
+          //   exsitedTodos: todos,
+          //   toSetTodos: todoDates
+          // })
+          const allTodosOfThisMonths = todoDates
           dates = updateDatePropertyOfTodoLabel(
             allTodosOfThisMonths,
             dates,
             showLabelAlways
           )
+          nextMonthGrids = updateDatePropertyOfTodoLabel(
+            allTodosOfThisMonths,
+            nextMonthGrids,
+            showLabelAlways
+          )
+          prevMonthGrids = updateDatePropertyOfTodoLabel(
+            allTodosOfThisMonths,
+            prevMonthGrids,
+            showLabelAlways
+          )
           const calendarData = {
             dates,
+            nextMonthGrids,
+            prevMonthGrids,
             todos: dateUtil.uniqueArrayByDate(
               todos.concat(
                 todoDates.map(date => dateUtil.tranformStr2NumOfDate(date))
@@ -97,10 +112,11 @@ export default () => {
           calendarData.todoLabelCircle = circle || false
           calendarData.showLabelAlways = showLabelAlways || false
           const existCalendarData = getCalendarData('calendar', component)
-          return renderCalendar.call(component, {
+          const obj = {
             ...existCalendarData,
             ...calendarData
-          })
+          }
+          return renderCalendar.call(component, obj)
         },
         deleteTodos(todos = []) {
           if (!(todos instanceof Array) || !todos.length)
