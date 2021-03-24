@@ -9,26 +9,26 @@
 import { getCalendarData, dateUtil } from '../utils/index'
 import { renderCalendar } from '../render'
 
-function filterTodos({ curYear, curMonth, exsitedTodos, toSetTodos }) {
-  const exsitedCurrentMonthTodos = dateUtil.filterDatesByYM(
-    {
-      year: curYear,
-      month: curMonth
-    },
-    exsitedTodos
-  )
-  const toSetTodosOfThisMonth = dateUtil.filterDatesByYM(
-    {
-      year: curYear,
-      month: curMonth
-    },
-    toSetTodos
-  )
-  const allTodosOfThisMonths = dateUtil.uniqueArrayByDate(
-    exsitedCurrentMonthTodos.concat(toSetTodosOfThisMonth)
-  )
-  return allTodosOfThisMonths
-}
+// function filterTodos({ curYear, curMonth, exsitedTodos, toSetTodos }) {
+//   const exsitedCurrentMonthTodos = dateUtil.filterDatesByYM(
+//     {
+//       year: curYear,
+//       month: curMonth
+//     },
+//     exsitedTodos
+//   )
+//   const toSetTodosOfThisMonth = dateUtil.filterDatesByYM(
+//     {
+//       year: curYear,
+//       month: curMonth
+//     },
+//     toSetTodos
+//   )
+//   const allTodosOfThisMonths = dateUtil.uniqueArrayByDate(
+//     exsitedCurrentMonthTodos.concat(toSetTodosOfThisMonth)
+//   )
+//   return allTodosOfThisMonths
+// }
 
 function updateDatePropertyOfTodoLabel(todos, dates, showLabelAlways) {
   const datesInfo = [...dates]
@@ -64,7 +64,7 @@ export default () => {
           let dates = [...calendar.dates]
           let nextMonthGrids = [...(calendar.nextMonthGrids || [])]
           let prevMonthGrids = [...(calendar.prevMonthGrids || [])]
-          const { curYear, curMonth } = calendar
+          // const { curYear, curMonth } = calendar
           const {
             circle,
             dotColor = '',
