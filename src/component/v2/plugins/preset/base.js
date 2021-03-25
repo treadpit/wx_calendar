@@ -57,7 +57,11 @@ export default () => {
         if (selectedDates.length) {
           preSelectedDate = [...selectedDates].pop() || {}
         }
-        if (!inverse && +preSelectedDate.date === +tapedDate.date) {
+        const isSameYear = +preSelectedDate.year === +tapedDate.year
+        const isSameDate = +preSelectedDate.date === +tapedDate.date
+        const isSameMonth = +preSelectedDate.month === +tapedDate.month
+        const isSameDay = isSameYear && isSameDate && isSameMonth
+        if (!inverse && isSameDay) {
           return calendar
         }
         let _tapedDate = { ...tapedDate, choosed: !tapedDate.choosed }

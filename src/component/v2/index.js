@@ -110,6 +110,19 @@ Component({
       const { date, disable } = info || {}
       if (disable || !date) return
       const { calendar, config } = this.data
+      if (info.month !== calendar.curMonth || info.year !== calendar.curYear) {
+        calendar.curMonth = info.month
+        calendar.curDate = info.date
+        calendar.curYear = info.year
+        let triggerEventName = 'whenChangeMonth'
+        this.triggerEvent(triggerEventName, {
+          current: {
+            year: +calendar.curYear,
+            month: +calendar.curMonth
+          },
+          next: calendar
+        })
+      }
       let calendarData = calendar
       let calendarConfig = config
       if (config.takeoverTap) {

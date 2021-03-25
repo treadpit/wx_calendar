@@ -113,7 +113,7 @@ function getDates(target, calendarDates = [], calendarConfig = {}) {
   const { firstDayOfWeek } = calendarConfig
   const firstDayOfWeekIsMon = firstDayOfWeek === 'Mon'
   if (firstDayOfWeekIsMon) {
-    const startIdx = date - targetDay
+    const startIdx = date - (targetDay || 7)
     return calendarDates.splice(startIdx, 7)
   } else {
     const startIdx = date - targetDay - 1
