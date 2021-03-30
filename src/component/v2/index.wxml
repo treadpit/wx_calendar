@@ -1,7 +1,9 @@
 <view class="flex b tb ac" wx:if="{{calendar}}">
   <view class="calendar b tb">
     <!-- 头部操作栏 -->
-    <view class="handle {{config.theme}}_handle-color fs28 b lr ac pc">
+    <view
+      wx:if="{{!config.hideHeader}}"
+      class="handle {{config.theme}}_handle-color fs28 b lr ac pc">
       <view class="prev fs36" wx:if="{{!config.weekMode}}">
         <text class="prev-handle iconfont icon-doubleleft" bindtap="changeDate" data-type="prev_year"></text>
         <text class="prev-handle iconfont icon-left" bindtap="changeDate" data-type="prev_month"></text>
