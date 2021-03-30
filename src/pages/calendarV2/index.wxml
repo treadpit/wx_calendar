@@ -3,9 +3,10 @@
     id="calendar"
     config="{{calendarConfig}}"
     bind:onSwipe="onSwipe"
+    bind:whenChangeWeek="whenChangeWeek"
+    bind:whenChangeMonth="whenChangeMonth"
     bind:takeoverTap="takeoverTap"
     bind:afterTapDate="afterTapDate"
-    bind:whenChangeMonth="whenChangeMonth"
     bind:afterCalendarRender="afterCalendarRender"
   ></calendar>
 </view>

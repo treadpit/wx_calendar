@@ -57,7 +57,8 @@ export default () => {
         if (selectedDates.length) {
           preSelectedDate = [...selectedDates].pop() || {}
         }
-        if (!inverse && +preSelectedDate.date === +tapedDate.date) {
+        const timeStr = dateUtil.toTimeStr
+        if (!inverse && timeStr(preSelectedDate) === timeStr(tapedDate)) {
           return calendar
         }
         let _tapedDate = { ...tapedDate, choosed: !tapedDate.choosed }

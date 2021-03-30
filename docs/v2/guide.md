@@ -6,7 +6,7 @@ title: 快速开始
 
 将 `calendar` 文件夹拷贝至自己的组件目录，页面 `json` 文件中配置组件，组件路径根据项目实际情况填写
 
-``` json {3}
+```json {3}
 {
   "usingComponents": {
     "calendar": "/component/calendar/index"
@@ -26,7 +26,7 @@ title: 快速开始
 
 另外日历组件提供一些自定义事件，其中自定义事件功能对应如下，返回参数的具体格式可运行 `demo` 中 `pages/calendarV2/index` 页面查看
 
-``` xml {2-6}
+```xml {2-6}
 <calendar
   bind:takeoverTap="takeoverTap"
   bind:afterTapDate="afterTapDate"
@@ -58,11 +58,17 @@ Page({
     console.log('afterTapDate', e.detail) // => { year: 2019, month: 12, date: 3, ...}
   },
   /**
-   * 当日历滑动时触发(适用于周/月视图)
-   * 可在滑动时按需在该方法内获取当前日历的一些数据
+   * 当日历滑动时触发
    */
   onSwipe(e) {
     console.log('onSwipe', e.detail)
+  },
+  /**
+   * 当日历滑动时触发(适用于周视图)
+   * 可在滑动时按需在该方法内获取当前日历的一些数据
+   */
+  whenChangeWeek(e) {
+    console.log('whenChangeWeek', e.detail)
   },
   /**
    * 当改变月份时触发
@@ -75,12 +81,11 @@ Page({
 })
 ```
 
-
 ## 自定义配置
 
 组件支持一系列配置，自定义配置需手动传给组件，如：
 
-``` xml {2}
+```xml {2}
 <calendar
   config="{{calendarConfig}}"
   bind:takeoverTap="takeoverTap"
@@ -102,6 +107,7 @@ const conf = {
       showLunar: true, // 是否显示农历，此配置会导致 setTodoLabels 中 showLabelAlways 配置失效
       inverse: true, // 单选模式下是否支持取消选中,
       markToday: '今', // 当天日期展示不使用默认数字，用特殊文字标记
+      hideHeader: true, // 隐藏日历头部操作栏
       takeoverTap: true, // 是否完全接管日期点击事件（日期不会选中)
       emphasisWeek: true, // 是否高亮显示周末日期
       chooseAreaMode: true, // 开启日期范围选择模式，该模式下只可选择时间段
@@ -124,4 +130,5 @@ const conf = {
 }
 Page(conf)
 ```
-为了赋予日历组件更多能力，小历同学2.0使用了简单的插件系统，比如需要使用设置代办事项相关功能，则必须手动引入todo插件才可使用相关功能，这点与1.x有很大区别，插件的使用请参考下一节 [引入插件](./plugin.md)
+
+为了赋予日历组件更多能力，小历同学 2.0 使用了简单的插件系统，比如需要使用设置代办事项相关功能，则必须手动引入 todo 插件才可使用相关功能，这点与 1.x 有很大区别，插件的使用请参考下一节 [引入插件](./plugin.md)
