@@ -1,12 +1,14 @@
 <view class="flex b tb ac" wx:if="{{calendar}}">
   <view class="calendar b tb">
     <!-- 头部操作栏 -->
-    <view class="handle {{config.theme}}_handle-color fs28 b lr ac pc">
+    <view
+      wx:if="{{!config.hideHeader}}"
+      class="handle {{config.theme}}_handle-color fs28 b lr ac pc">
       <view class="prev fs36" wx:if="{{!config.weekMode}}">
         <text class="prev-handle iconfont icon-doubleleft" bindtap="changeDate" data-type="prev_year"></text>
         <text class="prev-handle iconfont icon-left" bindtap="changeDate" data-type="prev_month"></text>
       </view>
-      <view class="flex date-in-handle b lr cc" bindtap="doubleClickToToday">{{calendar.curYear || "--"}} 年 {{calendar.curMonth || "--"}} 月</view>
+      <view class="flex date-in-handle b lr cc" bindtap="doubleClickJumpToToday">{{calendar.curYear || "--"}} 年 {{calendar.curMonth || "--"}} 月</view>
       <view class="next fs36" wx:if="{{!config.weekMode}}">
         <text class="next-handle iconfont icon-right" bindtap="changeDate" data-type="next_month"></text>
         <text class="next-handle iconfont icon-doubleright" bindtap="changeDate" data-type="next_year"></text>

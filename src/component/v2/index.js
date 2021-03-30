@@ -219,7 +219,39 @@ Component({
           },
           next: target
         })
+        this.triggerEvent('onSwipe', {
+          current: {
+            year: +curYear,
+            month: +curMonth
+          },
+          next: target,
+          type: triggerEventName
+        })
       })
+    },
+    doubleClickJumpToToday() {
+      const { multi, weekMode } = this.calendar.getCalendarConfig() || {}
+      if (multi || weekMode) return
+      if (this.count === undefined) {
+        this.count = 1
+      } else {
+        this.count += 1
+      }
+      if (this.lastClick) {
+        const difference = new Date().getTime() - this.lastClick
+        if (
+          difference < 500 &&
+          this.count >= 2 &&
+          typeof this.calendar.jump === 'function'
+        ) {
+          const today = dateUtil.todayFMD()
+          this.calendar.jump(today)
+        }
+        this.count = undefined
+        this.lastClick = undefined
+      } else {
+        this.lastClick = new Date().getTime()
+      }
     }
   }
 })

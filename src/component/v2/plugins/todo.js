@@ -9,27 +9,6 @@
 import { getCalendarData, dateUtil } from '../utils/index'
 import { renderCalendar } from '../render'
 
-function filterTodos({ curYear, curMonth, exsitedTodos, toSetTodos }) {
-  const exsitedCurrentMonthTodos = dateUtil.filterDatesByYM(
-    {
-      year: curYear,
-      month: curMonth
-    },
-    exsitedTodos
-  )
-  const toSetTodosOfThisMonth = dateUtil.filterDatesByYM(
-    {
-      year: curYear,
-      month: curMonth
-    },
-    toSetTodos
-  )
-  const allTodosOfThisMonths = dateUtil.uniqueArrayByDate(
-    exsitedCurrentMonthTodos.concat(toSetTodosOfThisMonth)
-  )
-  return allTodosOfThisMonths
-}
-
 function updateDatePropertyOfTodoLabel(todos, dates, showLabelAlways) {
   const datesInfo = [...dates]
   for (let todo of todos) {
@@ -54,6 +33,21 @@ function updateDatePropertyOfTodoLabel(todos, dates, showLabelAlways) {
 export default () => {
   return {
     name: 'todo',
+    beforeRender(calendarData = {}, calendarConfig = {}, component) {
+      const { todos = [], dates = [], showLabelAlways } = calendarData
+      const dateWithTodoInfo = updateDatePropertyOfTodoLabel(
+        todos,
+        dates,
+        showLabelAlways
+      )
+      return {
+        calendarData: {
+          ...calendarData,
+          dates: dateWithTodoInfo
+        },
+        calendarConfig
+      }
+    },
     methods(component) {
       return {
         setTodos: (options = {}) => {
@@ -61,8 +55,6 @@ export default () => {
           if (!calendar || !calendar.dates) {
             return Promise.reject('请等待日历初始化完成后再调用该方法')
           }
-          let dates = [...calendar.dates]
-          const { curYear, curMonth } = calendar
           const {
             circle,
             dotColor = '',
@@ -71,23 +63,13 @@ export default () => {
             dates: todoDates = []
           } = options
           const { todos = [] } = calendar
-          const allTodosOfThisMonths = filterTodos({
-            curYear,
-            curMonth,
-            exsitedTodos: todos,
-            toSetTodos: todoDates
-          })
-          dates = updateDatePropertyOfTodoLabel(
-            allTodosOfThisMonths,
-            dates,
-            showLabelAlways
+          const tranformStr2NumOfTodo = todoDates.map(date =>
+            dateUtil.tranformStr2NumOfDate(date)
           )
           const calendarData = {
-            dates,
+            dates: calendar.dates,
             todos: dateUtil.uniqueArrayByDate(
-              todos.concat(
-                todoDates.map(date => dateUtil.tranformStr2NumOfDate(date))
-              )
+              todos.concat(tranformStr2NumOfTodo)
             )
           }
           if (!circle) {
