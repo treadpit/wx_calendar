@@ -144,13 +144,15 @@ export default () => {
         },
         setCalendarConfig(config) {
           return new Promise((resolve, reject) => {
-            if (!component || !component.config) {
+            if (!component || !component.data.config) {
               reject('异常：未找到组件配置信息')
               return
             }
             let conf = { ...component.config, ...config }
             component.config = conf
-            setCalendarData('calendar.config', conf)
+            setCalendarData({ config: conf }, component)
+              .then(resolve)
+              .catch(reject)
           })
         },
         cancelSelectedDates(cancelDates = []) {
