@@ -165,8 +165,7 @@ export default () => {
           const existCalendarData = getCalendarData('calendar', component)
           const { enableDates = [] } = existCalendarData || {}
           let toSetDates = toSet.map(item => {
-            let date = { ...item }
-            if (typeof date === 'string') {
+            if (typeof item === 'string') {
               return dateUtil.transformDateRow2Dict(item)
             }
             return item
