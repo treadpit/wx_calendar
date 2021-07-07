@@ -119,8 +119,6 @@ export default () => {
           if (disableDates && disableDates.length) {
             if (disableDates && disableDates.includes(timeStr)) {
               item.disable = true
-            } else {
-              item.disable = false
             }
             return item
           }
