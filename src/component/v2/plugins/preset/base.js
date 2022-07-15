@@ -148,8 +148,8 @@ export default () => {
               reject('异常：未找到组件配置信息')
               return
             }
-            let conf = { ...component.config, ...config }
-            component.config = conf
+            let conf = { ...component.data.config, ...config }
+            component.data.config = conf
             setCalendarData({ config: conf }, component)
               .then(resolve)
               .catch(reject)
