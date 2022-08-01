@@ -33,7 +33,7 @@ function pusheNextMonthDateArea(
       })
     }
     if (i === datesLen - 1 && timeStamp < endTimestamp) {
-      pusheNextMonthDateArea(
+      tempOfSelectedDate = pusheNextMonthDateArea(
         dateUtil.getNextMonthInfo(date),
         startTimestamp,
         endTimestamp,
@@ -66,7 +66,7 @@ function pushPrevMonthDateArea(
       })
     }
     if (i === datesLen - 1 && firstDate > startTimestamp) {
-      pushPrevMonthDateArea(
+      tempOfSelectedDate = pushPrevMonthDateArea(
         dateUtil.getPrevMonthInfo(date),
         startTimestamp,
         endTimestamp,
