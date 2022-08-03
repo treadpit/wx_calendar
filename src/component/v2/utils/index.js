@@ -94,21 +94,20 @@ class DateUtil {
   getDayOfWeek(year, month, date) {
     return new Date(Date.UTC(year, month - 1, date)).getUTCDay()
   }
-  todayFMD() {
-    const _date = new Date()
-    const year = _date.getFullYear()
-    const month = _date.getMonth() + 1
-    const date = _date.getDate()
+  formatTimestamp(timestamp) {
+    const date = new Date(timestamp)
     return {
-      year: +year,
-      month: +month,
-      date: +date
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      date: date.getDate()
     }
   }
   todayTimestamp() {
-    const { year, month, date } = this.todayFMD()
-    const timestamp = this.newDate(year, month, date).getTime()
-    return timestamp
+    return new Date().getTime()
+  }
+  todayFMD() {
+    const timestamp = this.todayTimestamp()
+    return this.formatTimestamp(timestamp)
   }
   toTimeStr(dateInfo = {}) {
     return `${+dateInfo.year}-${+dateInfo.month}-${+dateInfo.date}`
