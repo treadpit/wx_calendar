@@ -190,9 +190,13 @@ export default () => {
           }
           return date
         })
-        const monthOfStartDate = new Date(startDateTimestamp).getMonth()
-        const monthOfEndDate = new Date(endDateTimestamp).getMonth()
-        if (monthOfStartDate !== monthOfEndDate) {
+        const { year: startYear, month: startMonth } = dateUtil.formatTimestamp(
+          startDateTimestamp
+        )
+        const { year: endYear, month: endMonth } = dateUtil.formatTimestamp(
+          endDateTimestamp
+        )
+        if (startMonth !== endMonth || startYear !== endYear) {
           __selectedDates = calcDateWhenNotInOneMonth({
             firstDate: __dates[0],
             lastDate: __dates[__dates.length - 1],
